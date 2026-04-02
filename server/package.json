@@ -1,0 +1,13 @@
+{
+  "name": "bsn-content-server",
+  "version": "1.0.0",
+  "description": "빌사남 콘텐츠 현황판 서버",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}

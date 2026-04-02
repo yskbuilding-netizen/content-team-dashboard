@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JARVIS - 콘텐츠팀 AI 어시스턴트</title>
+  <meta name="description" content="JARVIS - 콘텐츠팀 AI 어시스턴트 및 업무 관리 시스템">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- 로그인 화면 -->
+  <div id="login-screen" style="display:flex;align-items:center;justify-content:center;height:100vh;background:#0f0f23;">
+    <div style="background:#1a1a2e;padding:40px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);text-align:center;width:320px;">
+      <div style="font-size:48px;margin-bottom:16px;">📋</div>
+      <h2 style="color:#e8e8f0;margin-bottom:24px;font-size:20px;">콘텐츠팀 현황판</h2>
+      <input id="login-id" type="text" placeholder="아이디" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #333;border-radius:8px;background:#0f0f23;color:#e8e8f0;font-size:15px;box-sizing:border-box;">
+      <input id="login-pw" type="password" placeholder="비밀번호" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #333;border-radius:8px;background:#0f0f23;color:#e8e8f0;font-size:15px;box-sizing:border-box;">
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;color:#8a8aa8;font-size:13px;cursor:pointer;">
+        <input type="checkbox" id="login-auto" checked style="accent-color:#667eea;"> 자동 로그인
+      </label>
+      <div id="login-error" style="color:#ff6b6b;font-size:13px;margin-bottom:12px;display:none;">아이디 또는 비밀번호가 틀렸습니다.</div>
+      <button onclick="doLogin()" style="width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:8px;font-size:15px;cursor:pointer;font-weight:600;">로그인</button>
+    </div>
+  </div>
+  <script>
+    const _USERS={'bsn':'1234','admin':'1234'};
+    function doLogin(){
+      const id=document.getElementById('login-id').value.trim();
+      const pw=document.getElementById('login-pw').value.trim();
+      const auto=document.getElementById('login-auto').checked;
+      if(_USERS[id]&&_USERS[id]===pw){
+        document.getElementById('login-screen').style.display='none';
+        document.getElementById('app-main').style.display='';
+        if(auto) localStorage.setItem('ct_logged_in','1');
+      }else{
+        document.getElementById('login-error').style.display='block';
+      }
+    }
+    document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')doLogin();});
+    if(localStorage.getItem('ct_logged_in')==='1'){document.addEventListener('DOMContentLoaded',function(){document.getElementById('login-screen').style.display='none';document.getElementById('app-main').style.display='';});}
+  </script>
+
+  <div id="app-main" style="display:none;">
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+  
+  <div class="app-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-logo">
+        <span class="logo-icon">📋</span>
+        <span class="logo-text">콘텐츠팀</span>
+      </div>
+      <ul class="nav-list">
+        <li class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">대시보드</span>
+        </li>
+        <li class="nav-item" data-page="calendar">
+          <span class="nav-icon">📅</span>
+          <span class="nav-text">업무/캘린더</span>
+        </li>
+        <li class="nav-item" data-page="content-board">
+          <span class="nav-icon">🎬</span>
+          <span class="nav-text">유튜브</span>
+        </li>
+        <li class="nav-item" data-page="instagram">
+          <span class="nav-icon">📸</span>
+          <span class="nav-text">Instagram</span>
+        </li>
+        <li class="nav-item" data-page="tiktok">
+          <span class="nav-icon">🎵</span>
+          <span class="nav-text">TikTok</span>
+        </li>
+        <li class="nav-item" data-page="blog">
+          <span class="nav-icon">📝</span>
+          <span class="nav-text">블로그</span>
+        </li>
+        <li class="nav-item" data-page="tistory">
+          <span class="nav-icon">🟠</span>
+          <span class="nav-text">티스토리</span>
+        </li>
+        <li class="nav-item" data-page="wordpress">
+          <span class="nav-icon">🔵</span>
+          <span class="nav-text">WordPress</span>
+        </li>
+        <li class="nav-item" data-page="leads">
+          <span class="nav-icon">📞</span>
+          <span class="nav-text">리드/상담</span>
+        </li>
+        <li class="nav-item" data-page="competitors">
+          <span class="nav-icon">🔍</span>
+          <span class="nav-text">경쟁 분석</span>
+        </li>
+        <li class="nav-item" data-page="ads">
+          <span class="nav-icon">💰</span>
+          <span class="nav-text">광고 관리</span>
+        </li>
+      </ul>
+      <div class="sidebar-footer">© 2026 콘텐츠팀</div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- ═══ Chatbot Page ═══ -->
+      <!-- chatbot-page hidden but kept for JS compatibility -->
+      <section id="chatbot-page" class="page" style="display:none"></section>
+
+      <!-- ═══ Calendar + 업무입력 통합 ═══ -->
+      <section id="calendar-page" class="page">
+        <div class="page-header">
+          <h1>📅 업무 / 캘린더</h1>
+          <div class="cal-header-right">
+            <div class="cal-view-toggle">
+              <button class="cal-view-btn active" id="cal-view-week">주간</button>
+              <button class="cal-view-btn" id="cal-view-month">월간</button>
+            </div>
+            <div class="week-nav">
+              <button id="prev-week">◀</button>
+              <span class="week-label" id="cal-week-label"></span>
+              <button id="next-week">▶</button>
+            </div>
+          </div>
+        </div>
+        <!-- Team Sync Banner -->
+        <div class="team-sync-banner" id="team-sync-banner">
+          <div class="team-sync-info">
+            <span id="team-sync-status">🔒 로컬 저장 중</span>
+          </div>
+          <button class="btn btn-sm btn-primary" id="team-sync-btn">팀 공유 설정</button>
+        </div>
+        <!-- Team Sync Setup -->
+        <div class="team-sync-setup" id="team-sync-setup" style="display:none">
+          <div class="team-sync-card">
+            <h3>👥 팀 캘린더 공유</h3>
+            <p>Firebase를 연결하면 팀원들과 실시간으로 캘린더를 공유할 수 있습니다.</p>
+            <div class="yt-setup-steps" style="margin-bottom:14px">
+              <div class="yt-step">1. <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a> → 프로젝트 생성</div>
+              <div class="yt-step">2. Realtime Database 만들기 → 테스트 모드로 시작</div>
+              <div class="yt-step">3. 프로젝트 설정 → 웹 앱 추가 → config 복사</div>
+            </div>
+            <div class="yt-key-input-row" style="margin-bottom:8px">
+              <input type="text" id="firebase-url-input" placeholder="Firebase DB URL (예: https://xxx.firebaseio.com)">
+            </div>
+            <div class="yt-key-input-row" style="margin-bottom:8px">
+              <input type="text" id="firebase-key-input" placeholder="API Key">
+            </div>
+            <div class="yt-key-input-row" style="margin-bottom:8px">
+              <input type="text" id="team-name-input" placeholder="내 이름 (예: 홍길동)">
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" id="team-save-btn">연결</button>
+              <button class="btn btn-secondary" id="team-cancel-btn">취소</button>
+            </div>
+            <div class="yt-status" id="team-status" style="display:none"></div>
+          </div>
+        </div>
+        <div class="calendar-grid" id="calendar-grid"></div>
+        <!-- 업무 입력 영역 -->
+        <div style="margin-top:20px;background:var(--card-bg);border-radius:12px;padding:16px;">
+          <h3 style="margin:0 0 12px 0;color:var(--text-primary);font-size:15px;">💬 업무 입력</h3>
+          <div class="quick-actions">
+            <button class="quick-btn" data-prefix="유튜브 ">🎬 유튜브</button>
+            <button class="quick-btn" data-prefix="인스타 ">📸 인스타</button>
+            <button class="quick-btn" data-prefix="틱톡 ">🎵 틱톡</button>
+            <button class="quick-btn" data-prefix="블로그 ">📝 블로그</button>
+            <button class="quick-btn" data-prefix="디자인 ">🎨 디자인</button>
+            <button class="quick-btn" data-prefix="기획 ">💼 기획</button>
+            <button class="quick-btn" data-prefix="마케팅 ">📢 마케팅</button>
+          </div>
+          <div class="chat-input-row" style="margin-top:8px;">
+            <input type="text" id="chat-input" placeholder="오늘 한 업무를 입력하세요..." autocomplete="off">
+            <button id="chat-send">전송</button>
+          </div>
+          <div class="chat-messages" id="chat-messages" style="max-height:300px;overflow-y:auto;margin-top:12px;"></div>
+        </div>
+        <div class="weekly-summary" id="weekly-summary"></div>
+      </section>
+
+      <!-- ═══ Content Board Page (YouTube 빌사남TV) ═══ -->
+      <section id="content-board-page" class="page">
+        <div class="page-header">
+          <h1 id="yt-page-title">🎬 유튜브</h1>
+          <div class="yt-header-actions">
+            <button class="btn btn-secondary btn-sm" id="yt-back-btn" style="display:none" onclick="ContentBoard.showChannelSelect()">← 채널 목록</button>
+            <button class="btn btn-secondary" id="yt-refresh-btn">🔄 새로고침</button>
+          </div>
+        </div>
+        <div class="page-body">
+
+          <!-- Channel Select -->
+          <div id="yt-channel-select">
+            <div class="channel-select-grid">
+              <div class="channel-select-card" onclick="ContentBoard.selectChannel('bilsanam')">
+                <div class="cs-icon">🏢</div>
+                <div class="cs-name">빌사남 TV</div>
+                <div class="cs-desc">부동산 투자 채널</div>
+              </div>
+              <div class="channel-select-card" onclick="ContentBoard.selectChannel('seoulspace')">
+                <div class="cs-icon">🏙️</div>
+                <div class="cs-name">서울 스페이스</div>
+                <div class="cs-desc">공간/인테리어 채널</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- API Key Setup -->
+          <div class="yt-setup-area" id="yt-setup-area">
+            <div class="yt-setup-card">
+              <div class="yt-setup-icon">🔑</div>
+              <h2>YouTube API 연결</h2>
+              <p>빌사남 TV 채널 데이터를 불러오려면<br>YouTube Data API v3 키가 필요합니다.</p>
+              <div class="yt-setup-steps">
+                <div class="yt-step">1. <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a> 접속</div>
+                <div class="yt-step">2. 프로젝트 생성 후 YouTube Data API v3 사용 설정</div>
+                <div class="yt-step">3. API 키 생성 후 아래에 입력</div>
+              </div>
+              <div class="yt-key-input-row">
+                <input type="text" id="yt-api-key-input" placeholder="YouTube API 키를 입력하세요">
+                <button class="btn btn-primary" id="yt-save-key-btn">연결</button>
+              </div>
+              <div class="yt-status" id="yt-status" style="display:none"></div>
+              <div class="yt-demo-divider">
+                <span>또는</span>
+              </div>
+              <button class="btn btn-secondary yt-demo-start-btn" id="yt-demo-btn">샘플 데이터로 미리보기</button>
+              <p class="yt-demo-hint">API 키 없이 현황판 레이아웃을 먼저 확인할 수 있습니다</p>
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div class="yt-loading" id="yt-loading" style="display:none">
+            <div class="yt-spinner"></div>
+            <span>빌사남 TV 데이터를 불러오는 중...</span>
+          </div>
+
+          <!-- Dashboard Content -->
+          <div id="yt-dashboard-area" style="display:none">
+            <!-- Demo Mode Banner -->
+            <div class="yt-demo-banner" id="yt-demo-banner" style="display:none">
+              <span>샘플 데이터로 보는 중입니다. 실제 데이터를 보려면 YouTube API를 연결하세요.</span>
+              <button class="btn btn-sm btn-primary" id="yt-connect-real-btn">API 연결하기</button>
+            </div>
+            <!-- 채널 정보 + AI 분석 버튼 -->
+            <div class="yt-channel-header" id="yt-channel-info"></div>
+            <div id="ai-channel-result"></div>
+
+            <!-- Overview Cards -->
+            <div class="cb-summary-row" id="yt-overview-cards"></div>
+
+            <!-- Quick Stats Row -->
+            <div class="yt-quick-stats" id="yt-quick-stats"></div>
+
+            <!-- AI 통계 분석 (자동) -->
+            <div class="ai-auto-section">
+              <div class="ai-auto-header">
+                <h3 class="yt-section-title">🤖 AI 통계 분석</h3>
+                <button class="btn btn-sm btn-secondary" id="ai-auto-retry" onclick="ContentBoard.runAutoAI()" style="display:none">다시 분석</button>
+              </div>
+              <div id="ai-auto-result">
+                <div class="ai-loading"><div class="yt-spinner"></div> AI가 채널 데이터를 분석 중입니다...</div>
+              </div>
+            </div>
+
+            <!-- 영상 카드 -->
+            <div class="yt-section">
+              <h3 class="yt-section-title">🎬 영상별 성과 <span class="yt-section-sub">(클릭하면 상세 분석)</span></h3>
+              <div id="yt-video-cards"></div>
+            </div>
+
+            <!-- 접기/펼치기 -->
+            <div class="yt-section">
+              <div class="yt-collapse-header" onclick="this.parentElement.classList.toggle('open')">
+                <h3 class="yt-section-title">🚀 콘텐츠 추천</h3>
+                <span class="yt-collapse-icon">▼</span>
+              </div>
+              <div class="yt-collapse-body">
+                <div id="yt-recommendations"></div>
+              </div>
+            </div>
+
+            <div class="yt-section">
+              <div class="yt-collapse-header" onclick="this.parentElement.classList.toggle('open')">
+                <h3 class="yt-section-title">🧠 인사이트</h3>
+                <span class="yt-collapse-icon">▼</span>
+              </div>
+              <div class="yt-collapse-body">
+                <div id="yt-analysis"></div>
+              </div>
+            </div>
+
+            <div class="yt-section open">
+              <div class="yt-collapse-header" onclick="this.parentElement.classList.toggle('open')">
+                <h3 class="yt-section-title">📝 스크립트 제안</h3>
+                <span class="yt-collapse-icon">▼</span>
+              </div>
+              <div class="yt-collapse-body">
+                <div id="yt-script-ideas"></div>
+              </div>
+            </div>
+
+            <div style="display:none" id="yt-weekly-table"></div>
+            <div style="display:none" id="yt-video-list"></div>
+            <canvas id="yt-weekly-chart" style="display:none"></canvas>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ═══ Instagram Page ═══ -->
+      <section id="instagram-page" class="page">
+        <div class="page-header">
+          <h1>📸 Instagram 현황판</h1>
+          <button class="btn btn-secondary" id="ig-refresh-btn">🔄 새로고침</button>
+        </div>
+        <div class="page-body">
+          <!-- Instagram Setup -->
+          <div class="yt-setup-area" id="ig-setup-area">
+            <div class="yt-setup-card">
+              <div class="yt-setup-icon">📸</div>
+              <h2>Instagram 연결</h2>
+              <p>bsn 오피셜 비즈니스 계정의<br>데이터를 불러옵니다.</p>
+              <div class="yt-setup-steps">
+                <div class="yt-step">1. <a href="https://developers.facebook.com/tools/explorer/" target="_blank">Graph API 탐색기</a> 접속</div>
+                <div class="yt-step">2. 우측 상단 앱 선택 → <strong>"Generate Access Token"</strong> 클릭</div>
+                <div class="yt-step">3. 권한 추가: <strong>pages_show_list, instagram_basic, instagram_manage_insights</strong></div>
+                <div class="yt-step">4. 생성된 토큰 복사 → 아래에 붙여넣기</div>
+              </div>
+              <div class="yt-key-input-row">
+                <input type="text" id="ig-token-input" placeholder="액세스 토큰 붙여넣기">
+                <button class="btn btn-primary" id="ig-save-token-btn">연결</button>
+              </div>
+              <div class="yt-status" id="ig-status" style="display:none"></div>
+              <div class="yt-demo-divider"><span>또는</span></div>
+              <button class="btn btn-secondary yt-demo-start-btn" id="ig-demo-btn">샘플 데이터로 미리보기</button>
+            </div>
+          </div>
+
+          <!-- Loading -->
+          <div class="yt-loading" id="ig-loading" style="display:none">
+            <div class="yt-spinner"></div>
+            <span>Instagram 데이터를 불러오는 중...</span>
+          </div>
+
+          <!-- Instagram Dashboard -->
+          <div id="ig-dashboard-area" style="display:none">
+            <div class="yt-demo-banner" id="ig-demo-banner" style="display:none">
+              <span>샘플 데이터로 보는 중입니다.</span>
+              <button class="btn btn-sm btn-primary" id="ig-connect-real-btn">API 연결하기</button>
+            </div>
+            <!-- Profile -->
+            <div class="yt-channel-header" id="ig-profile-info"></div>
+            <!-- Overview -->
+            <div class="cb-summary-row" id="ig-overview-cards"></div>
+            <!-- Analysis -->
+            <div class="yt-section">
+              <h3 class="yt-section-title">🧠 인사이트 & 분석</h3>
+              <div id="ig-analysis"></div>
+            </div>
+            <!-- Posts -->
+            <div class="yt-section">
+              <h3 class="yt-section-title">📸 게시물별 성과</h3>
+              <div class="cb-table-wrap" id="ig-post-list"></div>
+            </div>
+
+            <!-- 콘텐츠 전략 -->
+            <div class="yt-section">
+              <h3 class="yt-section-title">🚀 Instagram 콘텐츠 전략</h3>
+              <div class="analysis-insights">
+                <div class="insight-card insight-tip"><div class="insight-icon">📑</div><div class="insight-body"><div class="insight-title">카루셀이 가장 효과적</div><div class="insight-desc">인스타 알고리즘이 카루셀을 2회 이상 노출합니다. 정보형 카루셀(5~10장)이 저장율과 공유율 최고. 첫 장은 궁금증 유발, 마지막 장은 저장/공유 CTA.</div></div></div>
+                <div class="insight-card insight-tip"><div class="insight-icon">🎬</div><div class="insight-body"><div class="insight-title">릴스 전략</div><div class="insight-desc">15~30초가 최적. 처음 1초에 텍스트 후킹 필수. 트렌딩 오디오 사용 시 노출 2~5배 증가. 자막은 반드시 추가 (음소거 시청 70%).</div></div></div>
+                <div class="insight-card insight-good"><div class="insight-icon">⏰</div><div class="insight-body"><div class="insight-title">최적 게시 시간</div><div class="insight-desc">평일: 오전 7~9시, 점심 12~13시, 저녁 19~21시. 주말: 오전 10~12시. 주 4~7회 게시가 이상적.</div></div></div>
+                <div class="insight-card insight-tip"><div class="insight-icon">#️⃣</div><div class="insight-body"><div class="insight-title">해시태그 전략</div><div class="insight-desc">대형(100만+) 3개 + 중형(1~10만) 7개 + 소형(1만 이하) 5개 믹스. 총 15~20개. 부동산 추천: #빌딩투자 #건물주되기 #부동산공부 #꼬마빌딩 #상가투자</div></div></div>
+              </div>
+            </div>
+
+            <!-- 콘텐츠 아이디어 -->
+            <div class="yt-section">
+              <h3 class="yt-section-title">💡 콘텐츠 아이디어</h3>
+              <div class="analysis-insights">
+                <div class="insight-card insight-good"><div class="insight-icon">📊</div><div class="insight-body"><div class="insight-title">데이터 카루셀</div><div class="insight-desc">"2026 서울 빌딩 시세 TOP 10", "월세 수익률 비교표" 등. 저장율이 매우 높고 전문성 어필.</div></div></div>
+                <div class="insight-card insight-good"><div class="insight-icon">🏢</div><div class="insight-body"><div class="insight-title">Before/After 시리즈</div><div class="insight-desc">리모델링 전후 비교, 공실→만실 스토리. 시각적 임팩트가 크고 참여율 높음.</div></div></div>
+                <div class="insight-card insight-good"><div class="insight-icon">💬</div><div class="insight-body"><div class="insight-title">Q&A 릴스</div><div class="insight-desc">팔로워 질문에 답하는 짧은 릴스. 소통감 UP + 알고리즘 우대. "DM으로 가장 많이 물어본 질문"</div></div></div>
+                <div class="insight-card insight-good"><div class="insight-icon">📈</div><div class="insight-body"><div class="insight-title">주간 시장 브리핑</div><div class="insight-desc">매주 월요일 부동산 뉴스 카드뉴스. 정기 시리즈화 → 팔로워 충성도 상승.</div></div></div>
+              </div>
+            </div>
+
+            <!-- 참고 계정 -->
+            <div class="yt-section">
+              <h3 class="yt-section-title">👀 참고할 Instagram 계정</h3>
+              <div class="analysis-insights">
+                <div class="insight-card insight-tip"><div class="insight-icon">📱</div><div class="insight-body"><div class="insight-title">@richgo_official (리치고)</div><div class="insight-desc">부동산 데이터 카루셀 1위. 깔끔한 디자인, 데이터 시각화 방식 참고. 팔로워 15만+</div></div></div>
+                <div class="insight-card insight-tip"><div class="insight-icon">📱</div><div class="insight-body"><div class="insight-title">@budongsan_geeks</div><div class="insight-desc">부동산 밈+정보 믹스. 젊은 층 타겟. 참여율 높은 게시물 스타일 참고.</div></div></div>
+                <div class="insight-card insight-tip"><div class="insight-icon">📱</div><div class="insight-body"><div class="insight-title">@zipbang_official (직방)</div><div class="insight-desc">브랜드 계정 운영 벤치마킹. 릴스+카루셀 믹스 전략. 전문 디자인 톤앤매너 참고.</div></div></div>
+                <div class="insight-card insight-tip"><div class="insight-icon">📱</div><div class="insight-body"><div class="insight-title">@land_teacher (부동산 선생님)</div><div class="insight-desc">교육형 카루셀 콘텐츠. 복잡한 정보를 쉽게 풀어쓰는 방식 참고. 저장율 매우 높음.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Dashboard Page ═══ -->
+      <section id="dashboard-page" class="page active">
+        <div class="page-header">
+          <h1>📊 마케팅 채널 종합 분석</h1>
+          <button class="btn btn-primary" id="add-stat-btn">+ 통계 입력</button>
+        </div>
+        <div class="page-body">
+          <!-- 종합 요약 -->
+          <div id="dashboard-overview"></div>
+
+          <!-- 플랫폼별 상세 -->
+          <div class="stats-cards" id="stats-cards"></div>
+
+          <!-- 트렌드 차트 -->
+          <div class="charts-container">
+            <div class="chart-card">
+              <h3>🎬 YouTube 트렌드</h3>
+              <canvas id="youtube-chart" height="250"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3>📸 Instagram 트렌드</h3>
+              <canvas id="instagram-chart" height="250"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3>🎵 TikTok 트렌드</h3>
+              <canvas id="tiktok-chart" height="250"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3>📝 블로그 트렌드</h3>
+              <canvas id="blog-chart" height="250"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3>🟠 티스토리 트렌드</h3>
+              <canvas id="tistory-chart" height="250"></canvas>
+            </div>
+            <div class="chart-card">
+              <h3>🔵 WordPress 트렌드</h3>
+              <canvas id="wordpress-chart" height="250"></canvas>
+            </div>
+          </div>
+
+          <!-- 게시 스케줄 & 크로스플랫폼 -->
+          <div class="yt-section">
+            <h3 class="yt-section-title">⏰ 최적 게시 스케줄</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-good"><div class="insight-icon">🎬</div><div class="insight-body"><div class="insight-title">YouTube</div><div class="insight-desc">화/목/토 오전 9시 또는 저녁 7시. 주 2~3회 롱폼 + 매일 숏폼이 이상적.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📸</div><div class="insight-body"><div class="insight-title">Instagram</div><div class="insight-desc">매일 1포스트. 릴스: 화/목/토 오전 8시. 카루셀: 월/수/금 저녁 7시. 스토리: 매일.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">🎵</div><div class="insight-body"><div class="insight-title">TikTok</div><div class="insight-desc">매일 1~2개. 평일 점심 12시, 저녁 8시. 주말 오전 10시. 트렌딩 오디오 매주 체크.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📝</div><div class="insight-body"><div class="insight-title">블로그</div><div class="insight-desc">네이버: 매일 오전 8~10시. 티스토리: 주 3~5회. 워드프레스: 주 1~2회 장문.</div></div></div>
+            </div>
+          </div>
+
+          <div class="yt-section">
+            <h3 class="yt-section-title">🔄 크로스 플랫폼 재활용 가이드</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">🎬→📱</div><div class="insight-body"><div class="insight-title">유튜브 → 숏폼</div><div class="insight-desc">롱폼의 핵심 30초를 추출 → 릴스/틱톡/숏츠로 동시 배포. 하나의 영상으로 3개 플랫폼 커버.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">🎬→📝</div><div class="insight-body"><div class="insight-title">유튜브 → 블로그</div><div class="insight-desc">영상 스크립트를 블로그 글로 재가공. 구글/네이버 검색 유입 추가 확보. 영상 임베드로 시너지.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📝→📸</div><div class="insight-body"><div class="insight-title">블로그 → 카루셀</div><div class="insight-desc">블로그 핵심 내용을 5~10장 카드뉴스로 제작. 인스타그램 저장율 극대화.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📊→📞</div><div class="insight-body"><div class="insight-title">모든 콘텐츠 → 리드</div><div class="insight-desc">모든 콘텐츠에 상담 CTA 삽입. 링크트리/카카오채널 연결. 유입 경로 반드시 추적.</div></div></div>
+            </div>
+          </div>
+
+          <!-- 팔로워 성장률 요약 -->
+          <div class="yt-section">
+            <h3 class="yt-section-title">📈 채널 성장 체크포인트</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-warn"><div class="insight-icon">📅</div><div class="insight-body"><div class="insight-title">주간 체크</div><div class="insight-desc">각 채널 팔로워/구독자 변화 기록 / 가장 잘 된 콘텐츠 1개 분석 / 경쟁 채널 신규 콘텐츠 확인 / 리드 유입 채널 확인</div></div></div>
+              <div class="insight-card insight-warn"><div class="insight-icon">📆</div><div class="insight-body"><div class="insight-title">월간 체크</div><div class="insight-desc">전체 채널 성장률 비교 / 광고 ROI 분석 / 콘텐츠 재활용률 확인 / 다음 달 콘텐츠 캘린더 수립 / KPI 달성률 검토</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ TikTok Page ═══ -->
+      <section id="tiktok-page" class="page">
+        <div class="page-header">
+          <h1>🎵 TikTok 관리</h1>
+          <button class="btn btn-primary" onclick="document.getElementById('stat-platform').value='tiktok';Dashboard.openModal()">+ 통계 입력</button>
+        </div>
+        <div class="page-body">
+          <div class="yt-section">
+            <h3 class="yt-section-title">📊 TikTok 콘텐츠 전략</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">🎯</div><div class="insight-body"><div class="insight-title">숏폼 콘텐츠 최적화</div><div class="insight-desc">15~30초 영상이 가장 높은 완주율. 처음 1초에 후킹 필수. 자막은 화면 중앙 하단에 배치.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">🔥</div><div class="insight-body"><div class="insight-title">부동산 틱톡 트렌드</div><div class="insight-desc">빌딩 투어 POV, Before/After 리모델링, "이 가격에 이 건물?" 시리즈, 경매 현장 브이로그가 인기.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">🎵</div><div class="insight-body"><div class="insight-title">트렌딩 오디오 활용</div><div class="insight-desc">트렌딩 사운드 사용 시 노출 2~5배 증가. 매주 인기 오디오 체크하고 부동산 콘텐츠에 접목.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📐</div><div class="insight-body"><div class="insight-title">최적 게시 시간</div><div class="insight-desc">평일 오전 7-9시, 점심 12-13시, 저녁 19-21시. 주말은 오전 10-12시가 최적.</div></div></div>
+            </div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">💡 콘텐츠 아이디어</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-good"><div class="insight-icon">🏢</div><div class="insight-body"><div class="insight-title">빌딩 투어 시리즈</div><div class="insight-desc">"서울에서 OO억으로 살 수 있는 건물" 형식. 가격→외관→내부→수익률 순서로 15초 압축.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">💰</div><div class="insight-body"><div class="insight-title">수익률 계산 숏폼</div><div class="insight-desc">"이 건물 월세 얼마 나올까?" → 계산 과정 → 결과 공개. 호기심 자극형.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">❓</div><div class="insight-body"><div class="insight-title">부동산 Q&A</div><div class="insight-desc">댓글 질문에 답하는 시리즈. "구독자님이 물어봤습니다" 형식으로 소통 극대화.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📈</div><div class="insight-body"><div class="insight-title">시장 동향 60초</div><div class="insight-desc">이번 주 부동산 뉴스를 60초로 요약. 정기 시리즈화하면 팔로워 충성도 상승.</div></div></div>
+            </div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">👀 참고 계정</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">📱</div><div class="insight-body"><div class="insight-title">@부동산읽어주는남자</div><div class="insight-desc">부동산 숏폼 1위. 자막 스타일, 후킹 방식 참고. 평균 조회수 50만+</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📱</div><div class="insight-body"><div class="insight-title">@월급쟁이부자들</div><div class="insight-desc">재테크+부동산 믹스. 공감형 콘텐츠로 높은 참여율. 댓글 소통 방식 참고.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Blog Page ═══ -->
+      <section id="blog-page" class="page">
+        <div class="page-header">
+          <h1>📝 네이버 블로그</h1>
+          <button class="btn btn-primary" onclick="document.getElementById('stat-platform').value='blog';Dashboard.openModal()">+ 통계 입력</button>
+        </div>
+        <div class="page-body">
+          <div class="yt-section">
+            <h3 class="yt-section-title">📊 네이버 블로그 전략</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">📗</div><div class="insight-body"><div class="insight-title">네이버 SEO 핵심</div><div class="insight-desc">제목에 키워드 포함, 본문 2000자 이상, 이미지 10장+. 부동산 키워드: "꼬마빌딩 매매", "상가 투자", "건물주 되는 법". 매일 1포스팅이 이상적.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">🔍</div><div class="insight-body"><div class="insight-title">상위 노출 전략</div><div class="insight-desc">C-Rank(신뢰도) + D.I.A(문서 품질) 알고리즘 공략. 한 주제에 집중하는 전문 블로그가 유리. 이웃 소통(댓글/공감) 활발히.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📱</div><div class="insight-body"><div class="insight-title">모바일 최적화</div><div class="insight-desc">네이버 검색의 70%가 모바일. 짧은 문단, 볼드 키워드, 이미지 사이 텍스트 배치. 스마트에디터 활용.</div></div></div>
+            </div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">💡 블로그 콘텐츠 아이디어</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-good"><div class="insight-icon">📊</div><div class="insight-body"><div class="insight-title">지역 분석 시리즈</div><div class="insight-desc">"강남구 빌딩 시장 분석", "마포구 상가 투자 가이드" 등 지역별 딥다이브. 검색 유입 극대화.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📋</div><div class="insight-body"><div class="insight-title">체크리스트형 포스팅</div><div class="insight-desc">"건물 매입 전 확인사항 20가지", "임대차 계약 체크리스트" 등. 저장율 높고 SEO에 유리.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📈</div><div class="insight-body"><div class="insight-title">시장 리포트</div><div class="insight-desc">월간/분기별 부동산 시장 동향 리포트. 전문성 어필 + 검색 유입. 유튜브 영상과 연계.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">🎬</div><div class="insight-body"><div class="insight-title">유튜브 영상 요약</div><div class="insight-desc">유튜브 콘텐츠를 블로그 글로 재가공. 크로스 플랫폼 시너지 + 추가 검색 유입.</div></div></div>
+            </div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">🔧 SEO 최적화 팁</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-warn"><div class="insight-icon">🔍</div><div class="insight-body"><div class="insight-title">키워드 리서치</div><div class="insight-desc">네이버 키워드 도구, 구글 키워드 플래너 활용. 월간 검색량 1000~5000 키워드를 노려야 상위 노출 가능.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">🏷️</div><div class="insight-body"><div class="insight-title">제목 최적화</div><div class="insight-desc">"[지역명] + [키워드] + [연도]" 패턴. 예: "2026 강남 꼬마빌딩 매매 시세 총정리"</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Tistory Page ═══ -->
+      <section id="tistory-page" class="page">
+        <div class="page-header">
+          <h1>🟠 티스토리</h1>
+          <button class="btn btn-primary" onclick="document.getElementById('stat-platform').value='tistory';Dashboard.openModal()">+ 통계 입력</button>
+        </div>
+        <div class="page-body">
+          <div class="yt-section">
+            <h3 class="yt-section-title">📊 티스토리 전략</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">🔍</div><div class="insight-body"><div class="insight-title">구글 SEO 최적화</div><div class="insight-desc">티스토리는 구글 검색에 강합니다. 장문 분석글(3000자+), 데이터 테이블, 이미지 ALT 태그 필수. "2026 서울 부동산 전망" 같은 롱테일 키워드 공략.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">💰</div><div class="insight-body"><div class="insight-title">애드센스 수익화</div><div class="insight-desc">구글 애드센스 승인 후 광고 수익 가능. 정보성 글이 CPC 높음. 부동산/재테크 카테고리는 광고 단가 상위권.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📐</div><div class="insight-body"><div class="insight-title">글 구조 최적화</div><div class="insight-desc">H2/H3 소제목 활용, 목차 플러그인 설치, 내부 링크 연결. 체류시간 증가 → 검색 순위 상승.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📅</div><div class="insight-body"><div class="insight-title">발행 전략</div><div class="insight-desc">주 3~5회 발행. 오전 8~10시 발행이 검색 유입에 유리. 시리즈물로 내부 링크 구축.</div></div></div>
+            </div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">💡 콘텐츠 아이디어</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-good"><div class="insight-icon">📊</div><div class="insight-body"><div class="insight-title">부동산 데이터 분석글</div><div class="insight-desc">"강남 오피스 공실률 추이", "서울 빌딩 매매가 변동 분석" 등 데이터 중심 장문글. 구글 상위 노출 가능.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📋</div><div class="insight-body"><div class="insight-title">투자 가이드 시리즈</div><div class="insight-desc">"빌딩 투자 A to Z" 시리즈. 1편: 자금 준비, 2편: 물건 찾기, 3편: 계약... 내부 링크로 연결.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">⚖️</div><div class="insight-body"><div class="insight-title">법률/세금 정리</div><div class="insight-desc">"2026 부동산 세금 총정리", "임대사업자 등록 방법" 등. 검색 수요 높고 전문성 어필.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ WordPress Page ═══ -->
+      <section id="wordpress-page" class="page">
+        <div class="page-header">
+          <h1>🔵 WordPress</h1>
+          <button class="btn btn-primary" onclick="document.getElementById('stat-platform').value='wordpress';Dashboard.openModal()">+ 통계 입력</button>
+        </div>
+        <div class="page-body">
+          <div class="yt-section">
+            <h3 class="yt-section-title">📊 WordPress 전략</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">🌐</div><div class="insight-body"><div class="insight-title">브랜딩 공식 사이트</div><div class="insight-desc">빌사남 공식 웹사이트로 활용. 회사 소개, 포트폴리오, 매물 소개, 상담 신청 폼 연동. 신뢰도 극대화.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">🔧</div><div class="insight-body"><div class="insight-title">필수 플러그인</div><div class="insight-desc">Yoast SEO (검색 최적화), WPForms (상담 폼), Elementor (페이지 빌더), WP Rocket (속도 최적화).</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📱</div><div class="insight-body"><div class="insight-title">반응형 디자인</div><div class="insight-desc">모바일 최적화 필수. Astra/GeneratePress 테마 추천. 로딩 속도 3초 이내 목표.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">🔗</div><div class="insight-body"><div class="insight-title">유튜브/SNS 연동</div><div class="insight-desc">유튜브 영상 임베드, 인스타 피드 위젯, 블로그 글 자동 연동. 모든 채널을 워드프레스로 허브화.</div></div></div>
+            </div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">💡 페이지 구성 추천</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-good"><div class="insight-icon">🏠</div><div class="insight-body"><div class="insight-title">메인 페이지</div><div class="insight-desc">히어로 섹션 + 최근 유튜브 영상 + 서비스 소개 + 상담 CTA. 방문자를 3초 안에 사로잡기.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">🏢</div><div class="insight-body"><div class="insight-title">매물 소개 페이지</div><div class="insight-desc">현재 진행 중인 매물 갤러리. 사진/도면/수익률 정보. 상담 신청 폼 연결.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📰</div><div class="insight-body"><div class="insight-title">블로그/뉴스</div><div class="insight-desc">부동산 인사이트, 시장 동향 글. 구글 SEO 유입 + 전문성 어필. 유튜브 영상 텍스트 버전.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📞</div><div class="insight-body"><div class="insight-title">상담 신청</div><div class="insight-desc">이름/연락처/관심분야 폼. 이메일 알림 설정. 카카오톡 채널 연동 버튼.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Leads Page ═══ -->
+      <section id="leads-page" class="page">
+        <div class="page-header">
+          <h1>📞 리드 / 상담 관리</h1>
+          <button class="btn btn-primary" onclick="Marketing.openLeadModal()">+ 상담 기록</button>
+        </div>
+        <div class="page-body">
+          <div class="overview-grid" style="margin-bottom:20px;">
+            <div class="overview-card overview-total"><div class="overview-icon">📞</div><div class="overview-value" id="lead-total">0</div><div class="overview-label">총 상담</div></div>
+            <div class="overview-card overview-views"><div class="overview-icon">🎬</div><div class="overview-value" id="lead-youtube">0</div><div class="overview-label">유튜브 유입</div></div>
+            <div class="overview-card overview-subs"><div class="overview-icon">📸</div><div class="overview-value" id="lead-instagram">0</div><div class="overview-label">인스타 유입</div></div>
+            <div class="overview-card overview-likes"><div class="overview-icon">📝</div><div class="overview-value" id="lead-blog">0</div><div class="overview-label">블로그 유입</div></div>
+            <div class="overview-card overview-engage"><div class="overview-icon">🔗</div><div class="overview-value" id="lead-other">0</div><div class="overview-label">기타</div></div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">📋 상담 기록</h3>
+            <div id="leads-list" style="max-height:500px;overflow-y:auto;"></div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">💡 리드 전환 팁</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">⏰</div><div class="insight-body"><div class="insight-title">골든타임 30분</div><div class="insight-desc">상담 문의 후 30분 내 연락 시 전환율 5배 증가. 자동 알림 설정 필수.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📊</div><div class="insight-body"><div class="insight-title">채널별 전환율 분석</div><div class="insight-desc">어떤 채널에서 온 리드가 실제 계약까지 이어지는지 추적. 가장 효율 좋은 채널에 투자 집중.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">🔄</div><div class="insight-body"><div class="insight-title">후속 콘텐츠 활용</div><div class="insight-desc">자주 묻는 질문을 콘텐츠로 제작. "고객님들이 가장 많이 물어보는 질문 TOP 5" → 리드 추가 유입.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Competitors Page ═══ -->
+      <section id="competitors-page" class="page">
+        <div class="page-header">
+          <h1>🔍 경쟁 채널 분석</h1>
+          <button class="btn btn-primary" onclick="Marketing.openCompetitorModal()">+ 경쟁 채널 추가</button>
+        </div>
+        <div class="page-body">
+          <div id="competitors-list"></div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">👀 모니터링 추천 채널</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">🎬</div><div class="insight-body"><div class="insight-title">YouTube 경쟁 채널</div><div class="insight-desc">부읽남 (구독자 100만+), 집코노미 (경제+부동산), 월급쟁이부자들 (재테크). 콘텐츠 주제, 썸네일 스타일, 업로드 빈도 참고.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📸</div><div class="insight-body"><div class="insight-title">Instagram 경쟁 계정</div><div class="insight-desc">리치고, 직방, 다방 공식계정. 카루셀 디자인, 릴스 포맷, 해시태그 전략 벤치마킹.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">🎵</div><div class="insight-body"><div class="insight-title">TikTok 경쟁 계정</div><div class="insight-desc">부동산읽어주는남자, 빌딩부자. 숏폼 후킹 방식, 자막 스타일, 트렌딩 오디오 활용법 참고.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">📝</div><div class="insight-body"><div class="insight-title">블로그 경쟁자</div><div class="insight-desc">네이버 "부동산" 카테고리 상위 블로거. 키워드 전략, 글 구조, 이미지 활용법 분석.</div></div></div>
+            </div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">📊 경쟁 분석 체크리스트</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-warn"><div class="insight-icon">📅</div><div class="insight-body"><div class="insight-title">주간 체크 항목</div><div class="insight-desc">경쟁 채널 신규 영상 주제 / 조회수 높은 콘텐츠 분석 / 새로운 포맷 시도 여부 / 댓글 반응 키워드</div></div></div>
+              <div class="insight-card insight-warn"><div class="insight-icon">📆</div><div class="insight-body"><div class="insight-title">월간 체크 항목</div><div class="insight-desc">구독자 증감 비교 / 평균 조회수 변화 / 새 채널 등장 여부 / 우리 채널 대비 강점·약점 정리</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ Ads Page ═══ -->
+      <section id="ads-page" class="page">
+        <div class="page-header">
+          <h1>💰 광고 관리</h1>
+          <button class="btn btn-primary" onclick="Marketing.openAdModal()">+ 광고 기록</button>
+        </div>
+        <div class="page-body">
+          <div class="overview-grid" style="margin-bottom:20px;">
+            <div class="overview-card overview-total"><div class="overview-icon">💰</div><div class="overview-value" id="ad-total-spend">0원</div><div class="overview-label">총 광고비</div></div>
+            <div class="overview-card overview-views"><div class="overview-icon">👁️</div><div class="overview-value" id="ad-total-reach">0</div><div class="overview-label">총 도달</div></div>
+            <div class="overview-card overview-subs"><div class="overview-icon">🖱️</div><div class="overview-value" id="ad-total-clicks">0</div><div class="overview-label">총 클릭</div></div>
+            <div class="overview-card overview-likes"><div class="overview-icon">📊</div><div class="overview-value" id="ad-cpc">0원</div><div class="overview-label">평균 CPC</div></div>
+            <div class="overview-card overview-engage"><div class="overview-icon">📞</div><div class="overview-value" id="ad-conversions">0</div><div class="overview-label">전환(상담)</div></div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">📋 광고 집행 기록</h3>
+            <div id="ads-list" style="max-height:500px;overflow-y:auto;"></div>
+          </div>
+          <div class="yt-section">
+            <h3 class="yt-section-title">💡 광고 최적화 팁</h3>
+            <div class="analysis-insights">
+              <div class="insight-card insight-tip"><div class="insight-icon">🎬</div><div class="insight-body"><div class="insight-title">YouTube 광고</div><div class="insight-desc">인스트림 광고: CPV 30~80원. 타겟: 25~54세, 부동산/재테크 관심사. 영상 첫 5초에 핵심 메시지.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📸</div><div class="insight-body"><div class="insight-title">Instagram 광고</div><div class="insight-desc">릴스 광고 CTR이 피드 대비 2배. 스토리 광고는 스와이프업으로 상담 페이지 연결. 일 예산 3~5만원 시작.</div></div></div>
+              <div class="insight-card insight-tip"><div class="insight-icon">📗</div><div class="insight-body"><div class="insight-title">네이버 검색광고</div><div class="insight-desc">"꼬마빌딩 매매", "상가 투자" 키워드 CPC 500~2000원. 파워링크 + 브랜드검색 조합 추천.</div></div></div>
+              <div class="insight-card insight-good"><div class="insight-icon">🎯</div><div class="insight-body"><div class="insight-title">리타겟팅 필수</div><div class="insight-desc">사이트 방문자, 영상 시청자를 리타겟팅하면 전환율 3~5배 상승. 페이스북 픽셀, 구글 태그 설치.</div></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Lead Input Modal -->
+  <div class="modal-overlay" id="lead-modal">
+    <div class="modal">
+      <h2>📞 상담 기록</h2>
+      <div class="modal-field"><label>날짜</label><input type="date" id="lead-date"></div>
+      <div class="modal-field"><label>고객명</label><input type="text" id="lead-name" placeholder="예: 홍길동"></div>
+      <div class="modal-field"><label>유입 채널</label>
+        <select id="lead-channel">
+          <option value="youtube">🎬 YouTube</option>
+          <option value="instagram">📸 Instagram</option>
+          <option value="tiktok">🎵 TikTok</option>
+          <option value="blog">📝 블로그</option>
+          <option value="naver">🔍 네이버 검색</option>
+          <option value="referral">👥 지인 소개</option>
+          <option value="other">기타</option>
+        </select>
+      </div>
+      <div class="modal-field"><label>상담 내용</label><input type="text" id="lead-note" placeholder="예: 강남 빌딩 매입 상담"></div>
+      <div class="modal-field"><label>상태</label>
+        <select id="lead-status">
+          <option value="new">🆕 신규</option>
+          <option value="contacted">📞 연락완료</option>
+          <option value="meeting">🤝 미팅예정</option>
+          <option value="closed">✅ 계약완료</option>
+          <option value="lost">❌ 이탈</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="Marketing.closeLeadModal()">취소</button>
+        <button class="btn btn-primary" onclick="Marketing.saveLead()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Competitor Input Modal -->
+  <div class="modal-overlay" id="competitor-modal">
+    <div class="modal">
+      <h2>🔍 경쟁 채널 추가</h2>
+      <div class="modal-field"><label>채널명</label><input type="text" id="comp-name" placeholder="예: 부읽남"></div>
+      <div class="modal-field"><label>플랫폼</label>
+        <select id="comp-platform">
+          <option value="youtube">🎬 YouTube</option>
+          <option value="instagram">📸 Instagram</option>
+          <option value="tiktok">🎵 TikTok</option>
+          <option value="blog">📝 블로그</option>
+        </select>
+      </div>
+      <div class="modal-field"><label>구독자/팔로워</label><input type="number" id="comp-subs" placeholder="예: 500000"></div>
+      <div class="modal-field"><label>메모</label><input type="text" id="comp-note" placeholder="예: 썸네일 스타일 참고"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="Marketing.closeCompetitorModal()">취소</button>
+        <button class="btn btn-primary" onclick="Marketing.saveCompetitor()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ad Input Modal -->
+  <div class="modal-overlay" id="ad-modal">
+    <div class="modal">
+      <h2>💰 광고 기록</h2>
+      <div class="modal-field"><label>날짜</label><input type="date" id="ad-date"></div>
+      <div class="modal-field"><label>플랫폼</label>
+        <select id="ad-platform">
+          <option value="youtube">🎬 YouTube 광고</option>
+          <option value="instagram">📸 Instagram 광고</option>
+          <option value="naver">🔍 네이버 검색광고</option>
+          <option value="google">🌐 Google 광고</option>
+          <option value="tiktok">🎵 TikTok 광고</option>
+        </select>
+      </div>
+      <div class="modal-field"><label>광고비 (원)</label><input type="number" id="ad-spend" placeholder="예: 100000"></div>
+      <div class="modal-field"><label>도달/노출</label><input type="number" id="ad-reach" placeholder="예: 50000"></div>
+      <div class="modal-field"><label>클릭</label><input type="number" id="ad-clicks" placeholder="예: 500"></div>
+      <div class="modal-field"><label>전환(상담)</label><input type="number" id="ad-conv" placeholder="예: 5"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="Marketing.closeAdModal()">취소</button>
+        <button class="btn btn-primary" onclick="Marketing.saveAd()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instagram Post Analysis Modal -->
+  <div class="modal-overlay" id="ig-analysis-modal">
+    <div class="modal modal-wide">
+      <div class="modal-close-row">
+        <button class="btn-icon" onclick="Instagram.closePostAnalysis()" title="닫기">✕</button>
+      </div>
+      <div id="ig-va-content"></div>
+    </div>
+  </div>
+
+  <!-- Video Analysis Modal -->
+  <div class="modal-overlay" id="video-analysis-modal">
+    <div class="modal modal-wide">
+      <div class="modal-close-row">
+        <button class="btn-icon" onclick="ContentBoard.closeVideoAnalysis()" title="닫기">✕</button>
+      </div>
+      <div id="va-content"></div>
+    </div>
+  </div>
+
+  <!-- Stat Input Modal -->
+  <div class="modal-overlay" id="stat-modal">
+    <div class="modal">
+      <h2>📊 통계 입력</h2>
+      <div class="modal-field">
+        <label>플랫폼</label>
+        <select id="stat-platform">
+          <option value="youtube">🎬 YouTube</option>
+          <option value="instagram">📸 Instagram</option>
+          <option value="tiktok">🎵 TikTok</option>
+          <option value="blog">📝 네이버 블로그</option>
+          <option value="tistory">🟠 티스토리</option>
+          <option value="wordpress">🔵 WordPress</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label>날짜</label>
+        <input type="date" id="stat-date">
+      </div>
+      <div class="modal-field">
+        <label>조회수</label>
+        <input type="number" id="stat-views" placeholder="예: 15000">
+      </div>
+      <div class="modal-field">
+        <label>구독자/팔로워</label>
+        <input type="number" id="stat-subs" placeholder="예: 5000">
+      </div>
+      <div class="modal-field">
+        <label>좋아요</label>
+        <input type="number" id="stat-likes" placeholder="예: 3000">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="cancel-stat-btn">취소</button>
+        <button class="btn btn-primary" id="save-stat-btn">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts (order matters) -->
+  <script src="js/ai-analysis.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/youtube-service.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/content-board.js"></script>
+  <script src="js/instagram.js"></script>
+  <script src="js/task-share.js"></script>
+  <script src="js/team-sync.js"></script>
+  <script src="js/marketing.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Set today's date label
+    const now = new Date();
+    const days = ['일','월','화','수','목','금','토'];
+    const label = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${days[now.getDay()]})`;
+    document.getElementById('today-label').textContent = label;
+  </script>
+  
+  <script>
+    // Mobile Menu Toggle
+    function toggleMobileMenu() {
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.classList.toggle('mobile-open');
+    }
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(e) {
+      const sidebar = document.querySelector('.sidebar');
+      const menuBtn = document.querySelector('.mobile-menu-btn');
+      
+      if (window.innerWidth <= 768 && 
+          !sidebar.contains(e.target) && 
+          !menuBtn.contains(e.target)) {
+        sidebar.classList.remove('mobile-open');
+      }
+    });
+    
+    // Close mobile menu when nav item clicked
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          document.querySelector('.sidebar').classList.remove('mobile-open');
+        }
+      });
+    });
+  </script>
+  </div><!-- /app-main -->
+</body>
+</html>

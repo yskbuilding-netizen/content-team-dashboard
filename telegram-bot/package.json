@@ -1,0 +1,13 @@
+{
+  "name": "bsn-telegram-bot",
+  "version": "2.0.0",
+  "description": "빌사남 콘텐츠 현황판 + Claude AI 코딩 도우미 텔레그램 봇",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "@anthropic-ai/sdk": "^0.39.0"
+  }
+}
