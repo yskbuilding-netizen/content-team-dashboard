@@ -56,9 +56,9 @@
         <span class="logo-text">콘텐츠팀</span>
       </div>
       <ul class="nav-list">
-        <li class="nav-item active" data-page="dashboard">
-          <span class="nav-icon">📊</span>
-          <span class="nav-text">대시보드</span>
+        <li class="nav-item active" data-page="ai-agent">
+          <span class="nav-icon">🤖</span>
+          <span class="nav-text">AI 에이전트</span>
         </li>
         <li class="nav-item" data-page="calendar">
           <span class="nav-icon">📅</span>
@@ -72,33 +72,9 @@
           <span class="nav-icon">📸</span>
           <span class="nav-text">Instagram</span>
         </li>
-        <li class="nav-item" data-page="tiktok">
-          <span class="nav-icon">🎵</span>
-          <span class="nav-text">TikTok</span>
-        </li>
-        <li class="nav-item" data-page="blog">
-          <span class="nav-icon">📝</span>
-          <span class="nav-text">블로그</span>
-        </li>
-        <li class="nav-item" data-page="tistory">
-          <span class="nav-icon">🟠</span>
-          <span class="nav-text">티스토리</span>
-        </li>
-        <li class="nav-item" data-page="wordpress">
-          <span class="nav-icon">🔵</span>
-          <span class="nav-text">WordPress</span>
-        </li>
-        <li class="nav-item" data-page="leads">
-          <span class="nav-icon">📞</span>
-          <span class="nav-text">리드/상담</span>
-        </li>
-        <li class="nav-item" data-page="competitors">
-          <span class="nav-icon">🔍</span>
-          <span class="nav-text">경쟁 분석</span>
-        </li>
-        <li class="nav-item" data-page="ads">
-          <span class="nav-icon">💰</span>
-          <span class="nav-text">광고 관리</span>
+        <li class="nav-item" data-page="dashboard">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">대시보드</span>
         </li>
       </ul>
       <div class="sidebar-footer">© 2026 콘텐츠팀</div>
@@ -687,6 +663,287 @@
         </div>
       </section>
 
+      <!-- ═══ AI Content Agent Page ═══ -->
+      <section id="ai-agent-page" class="page">
+        <div class="page-header">
+          <h1>🤖 AI 콘텐츠 에이전트</h1>
+          <div class="page-controls">
+            <span id="agent-date-label" style="color:var(--text-secondary);font-size:14px;margin-right:12px;"></span>
+            <button class="btn btn-primary" onclick="ContentAgent.runDaily()">🚀 오늘의 콘텐츠 생성</button>
+          </div>
+        </div>
+        <div class="page-body">
+
+          <!-- API Key 설정 -->
+          <div class="agent-api-setup" id="agent-api-setup">
+            <div class="yt-setup-card">
+              <div class="yt-setup-icon">🔑</div>
+              <h2>Anthropic API 연결</h2>
+              <p>AI 콘텐츠 에이전트를 사용하려면<br>Anthropic API 키가 필요합니다.</p>
+              <div class="yt-key-input-row">
+                <input type="text" id="agent-api-key-input" placeholder="sk-ant-api03-...">
+                <button class="btn btn-primary" onclick="ContentAgent.saveApiKey()">연결</button>
+              </div>
+              <div class="yt-status" id="agent-api-status" style="display:none"></div>
+            </div>
+          </div>
+
+          <!-- 에이전트 메인 영역 -->
+          <div id="agent-main-area" style="display:none;">
+
+            <!-- 탭 네비게이션 -->
+            <div class="agent-tabs">
+              <button class="agent-tab active" data-tab="news" onclick="ContentAgent.switchTab('news')">📰 뉴스/기사 수집</button>
+              <button class="agent-tab" data-tab="recommend" onclick="ContentAgent.switchTab('recommend')">💡 콘텐츠 추천</button>
+              <button class="agent-tab" data-tab="writer" onclick="ContentAgent.switchTab('writer')">✍️ 글 작성</button>
+              <button class="agent-tab" data-tab="cardnews" onclick="ContentAgent.switchTab('cardnews')">📸 카드뉴스</button>
+              <button class="agent-tab" data-tab="video" onclick="ContentAgent.switchTab('video')">🎬 영상 기획</button>
+              <button class="agent-tab" data-tab="calendar" onclick="ContentAgent.switchTab('calendar')">📅 발행 캘린더</button>
+            </div>
+
+            <!-- ═══ TAB: 뉴스/기사 수집 ═══ -->
+            <div class="agent-tab-content active" id="tab-news">
+              <div class="agent-section">
+                <div class="agent-section-header">
+                  <h3>📰 오늘의 부동산/경제 뉴스</h3>
+                  <div style="display:flex;gap:8px;">
+                    <select id="news-category" class="agent-select">
+                      <option value="부동산">부동산</option>
+                      <option value="경제">경제</option>
+                      <option value="건축">건축/인테리어</option>
+                      <option value="재테크">재테크/투자</option>
+                      <option value="정책">정책/법률</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="ContentAgent.fetchNews()">🔍 뉴스 수집</button>
+                  </div>
+                </div>
+                <div id="news-loading" class="agent-loading" style="display:none;">
+                  <div class="yt-spinner"></div> AI가 최신 뉴스를 분석하고 있습니다...
+                </div>
+                <div id="news-results" class="news-grid">
+                  <div class="empty-state">
+                    <div class="empty-icon">📰</div>
+                    <p>'뉴스 수집' 버튼을 클릭하면<br>AI가 관련 뉴스를 찾아 분석해드립니다.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══ TAB: 콘텐츠 추천 ═══ -->
+            <div class="agent-tab-content" id="tab-recommend">
+              <div class="agent-section">
+                <div class="agent-section-header">
+                  <h3>💡 AI 콘텐츠 추천</h3>
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <select id="recommend-platform" class="agent-select">
+                      <option value="all">전체 플랫폼</option>
+                      <option value="youtube">유튜브</option>
+                      <option value="instagram">인스타그램</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="ContentAgent.getRecommendations()">🎯 추천 받기</button>
+                  </div>
+                </div>
+                <div id="recommend-loading" class="agent-loading" style="display:none;">
+                  <div class="yt-spinner"></div> AI가 최적의 콘텐츠를 분석하고 있습니다...
+                </div>
+                <div id="recommend-results">
+                  <div class="empty-state">
+                    <div class="empty-icon">💡</div>
+                    <p>AI가 트렌드를 분석하여<br>최적의 콘텐츠를 추천해드립니다.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══ TAB: 글 작성 ═══ -->
+            <div class="agent-tab-content" id="tab-writer">
+              <div class="agent-section">
+                <div class="agent-section-header">
+                  <h3>✍️ AI 콘텐츠 작성기</h3>
+                </div>
+                <div class="writer-controls">
+                  <div class="writer-row">
+                    <div class="writer-field">
+                      <label>플랫폼</label>
+                      <select id="writer-platform" class="agent-select" onchange="ContentAgent.updateWriterUI()">
+                        <option value="blog">📝 네이버 블로그</option>
+                        <option value="tistory">🟠 티스토리</option>
+                        <option value="wordpress">🔵 워드프레스</option>
+                        <option value="instagram">📸 인스타그램 캡션</option>
+                      </select>
+                    </div>
+                    <div class="writer-field">
+                      <label>톤앤매너</label>
+                      <select id="writer-tone" class="agent-select">
+                        <option value="professional">전문적</option>
+                        <option value="friendly">친근한</option>
+                        <option value="educational">교육적</option>
+                        <option value="casual">캐주얼</option>
+                      </select>
+                    </div>
+                    <div class="writer-field">
+                      <label>글 길이</label>
+                      <select id="writer-length" class="agent-select">
+                        <option value="short">짧은 (500자)</option>
+                        <option value="medium" selected>보통 (1500자)</option>
+                        <option value="long">긴 (3000자+)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="writer-row">
+                    <div class="writer-field" style="flex:3;">
+                      <label>주제 / 키워드</label>
+                      <input type="text" id="writer-topic" placeholder="예: 2026 강남 꼬마빌딩 투자 전망, 상가 공실 대처법..." class="agent-input">
+                    </div>
+                    <div class="writer-field" style="flex:0 0 auto;align-self:flex-end;">
+                      <button class="btn btn-primary" onclick="ContentAgent.generateArticle()">✍️ 글 생성</button>
+                    </div>
+                  </div>
+                  <div class="writer-row">
+                    <div class="writer-field" style="flex:1;">
+                      <label>참고 자료 (선택)</label>
+                      <textarea id="writer-reference" placeholder="참고할 기사 URL이나 내용을 붙여넣으세요..." class="agent-textarea" rows="2"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div id="writer-loading" class="agent-loading" style="display:none;">
+                  <div class="yt-spinner"></div> AI가 콘텐츠를 작성하고 있습니다...
+                </div>
+                <div id="writer-result"></div>
+              </div>
+            </div>
+
+            <!-- ═══ TAB: 카드뉴스 ═══ -->
+            <div class="agent-tab-content" id="tab-cardnews">
+              <div class="agent-section">
+                <div class="agent-section-header">
+                  <h3>📸 인스타그램 카드뉴스 생성기</h3>
+                </div>
+                <div class="writer-controls">
+                  <div class="writer-row">
+                    <div class="writer-field" style="flex:2;">
+                      <label>카드뉴스 주제</label>
+                      <input type="text" id="cardnews-topic" placeholder="예: 빌딩 매입 전 확인사항 5가지" class="agent-input">
+                    </div>
+                    <div class="writer-field">
+                      <label>장수</label>
+                      <select id="cardnews-pages" class="agent-select">
+                        <option value="5">5장</option>
+                        <option value="7" selected>7장</option>
+                        <option value="10">10장</option>
+                      </select>
+                    </div>
+                    <div class="writer-field">
+                      <label>스타일</label>
+                      <select id="cardnews-style" class="agent-select">
+                        <option value="modern">모던/심플</option>
+                        <option value="bold">볼드/임팩트</option>
+                        <option value="soft">소프트/따뜻한</option>
+                        <option value="data">데이터/차트</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="writer-row">
+                    <div class="writer-field" style="flex:1;">
+                      <label>추가 지시사항 (선택)</label>
+                      <input type="text" id="cardnews-extra" placeholder="예: 파란색 계열, CTA 포함..." class="agent-input">
+                    </div>
+                    <div class="writer-field" style="flex:0 0 auto;align-self:flex-end;">
+                      <button class="btn btn-primary" onclick="ContentAgent.generateCardNews()">📸 카드뉴스 생성</button>
+                    </div>
+                  </div>
+                </div>
+                <div id="cardnews-loading" class="agent-loading" style="display:none;">
+                  <div class="yt-spinner"></div> AI가 카드뉴스를 디자인하고 있습니다...
+                </div>
+                <div id="cardnews-result"></div>
+              </div>
+            </div>
+
+            <!-- ═══ TAB: 영상 기획 ═══ -->
+            <div class="agent-tab-content" id="tab-video">
+              <div class="agent-section">
+                <div class="agent-section-header">
+                  <h3>🎬 영상 기획 & 스크립트</h3>
+                </div>
+                <div class="writer-controls">
+                  <div class="writer-row">
+                    <div class="writer-field">
+                      <label>영상 유형</label>
+                      <select id="video-type" class="agent-select">
+                        <option value="long">📺 롱폼 (10-20분)</option>
+                        <option value="medium">🎥 미디엄 (3-8분)</option>
+                        <option value="short">📱 숏폼/릴스 (60초)</option>
+                      </select>
+                    </div>
+                    <div class="writer-field">
+                      <label>채널</label>
+                      <select id="video-channel" class="agent-select">
+                        <option value="bilsanam">빌사남 TV</option>
+                        <option value="seoulspace">서울 스페이스</option>
+                      </select>
+                    </div>
+                    <div class="writer-field">
+                      <label>톤</label>
+                      <select id="video-tone" class="agent-select">
+                        <option value="professional">전문적</option>
+                        <option value="casual">캐주얼</option>
+                        <option value="entertaining">재미있는</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="writer-row">
+                    <div class="writer-field" style="flex:3;">
+                      <label>영상 주제</label>
+                      <input type="text" id="video-topic" placeholder="예: 2026 서울 빌딩 시장 전망, 경매로 빌딩 사는 법..." class="agent-input">
+                    </div>
+                    <div class="writer-field" style="flex:0 0 auto;align-self:flex-end;">
+                      <button class="btn btn-primary" onclick="ContentAgent.generateVideoScript()">🎬 스크립트 생성</button>
+                    </div>
+                  </div>
+                </div>
+                <div id="video-loading" class="agent-loading" style="display:none;">
+                  <div class="yt-spinner"></div> AI가 영상 기획서와 스크립트를 작성하고 있습니다...
+                </div>
+                <div id="video-result"></div>
+              </div>
+            </div>
+
+            <!-- ═══ TAB: 발행 캘린더 ═══ -->
+            <div class="agent-tab-content" id="tab-calendar">
+              <div class="agent-section">
+                <div class="agent-section-header">
+                  <h3>📅 이번 주 콘텐츠 발행 캘린더</h3>
+                  <div style="display:flex;gap:8px;">
+                    <button class="btn btn-primary btn-sm" onclick="ContentAgent.generateWeeklyPlan()">🗓️ 주간 계획 생성</button>
+                    <button class="btn btn-secondary btn-sm" onclick="ContentAgent.exportCalendar()">📤 내보내기</button>
+                  </div>
+                </div>
+                <div id="calendar-loading" class="agent-loading" style="display:none;">
+                  <div class="yt-spinner"></div> AI가 주간 콘텐츠 캘린더를 생성하고 있습니다...
+                </div>
+                <div id="agent-calendar-result">
+                  <div class="empty-state">
+                    <div class="empty-icon">📅</div>
+                    <p>'주간 계획 생성' 버튼을 클릭하면<br>AI가 이번 주 발행 캘린더를 만들어드립니다.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 생성 히스토리 -->
+            <div class="agent-section" style="margin-top:20px;">
+              <div class="agent-section-header">
+                <h3>📋 최근 생성 기록</h3>
+                <button class="btn btn-secondary btn-sm" onclick="ContentAgent.clearHistory()">🗑️ 기록 삭제</button>
+              </div>
+              <div id="agent-history" class="agent-history-list"></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -841,6 +1098,7 @@
   <script src="js/task-share.js"></script>
   <script src="js/team-sync.js"></script>
   <script src="js/marketing.js"></script>
+  <script src="js/content-agent.js"></script>
   <script src="js/app.js"></script>
   <script>
     // Set today's date label

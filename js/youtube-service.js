@@ -4,7 +4,7 @@
 // ========================================
 const YouTubeService = {
   API_BASE: 'https://www.googleapis.com/youtube/v3',
-  DEFAULT_API_KEY: 'AIzaSyDaZV8Fh6YVdysVTAfABMVRL6nmTV7RkIE',
+  DEFAULT_API_KEY: '',
   CHANNEL_NAME: '빌사남 TV',
   CACHE_KEY: 'yt_cache',
   API_KEY_KEY: 'yt_api_key',
