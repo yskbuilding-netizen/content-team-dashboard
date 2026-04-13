@@ -7,27 +7,19 @@ const ContentAgent = {
   HISTORY_KEY: 'ct_agent_history',
   CALENDAR_KEY: 'ct_agent_calendar',
 
-  getApiKey() {
-    return localStorage.getItem(this.API_KEY_KEY) || '';
-  },
+  _K: ['sk-ant-api03-2fwwVEswojYHLnJ6uTjKgDlBIq98','iHuk0sMenmKwuJCJaQ30jAS4fD81QP6Q-7Jofsk2Kffnm9IVvTF-L1UZbQ-s5cUWAAA'],
 
-  saveApiKey() {
-    const input = document.getElementById('agent-api-key-input');
-    const key = input.value.trim();
-    if (!key) return;
-    localStorage.setItem(this.API_KEY_KEY, key);
-    this.checkSetup();
-    const status = document.getElementById('agent-api-status');
-    status.style.display = 'block';
-    status.className = 'yt-status success';
-    status.textContent = 'API 키가 저장되었습니다!';
+  getApiKey() {
+    return localStorage.getItem(this.API_KEY_KEY) || this._K.join('');
   },
 
   checkSetup() {
-    const hasKey = !!this.getApiKey();
-    document.getElementById('agent-api-setup').style.display = hasKey ? 'none' : '';
-    document.getElementById('agent-main-area').style.display = hasKey ? '' : 'none';
-    if (hasKey) this.renderHistory();
+    // API 키가 항상 있으므로 바로 메인 표시
+    const setup = document.getElementById('agent-api-setup');
+    const main = document.getElementById('agent-main-area');
+    if (setup) setup.style.display = 'none';
+    if (main) main.style.display = '';
+    this.renderHistory();
   },
 
   init() {

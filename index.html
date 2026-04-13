@@ -674,19 +674,8 @@
         </div>
         <div class="page-body">
 
-          <!-- API Key 설정 -->
-          <div class="agent-api-setup" id="agent-api-setup">
-            <div class="yt-setup-card">
-              <div class="yt-setup-icon">🔑</div>
-              <h2>Anthropic API 연결</h2>
-              <p>AI 콘텐츠 에이전트를 사용하려면<br>Anthropic API 키가 필요합니다.</p>
-              <div class="yt-key-input-row">
-                <input type="text" id="agent-api-key-input" placeholder="sk-ant-api03-...">
-                <button class="btn btn-primary" onclick="ContentAgent.saveApiKey()">연결</button>
-              </div>
-              <div class="yt-status" id="agent-api-status" style="display:none"></div>
-            </div>
-          </div>
+          <!-- API 자동 연결됨 -->
+          <div id="agent-api-setup" style="display:none;"></div>
 
           <!-- 에이전트 메인 영역 -->
           <div id="agent-main-area" style="display:none;">
