@@ -171,32 +171,6 @@ app.post('/api/ig/refresh', async (req, res) => {
   res.json(result);
 });
 
-// ── 서버 실행 ──dConfig();
-  var token = config.instagram.token;
-
-  if (!token) {
-    res.json({ ok: false, error: '토큰 없음' });
-    return;
-  }
-
-  try {
-    // 장기 토큰으로 교환
-    var url = 'https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=' + token;
-    var response = await fetch(url);
-    var data = await response.json();
-
-    if (data.access_token) {
-      config.instagram.token = data.access_token;
-      saveConfig(config);
-      res.json({ ok: true, expiresIn: data.expires_in });
-    } else {
-      res.json({ ok: false, error: data.error ? data.error.message : '갱신 실패' });
-    }
-  } catch (err) {
-    res.json({ ok: false, error: err.message });
-  }
-});
-
 // ── API: Instagram 장기 토큰 교환 ──
 app.post('/api/ig/exchange', async (req, res) => {
   var config = loadConfig();

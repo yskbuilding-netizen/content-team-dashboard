@@ -27,7 +27,7 @@
     </div>
   </div>
   <script>
-    const _USERS={'bsn':'1234','admin':'1234'};
+    const _USERS={'bsn':'123123','admin':'123123'};
     function doLogin(){
       const id=document.getElementById('login-id').value.trim();
       const pw=document.getElementById('login-pw').value.trim();
@@ -137,6 +137,25 @@
           </div>
         </div>
         <div class="calendar-grid" id="calendar-grid"></div>
+
+        <!-- 주간 일정 + 콘텐츠 추천 패널 -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;">
+          <div style="background:var(--card-bg);border-radius:12px;padding:16px;">
+            <h3 style="margin:0 0 12px 0;color:var(--text-primary);font-size:15px;">🎬 촬영 일정</h3>
+            <ul style="margin:0;padding-left:18px;color:var(--text-secondary);font-size:14px;line-height:1.7;">
+              <li>5월 20일 (수)~22일 (금) 중 1일 / 성수 동연무장길 촬영 / 기상여건에 따라 결정 / 양승주 PD, 배미진 PD</li>
+            </ul>
+          </div>
+          <div style="background:var(--card-bg);border-radius:12px;padding:16px;">
+            <h3 style="margin:0 0 12px 0;color:var(--text-primary);font-size:15px;">💡 콘텐츠 추천</h3>
+            <ul style="margin:0;padding-left:18px;color:var(--text-secondary);font-size:14px;line-height:1.7;">
+              <li>[빌사남] 18년 중개하며 지켜본 '빌딩 부자'들의 결정적 한 끗 차이 (마인드 멘탈 등)</li>
+              <li>[빌사남] 임대차 계약서 작성 시 꼭 넣어야 할 '특약' 3가지</li>
+              <li>[릴스] <a href="https://www.instagram.com/reels/DVdOsMRDzCS/" target="_blank" style="color:#667eea;">https://www.instagram.com/reels/DVdOsMRDzCS/</a> (밸런스게임)</li>
+            </ul>
+          </div>
+        </div>
+
         <!-- 업무 입력 영역 -->
         <div style="margin-top:20px;background:var(--card-bg);border-radius:12px;padding:16px;">
           <h3 style="margin:0 0 12px 0;color:var(--text-primary);font-size:15px;">💬 업무 입력</h3>
