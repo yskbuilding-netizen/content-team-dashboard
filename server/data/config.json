@@ -1,0 +1,18 @@
+{
+  "instagram": {
+    "token": "IGAANypTw4tCJBZAFl3T0FudkxPNC1xYS0wNG16bktuQXJGUWtIWWUtU1NLVUpRdWtPQmEySFBtQUQ3UklzM2pya3lYbXR6dGJXUDk2dHlhWHNLbG8tSzA3blJ0a0luTWJWc2RhU3NhUHJWT1RuZA2lwSEpn",
+    "appId": "970478935651362",
+    "appSecret": "",
+    "userId": ""
+  },
+  "youtube": {
+    "apiKey": "AIzaSyDaZV8Fh6YVdysVTAfABMVRL6nmTV7RkIE"
+  },
+  "publishing": {
+    "wordpress": {
+      "url": "https://bilsanam.com",
+      "user": "admin",
+      "pass": "test123"
+    }
+  }
+}

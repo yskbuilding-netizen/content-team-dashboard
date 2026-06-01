@@ -121,13 +121,58 @@ app.post('/api/ig/token', (req, res) => {
 // ══════════════════════════════════════════════
 app.post('/api/ai/generate', async (req, res) => {
   const { prompt, type } = req.body;
-  
-  if (!prompt) {
-    return res.status(400).json({ success: false, error: '프롬프트가 필요합니다' });
-  }
-
+  if (!prompt) return res.status(400).json({ success: false, error: '프롬프트가 필요합니다' });
   const result = await apiManager.generateContent(prompt, type);
   res.json(result);
+});
+
+// 유튜브/인스타그램 AI 분석 (서버사이드 Claude 호출)
+app.post('/api/ai/analyze', async (req, res) => {
+  const { prompt, systemPrompt, maxTokens } = req.body;
+  if (!prompt) return res.status(400).json({ success: false, error: '프롬프트 필요' });
+
+  var key = apiManager.config.anthropic;
+  if (!key || key.length < 20) return res.status(503).json({ success: false, error: 'Claude API 키 미설정. .env ANTHROPIC_API_KEY를 확인해주세요.' });
+
+  try {
+    var body = {
+      model: 'claude-sonnet-4-5',
+      max_tokens: maxTokens || 2000,
+      messages: [{ role: 'user', content: prompt }]
+    };
+    if (systemPrompt) body.system = systemPrompt;
+
+    var response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'x-api-key': key, 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify(body)
+    });
+    var data = await response.json();
+    if (!response.ok) throw new Error(data?.error?.message || `HTTP ${response.status}`);
+    res.json({ success: true, content: data.content[0].text });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
+// Claude API 키 설정
+app.post('/api/admin/set-anthropic-key', (req, res) => {
+  const { key } = req.body;
+  if (!key || !key.startsWith('sk-ant')) return res.status(400).json({ success: false, error: '유효하지 않은 키' });
+  try {
+    var envPath = require('path').join(__dirname, '..', '.env');
+    var envContent = require('fs').existsSync(envPath) ? require('fs').readFileSync(envPath, 'utf8') : '';
+    if (envContent.match(/ANTHROPIC_API_KEY=.*/)) {
+      envContent = envContent.replace(/ANTHROPIC_API_KEY=.*/, 'ANTHROPIC_API_KEY=' + key);
+    } else {
+      envContent += '\nANTHROPIC_API_KEY=' + key;
+    }
+    require('fs').writeFileSync(envPath, envContent);
+    apiManager.config.anthropic = key;
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
 });
 
 // ══════════════════════════════════════════════
@@ -255,6 +300,197 @@ async function autoRefreshToken() {
 // 24시간마다 토큰 갱신
 setInterval(autoRefreshToken, 24 * 60 * 60 * 1000);
 
+// ── 발행 플랫폼 설정 저장/조회 ──
+app.get('/api/publish/config', (req, res) => {
+  var config = loadConfig();
+  var pub = config.publishing || {};
+  var safe = {
+    wordpress: pub.wordpress ? { url: pub.wordpress.url, user: pub.wordpress.user, connected: true } : { connected: false },
+    threads: pub.threads ? { uid: pub.threads.uid, connected: true } : { connected: false },
+    linkedin: pub.linkedin ? { uid: pub.linkedin.uid, connected: true } : { connected: false }
+  };
+  res.json(safe);
+});
+
+app.post('/api/publish/config', (req, res) => {
+  var config = loadConfig();
+  if (!config.publishing) config.publishing = {};
+  var body = req.body;
+  if (body.platform === 'wordpress') {
+    config.publishing.wordpress = { url: body.url, user: body.user, pass: body.pass };
+  } else if (body.platform === 'threads') {
+    config.publishing.threads = { uid: body.uid, token: body.token };
+  } else if (body.platform === 'linkedin') {
+    config.publishing.linkedin = { uid: body.uid, token: body.token };
+  } else {
+    return res.status(400).json({ error: '알 수 없는 플랫폼' });
+  }
+  saveConfig(config);
+  res.json({ ok: true });
+});
+
+// ── WordPress 발행 프록시 ──
+app.post('/api/publish/wordpress', async (req, res) => {
+  var config = loadConfig();
+  var wp = (config.publishing || {}).wordpress;
+  if (!wp || !wp.url) return res.status(400).json({ error: 'WordPress 미연결' });
+
+  try {
+    var auth = Buffer.from(wp.user + ':' + wp.pass).toString('base64');
+    var tagIds = [];
+
+    if (req.body.tags && req.body.tags.length) {
+      for (var tag of req.body.tags) {
+        try {
+          var searchRes = await fetch(wp.url + '/wp-json/wp/v2/tags?search=' + encodeURIComponent(tag));
+          var existing = await searchRes.json();
+          if (existing.length > 0) {
+            tagIds.push(existing[0].id);
+          } else {
+            var createRes = await fetch(wp.url + '/wp-json/wp/v2/tags', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + auth },
+              body: JSON.stringify({ name: tag })
+            });
+            if (createRes.ok) {
+              var newTag = await createRes.json();
+              tagIds.push(newTag.id);
+            }
+          }
+        } catch (e) { /* tag 실패는 무시 */ }
+      }
+    }
+
+    var postRes = await fetch(wp.url + '/wp-json/wp/v2/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Basic ' + auth },
+      body: JSON.stringify({
+        title: req.body.title || '',
+        content: req.body.content || '',
+        status: req.body.status || 'draft',
+        excerpt: req.body.summary || '',
+        tags: tagIds
+      })
+    });
+
+    if (!postRes.ok) {
+      var errBody = await postRes.text();
+      throw new Error('WP API ' + postRes.status + ': ' + errBody.slice(0, 200));
+    }
+
+    var post = await postRes.json();
+    res.json({
+      ok: true,
+      postId: post.id,
+      postUrl: post.link,
+      editUrl: wp.url + '/wp-admin/post.php?post=' + post.id + '&action=edit'
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── Threads 발행 프록시 ──
+app.post('/api/publish/threads', async (req, res) => {
+  var config = loadConfig();
+  var th = (config.publishing || {}).threads;
+  if (!th || !th.token) return res.status(400).json({ error: 'Threads 미연결' });
+
+  try {
+    var text = (req.body.content || '').slice(0, 500);
+    var createParams = new URLSearchParams({
+      media_type: 'TEXT',
+      text: text,
+      access_token: th.token
+    });
+
+    var createRes = await fetch('https://graph.threads.net/v1.0/' + th.uid + '/threads?' + createParams, { method: 'POST' });
+    if (!createRes.ok) {
+      var errBody = await createRes.text();
+      throw new Error('컨테이너 생성 실패: ' + errBody.slice(0, 200));
+    }
+    var container = await createRes.json();
+
+    await new Promise(function(r) { setTimeout(r, 2500); });
+
+    var pubParams = new URLSearchParams({
+      creation_id: container.id,
+      access_token: th.token
+    });
+    var pubRes = await fetch('https://graph.threads.net/v1.0/' + th.uid + '/threads_publish?' + pubParams, { method: 'POST' });
+    if (!pubRes.ok) {
+      var errBody2 = await pubRes.text();
+      throw new Error('게시 실패: ' + errBody2.slice(0, 200));
+    }
+    var result = await pubRes.json();
+    res.json({ ok: true, postId: result.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── LinkedIn 발행 프록시 ──
+app.post('/api/publish/linkedin', async (req, res) => {
+  var config = loadConfig();
+  var li = (config.publishing || {}).linkedin;
+  if (!li || !li.token) return res.status(400).json({ error: 'LinkedIn 미연결' });
+
+  try {
+    var body = {
+      author: 'urn:li:person:' + li.uid,
+      lifecycleState: 'PUBLISHED',
+      specificContent: {
+        'com.linkedin.ugc.ShareContent': {
+          shareCommentary: { text: (req.body.content || '').slice(0, 3000) },
+          shareMediaCategory: 'NONE'
+        }
+      },
+      visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' }
+    };
+
+    var postRes = await fetch('https://api.linkedin.com/v2/ugcPosts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + li.token,
+        'X-Restli-Protocol-Version': '2.0.0'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (!postRes.ok) {
+      var errBody = await postRes.text();
+      throw new Error('LinkedIn API ' + postRes.status + ': ' + errBody.slice(0, 200));
+    }
+    var result = await postRes.json();
+    res.json({ ok: true, postId: result.id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ── 전체 플랫폼 일괄 발행 ──
+app.post('/api/publish/all', async (req, res) => {
+  var results = {};
+  var platforms = req.body.platforms || ['wordpress', 'threads', 'linkedin'];
+  var data = req.body.data || {};
+
+  for (var platform of platforms) {
+    try {
+      var pData = data[platform] || data.all || {};
+      var innerRes = await fetch('http://localhost:' + (process.env.PORT || 3000) + '/api/publish/' + platform, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pData)
+      });
+      results[platform] = await innerRes.json();
+    } catch (err) {
+      results[platform] = { error: err.message };
+    }
+  }
+  res.json(results);
+});
+
 // ── 서버 시작 ──
 var PORT = 3000;
 app.listen(PORT, function() {
@@ -271,14 +507,11 @@ app.listen(PORT, function() {
   Object.keys(interfaces).forEach(function(name) {
     interfaces[name].forEach(function(iface) {
       if (iface.family === 'IPv4' && !iface.internal) {
-        console.log('🌐 http://' + iface.address + ':' + PORT);
+        console.log('http://' + iface.address + ':' + PORT);
       }
     });
   });
 
   console.log('');
-  console.log('Instagram 토큰 자동 갱신: 매일 1회');
-
-  // 첫 실행 시 토큰 갱신 시도
   autoRefreshToken();
 });

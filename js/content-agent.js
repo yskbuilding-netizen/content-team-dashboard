@@ -698,8 +698,10 @@ ${extra ? `- 추가 지시: ${extra}` : ''}
 
       const cards = JSON.parse(jsonMatch[0]);
       const colors = styleGuide[style] || styleGuide.modern;
+      const category = document.getElementById('cardnews-category')?.value || '투자정보';
       this.renderCardNews(cards, colors, topic, imageKeywords);
       this.addHistory({ type: 'cardnews', title: `카드뉴스: ${topic}`, content: response });
+      this.saveCardNewsHistory({ topic, category, cards, colors, style, pages: parseInt(pages), createdAt: new Date().toISOString() });
 
     } catch (err) {
       result.innerHTML = `<div class="agent-error">오류: ${err.message}</div>`;
@@ -1093,5 +1095,457 @@ ${days.map((d, i) => `${i === 0 ? '월' : i === 1 ? '화' : i === 2 ? '수' : i 
     a.href = URL.createObjectURL(blob);
     a.download = `${title.substring(0, 30)}-${Storage.formatDate(new Date())}.txt`;
     a.click();
+  },
+
+  // ════════════════════════════════════════
+  // 캘린더 페이지 임베드용 함수
+  // ════════════════════════════════════════
+  switchTabEmbed(tabName) {
+    document.querySelectorAll('.agent-tab-embed').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.agent-tab-embed-content').forEach(t => t.classList.remove('active'));
+    const tabBtn = document.querySelector(`.agent-tab-embed[data-tab="${tabName}"]`);
+    if (tabBtn) tabBtn.classList.add('active');
+    const tabContent = document.getElementById(`tab-${tabName}-embed`);
+    if (tabContent) tabContent.classList.add('active');
+  },
+
+  async fetchNewsEmbed() {
+    const loading = document.getElementById('news-loading-embed');
+    const results = document.getElementById('news-results-embed');
+    if (!results) return;
+
+    this.switchTabEmbed('news');
+    loading.style.display = 'flex';
+    results.innerHTML = '';
+
+    try {
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일`;
+      const types = ['뉴스/기사', '통계/데이터', '정책/제도'];
+      const counts = [10, 8, 8];
+      let allItems = [];
+
+      for (let i = 0; i < types.length; i++) {
+        const prompt = this._buildNewsPrompt(dateStr, '부동산', types[i], counts[i]);
+        try {
+          const res = await this.callClaude(prompt, 3500);
+          const m = res.match(/\[[\s\S]*\]/);
+          if (m) allItems = allItems.concat(JSON.parse(m[0]));
+        } catch (e) {
+          console.warn(`${types[i]} 수집 오류:`, e.message);
+        }
+        if (i < types.length - 1) await new Promise(r => setTimeout(r, 4000));
+      }
+
+      if (allItems.length === 0) throw new Error('뉴스 수집 실패. 잠시 후 다시 시도.');
+
+      this._latestNews = allItems;
+
+      await new Promise(r => setTimeout(r, 3000));
+      const summaryPrompt = `당신은 중소형 빌딩(꼬마빌딩, 50억 이하) 투자 전문 애널리스트입니다.
+아래 ${allItems.length}건의 뉴스/통계/정책 데이터를 중소형 빌딩 투자자 관점에서 종합 분석해주세요.
+
+## 수집 데이터
+${allItems.map((n, i) => `${i+1}. [${n.category}] ${n.title}`).join('\n')}
+
+## 출력 형식 (마크다운)
+### 📊 핵심 요약 (3줄)
+### 🔥 빌사남 콘텐츠 기회 TOP 3
+### 📈 주요 통계 포인트
+### 🎯 다음 주 추천 콘텐츠 주제 3가지 (제목까지)`;
+
+      const summary = await this.callClaude(summaryPrompt, 2500);
+
+      const itemsHtml = allItems.slice(0, 12).map(n => `
+        <div class="news-card">
+          <div class="news-category">${n.category || '뉴스'}</div>
+          <div class="news-title">${n.title}</div>
+          <div class="news-summary">${n.summary || ''}</div>
+          <div class="news-meta">${n.source || ''}${n.relevance ? ' · 관련성: ' + n.relevance : ''}</div>
+        </div>
+      `).join('');
+
+      results.innerHTML = `
+        <div class="news-summary-briefing">
+          <h3 style="margin:0 0 12px 0;">📋 종합 브리핑</h3>
+          <div class="agent-output-md">${this._mdToHtml(summary)}</div>
+        </div>
+        <div class="news-grid" style="margin-top:16px;">${itemsHtml}</div>
+      `;
+      this.addHistory({ type: 'news', title: `뉴스 ${allItems.length}건 분석`, content: summary });
+    } catch (err) {
+      results.innerHTML = `<div class="agent-error">오류: ${err.message}</div>`;
+    } finally {
+      loading.style.display = 'none';
+    }
+  },
+
+  async analyzeCompetitors() {
+    const loading = document.getElementById('competitors-loading-embed');
+    const results = document.getElementById('competitors-results-embed');
+    if (!results) return;
+
+    this.switchTabEmbed('competitors');
+    loading.style.display = 'flex';
+    results.innerHTML = '';
+
+    try {
+      const queries = [
+        '꼬마빌딩 투자', '빌딩 매매', '건물주', '상가 투자',
+        '빌딩 수익률', '상업용 부동산', '서울 빌딩', '강남 빌딩'
+      ];
+      loading.innerHTML = '<div class="yt-spinner"></div> 경쟁 채널의 최근 인기 영상을 수집합니다...';
+      const videos = await this.searchYouTubeTrending(queries);
+
+      if (!videos || videos.length === 0) {
+        results.innerHTML = `<div class="agent-error">YouTube 데이터를 가져오지 못했습니다. 유튜브 메뉴에서 API 키를 먼저 연결해주세요.</div>`;
+        return;
+      }
+
+      // 채널별 집계
+      const byChannel = {};
+      videos.forEach(v => {
+        if (!byChannel[v.channel]) byChannel[v.channel] = { videos: [], totalViews: 0 };
+        byChannel[v.channel].videos.push(v);
+        byChannel[v.channel].totalViews += v.views;
+      });
+      const channelList = Object.entries(byChannel)
+        .map(([name, data]) => ({ name, ...data }))
+        .sort((a, b) => b.totalViews - a.totalViews)
+        .slice(0, 10);
+
+      loading.innerHTML = '<div class="yt-spinner"></div> AI가 인기 패턴을 분석하고 있습니다...';
+
+      const prompt = `당신은 부동산 유튜브 콘텐츠 전략가입니다.
+빌사남(중소형 빌딩 투자 전문) 관점에서 경쟁/유사 채널의 인기 영상 데이터를 분석해주세요.
+
+## 경쟁 채널 TOP ${channelList.length} (조회수 합계 기준)
+${channelList.map((c, i) => `${i+1}. ${c.name} - 영상 ${c.videos.length}개, 누적 조회수 ${c.totalViews.toLocaleString()}`).join('\n')}
+
+## 인기 영상 TOP 20 (실제 YouTube 데이터)
+${videos.slice(0, 20).map((v, i) => `${i+1}. "${v.title}" - ${v.channel} | 조회수 ${v.views.toLocaleString()} | 좋아요 ${v.likes.toLocaleString()}`).join('\n')}
+
+## 분석 출력 (마크다운)
+### 🏆 가장 잘 되는 채널 분석 (TOP 3 채널의 공통점)
+### 🔥 조회수가 폭발한 영상 패턴 (제목·주제·포맷)
+### 📊 우리(빌사남)가 놓치고 있는 주제
+### 💡 빌사남이 따라잡거나 차별화할 포인트 5가지
+### 🎯 다음 주 촬영 추천 주제 3개 (제목까지)`;
+
+      const analysis = await this.callClaude(prompt, 3000);
+
+      const channelsHtml = channelList.slice(0, 8).map(c => `
+        <div class="competitor-channel">
+          <div class="competitor-name">${c.name}</div>
+          <div class="competitor-stat">영상 ${c.videos.length}개 · 누적 ${this._fmt(c.totalViews)} 조회</div>
+        </div>
+      `).join('');
+
+      const videosHtml = videos.slice(0, 10).map((v, i) => `
+        <a href="https://youtube.com/watch?v=${v.videoId}" target="_blank" class="trending-video-item">
+          <span class="trending-rank">${i + 1}</span>
+          <img class="trending-thumb" src="${v.thumbnail}" alt="" loading="lazy">
+          <div class="trending-info">
+            <div class="trending-title">${v.title}</div>
+            <div class="trending-meta"><span>${v.channel}</span><span>👁 ${this._fmt(v.views)}</span><span>👍 ${this._fmt(v.likes)}</span></div>
+          </div>
+        </a>
+      `).join('');
+
+      results.innerHTML = `
+        <div class="agent-output-md" style="background:rgba(102,126,234,0.06);border-left:3px solid #667eea;padding:14px;border-radius:8px;margin-bottom:16px;">${this._mdToHtml(analysis)}</div>
+        <h4 style="margin:16px 0 10px 0;">📺 경쟁/유사 채널 TOP ${channelList.length}</h4>
+        <div class="competitors-grid">${channelsHtml}</div>
+        <h4 style="margin:16px 0 10px 0;">🔥 인기 영상 TOP 10</h4>
+        <div class="trending-body">${videosHtml}</div>
+      `;
+      this.addHistory({ type: 'competitors', title: `경쟁사 ${channelList.length}개 채널 분석`, content: analysis });
+    } catch (err) {
+      results.innerHTML = `<div class="agent-error">오류: ${err.message}</div>`;
+    } finally {
+      loading.style.display = 'none';
+    }
+  },
+
+  async getRecommendationsEmbed() {
+    const loading = document.getElementById('recommend-loading-embed');
+    const results = document.getElementById('recommend-results-embed');
+    if (!results) return;
+
+    this.switchTabEmbed('recommend');
+    loading.style.display = 'flex';
+    results.innerHTML = '';
+
+    try {
+      const today = new Date();
+      const dateStr = `${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일`;
+      const dayOfWeek = ['일','월','화','수','목','금','토'][today.getDay()];
+
+      loading.innerHTML = '<div class="yt-spinner"></div> YouTube에서 최근 인기 영상을 검색하고 있습니다...';
+      const searchQueries = ['꼬마빌딩 투자', '빌딩 매매', '건물주', '상가 투자', '빌딩 수익률', '상업용 부동산'];
+      const trendingVideos = await this.searchYouTubeTrending(searchQueries);
+
+      let trendingContext = '';
+      if (trendingVideos.length > 0) {
+        trendingContext = `\n## 최근 1개월 유튜브 인기 영상 TOP ${Math.min(trendingVideos.length, 20)}
+${trendingVideos.slice(0, 20).map((v, i) => `${i+1}. "${v.title}" - ${v.channel} | 조회수 ${v.views.toLocaleString()}`).join('\n')}`;
+      }
+
+      const newsContext = this._latestNews ? `\n## 최근 수집 뉴스/통계\n${this._latestNews.filter(n=>n.relevance==='높음').slice(0,6).map((n,i)=>`${i+1}. [${n.category}] ${n.title}`).join('\n')}` : '';
+
+      loading.innerHTML = '<div class="yt-spinner"></div> AI가 다음 주 콘텐츠를 기획하고 있습니다...';
+
+      const prompt = `당신은 부동산 유튜브/SNS 콘텐츠 전략가입니다.
+
+## 회사: 빌사남
+- 분야: 중소형 빌딩(50억 이하) 매매/투자 컨설팅
+- 채널: 빌사남TV (유튜브), 서울스페이스 (유튜브), 인스타그램
+- 고객: 자산 10~50억대 예비 건물주
+${trendingContext}${newsContext}
+
+## 핵심 지시
+실제 인기 영상 데이터를 기반으로 **다음 주에 촬영하면 좋을 콘텐츠 7개**를 추천하세요.
+- 1~5번: 빌사남TV (유튜브 롱폼)
+- 6번: 서울스페이스 (유튜브 롱폼)
+- 7번: 인스타그램 릴스
+
+오늘: ${dateStr} (${dayOfWeek})
+
+JSON 배열로:
+[
+  {
+    "title": "콘텐츠 제목",
+    "platform": "youtube/instagram",
+    "channel": "빌사남TV/서울스페이스/인스타그램",
+    "format": "롱폼/숏폼/릴스",
+    "reference": "참고한 인기 영상",
+    "reason": "뜰 수 있는 이유",
+    "outline": "구성 3-5줄",
+    "thumbnailIdea": "썸네일 아이디어",
+    "publishGuide": "발행 가이드",
+    "hashtags": ["태그1", "태그2", "태그3"],
+    "bestTime": "최적 시간",
+    "expectedViews": "예상 조회수"
+  }
+]
+JSON 배열만 응답하세요.`;
+
+      const response = await this.callClaude(prompt, 4096);
+      const jsonMatch = response.match(/\[[\s\S]*\]/);
+      if (!jsonMatch) throw new Error('응답 파싱 실패');
+      const recs = JSON.parse(jsonMatch[0]);
+
+      const platformIcons = { youtube: '🎬', instagram: '📸' };
+      const recsHtml = recs.map((r, i) => `
+        <div class="recommend-card">
+          <div class="recommend-header">
+            <span class="recommend-num">${i + 1}</span>
+            <span class="platform-badge">${platformIcons[r.platform] || '📄'} ${r.channel || r.platform}</span>
+            <span class="format-badge">${r.format}</span>
+            ${r.expectedViews ? `<span class="views-badge">👁 ${r.expectedViews}</span>` : ''}
+          </div>
+          <h4 class="recommend-title">${r.title}</h4>
+          ${r.reference ? `<div class="reference-badge">📌 참고: ${r.reference}</div>` : ''}
+          <p class="recommend-reason"><strong>뜨는 이유:</strong> ${r.reason}</p>
+          <div class="recommend-outline"><strong>구성:</strong><br>${(r.outline || '').replace(/\n/g, '<br>')}</div>
+          ${r.thumbnailIdea ? `<div class="thumbnail-idea"><strong>🖼 썸네일:</strong> ${r.thumbnailIdea}</div>` : ''}
+          ${r.publishGuide ? `<div class="publish-guide"><strong>📌 발행 가이드:</strong> ${r.publishGuide}</div>` : ''}
+          <div class="recommend-tags">${(r.hashtags || []).map(h => `<span class="keyword-tag">#${h}</span>`).join('')}</div>
+          <div class="news-actions" style="margin-top:10px;">
+            <button class="btn btn-sm btn-primary" onclick="ContentAgent.pushToCalendar('${r.title.replace(/'/g, "\\'")}', '${r.channel || r.platform}')">📅 캘린더에 추가</button>
+          </div>
+        </div>
+      `).join('');
+
+      results.innerHTML = `<h3 style="margin:0 0 14px;font-size:16px;">💡 다음 주 추천 콘텐츠 ${recs.length}개</h3>${recsHtml}`;
+      this.addHistory({ type: 'recommend', title: `다음 주 콘텐츠 ${recs.length}개 추천`, content: response });
+    } catch (err) {
+      results.innerHTML = `<div class="agent-error">오류: ${err.message}</div>`;
+    } finally {
+      loading.style.display = 'none';
+    }
+  },
+
+  pushToCalendar(title, channelLabel) {
+    if (typeof UploadPlanner === 'undefined') { alert('UploadPlanner가 로드되지 않았습니다.'); return; }
+    const platformMap = {
+      '빌사남TV': 'youtube-bilsanam', 'youtube-bilsanam': 'youtube-bilsanam',
+      '서울스페이스': 'youtube-seoulspace', 'youtube-seoulspace': 'youtube-seoulspace',
+      '인스타그램': 'instagram', 'instagram': 'instagram',
+      '릴스': 'reels'
+    };
+    const platform = platformMap[channelLabel] || 'youtube-bilsanam';
+    UploadPlanner.openModal('next');
+    setTimeout(() => {
+      document.getElementById('upload-title').value = title;
+      document.getElementById('upload-platform').value = platform;
+    }, 100);
+  },
+
+  _fmt(num) {
+    if (!num) return '0';
+    num = Number(num);
+    if (num >= 100000000) return (num / 100000000).toFixed(1) + '억';
+    if (num >= 10000) return (num / 10000).toFixed(1) + '만';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num.toLocaleString();
+  },
+
+  _mdToHtml(md) {
+    return (md || '')
+      .replace(/^### (.+)$/gm, '<h4>$1</h4>')
+      .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n/g, '<br>');
+  },
+
+  // ── 카드뉴스 히스토리 관리 ──
+  CN_HISTORY_KEY: 'cn_history',
+
+  getCardNewsHistory() {
+    try { return JSON.parse(localStorage.getItem(this.CN_HISTORY_KEY)) || []; } catch { return []; }
+  },
+
+  saveCardNewsHistory(item) {
+    const list = this.getCardNewsHistory();
+    list.unshift({ id: Date.now().toString(36), ...item });
+    if (list.length > 50) list.splice(50);
+    localStorage.setItem(this.CN_HISTORY_KEY, JSON.stringify(list));
+  },
+
+  deleteCardNews(id) {
+    if (!confirm('이 카드뉴스를 삭제하시겠습니까?')) return;
+    const list = this.getCardNewsHistory().filter(i => i.id !== id);
+    localStorage.setItem(this.CN_HISTORY_KEY, JSON.stringify(list));
+    this.renderCardNewsHistory(this._cnHistoryFilter || 'all');
+  },
+
+  clearCardNewsHistory() {
+    if (!confirm('전체 카드뉴스 히스토리를 삭제하시겠습니까?')) return;
+    localStorage.removeItem(this.CN_HISTORY_KEY);
+    this.renderCardNewsHistory('all');
+  },
+
+  toggleCardNewsHistory() {
+    const area = document.getElementById('cardnews-history-area');
+    if (!area) return;
+    const isVisible = area.style.display !== 'none';
+    area.style.display = isVisible ? 'none' : 'block';
+    if (!isVisible) this.renderCardNewsHistory(this._cnHistoryFilter || 'all');
+  },
+
+  filterCardNews(cat) {
+    this._cnHistoryFilter = cat;
+    document.querySelectorAll('.cn-cat-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+    const area = document.getElementById('cardnews-history-area');
+    if (area && area.style.display !== 'none') this.renderCardNewsHistory(cat);
+  },
+
+  renderCardNewsHistory(filter) {
+    const list = document.getElementById('cardnews-history-list');
+    if (!list) return;
+    let items = this.getCardNewsHistory();
+    if (filter && filter !== 'all') items = items.filter(i => i.category === filter);
+
+    if (!items.length) {
+      list.innerHTML = '<div style="padding:16px;color:var(--text-secondary);font-size:13px;">저장된 카드뉴스가 없습니다.</div>';
+      return;
+    }
+
+    const catColors = { '투자정보': '#667eea', '시장분석': '#4ecdc4', '세금법률': '#f7971e', '임장리뷰': '#48cae4', '생활팁': '#a8e6cf', '브랜딩': '#ff6b9d' };
+
+    list.innerHTML = items.map(item => [
+      '<div class="cn-history-item" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg-secondary);border-radius:8px;margin-bottom:8px;">',
+      '<div style="flex:1;min-width:0;">',
+      `<div style="font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${item.topic}</div>`,
+      '<div style="display:flex;gap:6px;align-items:center;">',
+      `<span style="font-size:11px;padding:2px 7px;border-radius:10px;background:${(catColors[item.category]||'#667eea')}22;color:${catColors[item.category]||'#667eea'}">${item.category||''}</span>`,
+      `<span style="font-size:11px;color:var(--text-muted)">${item.pages}장 · ${item.style}</span>`,
+      `<span style="font-size:11px;color:var(--text-muted)">${new Date(item.createdAt).toLocaleDateString('ko-KR')}</span>`,
+      '</div></div>',
+      '<div style="display:flex;gap:6px;flex-shrink:0;">',
+      `<button class="btn btn-secondary btn-sm" onclick="ContentAgent.loadCardNews('${item.id}')">불러오기</button>`,
+      `<button class="btn btn-secondary btn-sm" onclick="ContentAgent.editCardNewsItem('${item.id}')">수정</button>`,
+      `<button class="btn btn-secondary btn-sm" style="color:#ff6b6b" onclick="ContentAgent.deleteCardNews('${item.id}')">삭제</button>`,
+      '</div></div>'
+    ].join('')).join('');
+  },
+
+  loadCardNews(id) {
+    const item = this.getCardNewsHistory().find(i => i.id === id);
+    if (!item) return;
+    const colors = item.colors || { bg: 'rgba(20,20,40,0.85)', text: '#ffffff', accent: '#667eea', gradient: 'linear-gradient(135deg,#667eea,#764ba2)' };
+    const keywords = ['building+city', 'office+building', 'real+estate', 'commercial+building', 'architecture+modern', 'urban+building'];
+    this.renderCardNews(item.cards, colors, item.topic, keywords);
+    const topicEl = document.getElementById('cardnews-topic');
+    if (topicEl) topicEl.value = item.topic;
+    const catEl = document.getElementById('cardnews-category');
+    if (catEl) catEl.value = item.category || '투자정보';
+    const res = document.getElementById('cardnews-result');
+    if (res) res.scrollIntoView({ behavior: 'smooth' });
+  },
+
+  editCardNewsItem(id) {
+    const item = this.getCardNewsHistory().find(i => i.id === id);
+    if (!item) return;
+
+    let modal = document.getElementById('cn-edit-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'cn-edit-modal';
+      modal.className = 'modal-overlay';
+      modal.onclick = (e) => { if (e.target === modal) modal.style.display = 'none'; };
+      document.body.appendChild(modal);
+    }
+
+    const cardsJson = JSON.stringify(item.cards, null, 2);
+    const safeId = id.replace(/'/g, '');
+    modal.innerHTML = [
+      '<div class="modal" style="max-width:640px;width:92%;max-height:80vh;overflow-y:auto;">',
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">',
+      '<h2 style="margin:0;font-size:16px;">카드뉴스 수정</h2>',
+      '<button id="cn-edit-close" style="background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-secondary);">X</button>',
+      '</div>',
+      '<div class="form-group" style="margin-bottom:12px;">',
+      '<label style="font-size:13px;color:var(--text-secondary);margin-bottom:4px;display:block;">주제</label>',
+      `<input type="text" id="cn-edit-topic" class="agent-input" value="${item.topic.replace(/"/g, '&quot;')}" style="width:100%;box-sizing:border-box;">`,
+      '</div>',
+      '<div class="form-group" style="margin-bottom:12px;">',
+      '<label style="font-size:13px;color:var(--text-secondary);margin-bottom:4px;display:block;">카드 내용 (JSON)</label>',
+      `<textarea id="cn-edit-cards" class="agent-textarea" rows="14" style="width:100%;box-sizing:border-box;font-size:12px;font-family:monospace;">${cardsJson.replace(/</g,'&lt;')}</textarea>`,
+      '</div>',
+      '<div style="display:flex;gap:8px;justify-content:flex-end;">',
+      '<button id="cn-edit-cancel" class="btn btn-secondary">취소</button>',
+      `<button class="btn btn-primary" onclick="ContentAgent.applyCardNewsEdit('${safeId}')">저장 & 미리보기</button>`,
+      '</div>',
+      '</div>'
+    ].join('');
+
+    document.getElementById('cn-edit-close').onclick = () => { modal.style.display = 'none'; };
+    document.getElementById('cn-edit-cancel').onclick = () => { modal.style.display = 'none'; };
+    modal.style.display = 'flex';
+  },
+
+  applyCardNewsEdit(id) {
+    const topicEl = document.getElementById('cn-edit-topic');
+    const cardsEl = document.getElementById('cn-edit-cards');
+    const topic = topicEl ? topicEl.value.trim() : '';
+    const cardsRaw = cardsEl ? cardsEl.value : '';
+    try {
+      const cards = JSON.parse(cardsRaw);
+      const list = this.getCardNewsHistory();
+      const idx = list.findIndex(i => i.id === id);
+      if (idx >= 0) {
+        list[idx].topic = topic || list[idx].topic;
+        list[idx].cards = cards;
+        localStorage.setItem(this.CN_HISTORY_KEY, JSON.stringify(list));
+      }
+      document.getElementById('cn-edit-modal').style.display = 'none';
+      this.loadCardNews(id);
+      this.renderCardNewsHistory(this._cnHistoryFilter || 'all');
+    } catch (e) {
+      alert('JSON 파싱 오류: ' + e.message);
+    }
   }
 };

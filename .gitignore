@@ -1,3 +1,15 @@
 .env
+*.env
 node_modules/
 api-keys.js
+.claude/
+bsn-content-agent/
+content-agent/
+telegram-bot/
+upgrade-patch.js
+*.log
+*.lock
+dist/
+build/
+.DS_Store
+Thumbs.db

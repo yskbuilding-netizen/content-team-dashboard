@@ -73,28 +73,32 @@ ${top5.map((v, i) => `${i + 1}. "${v.title}" - 조회수 ${v.views.toLocaleStrin
 가장 중요한 액션 아이템 딱 하나`;
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      // 서버 프록시 우선 (API 키 불필요)
+      const res = await fetch('/api/ai/analyze', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1500,
-          messages: [{ role: 'user', content: prompt }]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, maxTokens: 1500 })
       });
+      const data = await res.json();
+      if (data.success) return data.content;
 
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err?.error?.message || `HTTP ${response.status}`);
+      // 서버 실패 시 직접 호출 (브라우저 API 키)
+      if (apiKey) {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          },
+          body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 1500, messages: [{ role: 'user', content: prompt }] })
+        });
+        if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err?.error?.message || `HTTP ${response.status}`); }
+        const d = await response.json();
+        return d.content[0].text;
       }
-
-      const data = await response.json();
-      return data.content[0].text;
+      throw new Error(data.error || 'API 키 미설정. 서버 설정에서 Anthropic API 키를 등록해주세요.');
     } catch (err) {
       console.error('AI Analysis error:', err);
       throw err;
@@ -152,28 +156,26 @@ ${bottom5.map((v, i) => `${i+1}. "${v.title}" - ${v.views.toLocaleString()}회 /
 ### 5. 한 달 성장 전략
 구독자와 조회수를 올리기 위한 한 달 로드맵`;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/api/ai/analyze', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2000,
-        messages: [{ role: 'user', content: prompt }]
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, maxTokens: 2000 })
     });
+    const data = await res.json();
+    if (data.success) return data.content;
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `HTTP ${response.status}`);
+    // 폴백: 직접 호출
+    if (apiKey) {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 2000, messages: [{ role: 'user', content: prompt }] })
+      });
+      if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err?.error?.message || `HTTP ${response.status}`); }
+      const d = await response.json();
+      return d.content[0].text;
     }
-
-    const data = await response.json();
-    return data.content[0].text;
+    throw new Error(data.error || 'API 키 미설정');
   },
 
   // 마크다운을 간단한 HTML로 변환
@@ -181,8 +183,8 @@ ${bottom5.map((v, i) => `${i+1}. "${v.title}" - ${v.views.toLocaleString()}회 /
     return text
       .replace(/### (\d+)\. (.+)/g, '<div class="ai-section-title"><span class="ai-num">$1</span> $2</div>')
       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n- /g, '\n• ')
+      .replace(/\n- /g, '\n\u2022 ')
       .replace(/\n/g, '<br>')
-      .replace(/• /g, '<span class="ai-bullet">•</span> ');
+      .replace(/\u2022 /g, '<span class="ai-bullet">\u2022</span> ');
   }
 };
