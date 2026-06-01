@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>가로수길 프레임 선택</title>
+<style>
+body { font-family: 'Noto Sans KR', sans-serif; background: #1a1a1a; color: #fff; padding: 30px; }
+h1 { margin-bottom: 8px; }
+p { color: #aaa; margin-bottom: 24px; font-size: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.frame { position: relative; cursor: pointer; border-radius: 8px; overflow: hidden; border: 3px solid transparent; transition: 0.2s; }
+.frame:hover { border-color: #c9a96e; transform: translateY(-2px); }
+.frame img { width: 100%; display: block; }
+.frame .info { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 8px 12px; font-size: 13px; }
+.frame .num { color: #c9a96e; font-weight: 900; margin-right: 6px; }
+.frame .time { color: rgba(255,255,255,0.7); }
+.frame.selected { border-color: #2ecc71; }
+.frame.selected::before { content: '선택됨'; position: absolute; top: 8px; right: 8px; background: #2ecc71; color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; z-index: 10; }
+.toast { position: fixed; bottom: 24px; right: 24px; background: #c9a96e; color: #0a0a0f; padding: 14px 22px; border-radius: 6px; font-weight: 700; box-shadow: 0 4px 20px rgba(0,0,0,0.4); opacity: 0; transition: 0.3s; pointer-events: none; }
+.toast.show { opacity: 1; }
+.command { background: #2a2a2f; padding: 12px 16px; border-radius: 6px; font-family: monospace; font-size: 13px; margin-top: 8px; color: #c9a96e; }
+</style>
+</head>
+<body>
+
+<h1>가로수길 영상 프레임 선택</h1>
+<p>마음에 드는 공실 장면 클릭하면 파일명이 복사돼요. 그 다음 채팅에 알려주시면 표지로 적용합니다.</p>
+
+<div class="grid" id="grid"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const frames = [];
+for (let i = 1; i <= 20; i++) {
+  const num = i.toString().padStart(3, '0');
+  const seconds = (i - 1) * 25;
+  const min = Math.floor(seconds / 60);
+  const sec = seconds % 60;
+  frames.push({
+    file: 'frame_' + num + '.jpg',
+    time: min + ':' + sec.toString().padStart(2, '0'),
+    num: i
+  });
+}
+
+document.getElementById('grid').innerHTML = frames.map(f => `
+  <div class="frame" data-file="${f.file}" onclick="selectFrame('${f.file}')">
+    <img src="./images/garosu_frames/${f.file}" alt="${f.file}">
+    <div class="info">
+      <span class="num">#${f.num}</span>
+      <span class="time">${f.time}</span>
+    </div>
+  </div>
+`).join('');
+
+function selectFrame(file) {
+  document.querySelectorAll('.frame').forEach(f => f.classList.remove('selected'));
+  document.querySelector(`.frame[data-file="${file}"]`).classList.add('selected');
+
+  // 클립보드 복사
+  const path = `./images/garosu_frames/${file}`;
+  if (navigator.clipboard) navigator.clipboard.writeText(path);
+
+  const toast = document.getElementById('toast');
+  toast.innerHTML = `선택: ${file} <br>채팅에 알려주세요: <span style="color:#0a0a0f; font-weight:900;">${file}</span>`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 4000);
+}
+</script>
+
+</body>
+</html>

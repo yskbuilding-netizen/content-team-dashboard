@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 1000억 빌딩이 450억에 팔렸다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.bsn { font-size:20px; font-weight:900; letter-spacing:1px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 8장)</button></div>
+
+<!-- 1장 표지 — 강한 충격 후크 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&q=80&auto=format&fit=crop');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.5) 0%, rgba(10,10,15,0.85) 50%, rgba(10,10,15,0.98) 90%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:#e74c3c; letter-spacing:3px; font-weight:800;">CASE STUDY</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="display:inline-block; padding:5px 12px; background:#e74c3c; color:#fff; font-size:11px; font-weight:800; letter-spacing:2px; border-radius:3px; margin-bottom:18px; align-self:flex-start;">실화</div>
+
+      <div style="font-size:38px; font-weight:500; color:#fff; line-height:1.15; letter-spacing:-1.2px; margin-bottom:6px;">1,002억 빌딩이</div>
+      <div style="font-size:60px; font-weight:900; color:#e74c3c; line-height:1; letter-spacing:-2.5px; margin-bottom:14px;">450억에 팔렸다.</div>
+      <div style="font-size:22px; color:#fff; line-height:1.3; font-weight:700; letter-spacing:-0.5px; margin-bottom:24px;">
+        그걸 산 사람은<br>
+        <span style="color:#c9a96e; font-weight:900;">바로 그 건물 임차인.</span>
+      </div>
+
+      <div style="font-size:13px; color:rgba(255,255,255,0.7); line-height:1.6;">
+        수원 신축 상가 빌딩 · KBS 보도
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:13px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.6);">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 사건 타임라인 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02 / 08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:14px; font-weight:700;">사건 타임라인</div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="font-size:11px; color:#c9a96e; font-weight:900; min-width:50px; padding-top:2px;">입주</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:600; line-height:1.5; flex:1;">보증금 30억 · 월세 1.7억<br>지원금 21억 + 6개월 렌트프리</div>
+        </div>
+        <div style="height:1px; background:rgba(0,0,0,0.1);"></div>
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="font-size:11px; color:#c9a96e; font-weight:900; min-width:50px; padding-top:2px;">7개월</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:600; line-height:1.5; flex:1;">무료 기간 끝나자마자 월세 끊김<br>미납액 누적 <span style="color:#e74c3c; font-weight:900;">40억</span></div>
+        </div>
+        <div style="height:1px; background:rgba(0,0,0,0.1);"></div>
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="font-size:11px; color:#c9a96e; font-weight:900; min-width:50px; padding-top:2px;">공매</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:600; line-height:1.5; flex:1;">PF 이자 감당 불가<br>매일 10%씩 떨어지는 입찰</div>
+        </div>
+        <div style="height:1px; background:rgba(0,0,0,0.1);"></div>
+        <div style="display:flex; gap:12px; align-items:flex-start;">
+          <div style="font-size:11px; color:#e74c3c; font-weight:900; min-width:50px; padding-top:2px;">9차</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:700; line-height:1.5; flex:1;">450억 수의계약<br><span style="color:#e74c3c; font-weight:900;">매수자 = 그 임차인</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 손익 비교 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:2px; margin-bottom:18px; font-weight:700;">결과는 어땠나</div>
+
+      <div style="border-left:3px solid #e74c3c; padding:16px 18px; margin-bottom:14px; background:rgba(231,76,60,0.1);">
+        <div style="font-size:12px; color:#ff7268; font-weight:800; letter-spacing:1px; margin-bottom:8px;">빌딩주</div>
+        <div style="font-size:15px; color:#fff; line-height:1.7; font-weight:500;">
+          매입가 절반 이상 손실<br>
+          시설 지원금 21억 증발<br>
+          현재 명도소송 진행 중
+        </div>
+      </div>
+
+      <div style="border-left:3px solid #c9a96e; padding:16px 18px; background:rgba(201,169,110,0.1);">
+        <div style="font-size:12px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:8px;">임차인 원장</div>
+        <div style="font-size:15px; color:#fff; line-height:1.7; font-weight:500;">
+          21억으로 인테리어<br>
+          6개월 무료 사용<br>
+          건물까지 반값에 인수
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 방어 1: 금전 소비대차 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">04</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:11px; color:#c9a96e; letter-spacing:3px; font-weight:800; margin-bottom:8px;">방어 장치 01</div>
+      <div style="font-size:30px; font-weight:900; color:#0a0a0f; line-height:1.2; letter-spacing:-1.2px; margin-bottom:18px;">
+        지원금은<br>
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 4px;">대여금</span>으로 묶어라.
+      </div>
+
+      <div style="font-size:15px; color:#333; line-height:1.7; margin-bottom:14px;">
+        21억을 단순 지원으로 주면 그냥 증발이에요.<br>
+        '금전 소비대차' 계약으로 묶으면 빚이 돼요.
+      </div>
+
+      <div style="padding:14px 16px; background:#0a0a0f; border-radius:6px;">
+        <div style="font-size:14px; color:#c9a96e; font-weight:800; line-height:1.6;">
+          월세 끊는 순간 → 21억 즉시 갚아야 함.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- 5장 방어 2: 강제집행 공정증서 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">05</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:11px; color:#c9a96e; letter-spacing:3px; font-weight:800; margin-bottom:8px;">방어 장치 02</div>
+      <div style="font-size:30px; font-weight:900; color:#fff; line-height:1.2; letter-spacing:-1.2px; margin-bottom:18px;">
+        강제집행<br>
+        <span style="color:#c9a96e;">공정증서</span> 받아라.
+      </div>
+
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.7; margin-bottom:14px;">
+        소송으로 가면 1년 넘게 걸려요.<br>
+        그 사이 미납액이 40억까지 쌓여요.
+      </div>
+
+      <div style="padding:14px 16px; background:rgba(201,169,110,0.15); border-left:3px solid #c9a96e;">
+        <div style="font-size:14px; color:#fff; font-weight:700; line-height:1.6;">
+          공증 있으면 연체 즉시<br>
+          소송 없이 재산 압류 가능.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- 6장 방어 3: 요양급여 채권 양도 담보 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:11px; color:#c9a96e; letter-spacing:3px; font-weight:800; margin-bottom:8px;">방어 장치 03</div>
+      <div style="font-size:28px; font-weight:900; color:#0a0a0f; line-height:1.2; letter-spacing:-1.2px; margin-bottom:18px;">
+        요양급여 채권<br>
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 4px;">양도 담보</span>로 잡아라.
+      </div>
+
+      <div style="font-size:15px; color:#333; line-height:1.7; margin-bottom:14px;">
+        병원은 월세 안 내도 매출은 들어와요.<br>
+        건강보험공단 요양급여로요.
+      </div>
+
+      <div style="padding:14px 16px; background:#0a0a0f; border-radius:6px;">
+        <div style="font-size:14px; color:#c9a96e; font-weight:800; line-height:1.6;">
+          담보 설정 시 → 공단 돈이<br>빌딩주 계좌로 직접 들어옴.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<!-- 7장 진짜 교훈 - 인용 카드 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">07</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:80px; color:#c9a96e; line-height:0.5; margin-bottom:20px; font-family:Georgia, serif;">"</div>
+
+      <div style="font-size:24px; color:#fff; line-height:1.5; font-weight:500; letter-spacing:-0.5px; margin-bottom:24px;">
+        화려한 직업과<br>
+        높은 임대료에<br>
+        <span style="font-weight:900; color:#c9a96e;">속지 마세요.</span>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.2); padding-top:14px;">
+        <div style="font-size:13px; color:rgba(255,255,255,0.7); line-height:1.6;">
+          큰 임차인일수록 리스크도 커요.<br>
+          월세 1.7억 임차인이면 손실도 1.7억씩 쌓여요.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장</button>
+</div>
+
+<!-- 8장 결론 - 3중 잠금 -->
+<div class="card-wrapper">
+<div class="card" id="card-8">
+  <div class="bg-color" style="background: #c9a96e;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:2px;">08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:11px; color:rgba(255,255,255,0.7); letter-spacing:4px; font-weight:700; margin-bottom:18px;">3중 잠금장치</div>
+
+      <div style="font-size:28px; color:#fff; line-height:1.5; font-weight:900; letter-spacing:-0.8px; margin-bottom:30px;">
+        <div style="margin-bottom:6px;">지원금은 <span style="color:#1a1a1a;">대여금</span>으로.</div>
+        <div style="margin-bottom:6px;">연체는 <span style="color:#1a1a1a;">공증</span>으로.</div>
+        <div>수익은 <span style="color:#1a1a1a;">채권 담보</span>로.</div>
+      </div>
+
+      <div style="width:48px; height:3px; background:#fff; opacity:0.6; margin-bottom:18px;"></div>
+
+      <div style="font-size:15px; color:#fff; line-height:1.8; font-weight:500;">
+        이 세 가지가<br>여러분의 빌딩을 지키는<br>유일한 방법이에요.
+      </div>
+    </div>
+    <div style="font-size:12px; color:rgba(255,255,255,0.7); font-weight:500; text-align:center;">@bsn__official · 빌사남</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(8)">8장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'suwon_case_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 8; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 양도세 중과, 빌딩으로 자금이 넘어올까</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.bsn { font-size:20px; font-weight:900; letter-spacing:1px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 4장)</button></div>
+
+<!-- 1장 표지 — 세율 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('./images/bd1.jpg');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.3) 0%, rgba(10,10,15,0.85) 40%, rgba(10,10,15,0.97) 90%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="display:inline-block; padding:4px 10px; background:#e74c3c; color:#fff; font-size:10px; font-weight:800; letter-spacing:2px; border-radius:3px;">2026.05.09 시행</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:12px; color:#c9a96e; letter-spacing:3px; font-weight:800; margin-bottom:14px;">다주택자 양도세 중과 부활</div>
+
+      <div style="font-size:34px; font-weight:900; color:#fff; line-height:1.15; letter-spacing:-1.5px; margin-bottom:18px;">
+        조정대상지역 매도 시<br>최고 세율
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:7px; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 14px; background:rgba(255,255,255,0.08); border-radius:5px;">
+          <div style="font-size:12px; color:rgba(255,255,255,0.8); font-weight:600;">1주택 (일반)</div>
+          <div style="font-size:16px; color:#fff; font-weight:900; letter-spacing:-0.5px;">6 ~ 45<span style="font-size:12px;">%</span></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:9px 14px; background:rgba(255,165,0,0.18); border-radius:5px;">
+          <div style="font-size:12px; color:#ffc068; font-weight:700;">2주택자 (+20%p)</div>
+          <div style="font-size:16px; color:#fff; font-weight:900; letter-spacing:-0.5px;">최고 71.5<span style="font-size:12px;">%</span></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:rgba(231,76,60,0.25); border:1px solid #e74c3c; border-radius:5px;">
+          <div style="font-size:12px; color:#ff8a78; font-weight:800;">3주택 이상 (+30%p)</div>
+          <div style="font-size:18px; color:#fff; font-weight:900; letter-spacing:-0.5px;">최고 82.5<span style="font-size:13px;">%</span></div>
+        </div>
+      </div>
+
+      <div style="font-size:13px; color:rgba(255,255,255,0.7); line-height:1.5;">
+        ※ 지방소득세 포함 기준
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px;">
+      <div style="font-size:12px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.65);">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 자금 이동 가능성 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02 / 04</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:14px; font-weight:700;">빌딩 시장에 미칠 영향</div>
+
+      <div style="font-size:26px; font-weight:900; color:#0a0a0f; line-height:1.3; letter-spacing:-1px; margin-bottom:22px;">
+        빌딩으로 자금이<br>
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 4px;">들어올 가능성</span>이 있어요.
+      </div>
+
+      <div style="padding:14px 16px; background:#fff; border-radius:6px; margin-bottom:12px;">
+        <div style="font-size:12px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:6px;">상업용 빌딩</div>
+        <div style="font-size:14px; color:#0a0a0f; line-height:1.6; font-weight:600;">
+          다주택자 양도세 중과 대상이 아님<br>
+          자산 포트폴리오 재편의 출구
+        </div>
+      </div>
+
+      <div style="font-size:13px; color:#555; line-height:1.6;">
+        주택 비중을 줄이려는 자산가들이<br>
+        빌딩 매수로 갈아탈 가능성이 있어요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 코로나 때와 비교 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03 / 04</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:2px; margin-bottom:14px; font-weight:700;">근데 코로나 때와 다른 점</div>
+
+      <div style="border:1px solid rgba(201,169,110,0.4); border-radius:8px; padding:14px 16px; margin-bottom:12px; background:rgba(201,169,110,0.08);">
+        <div style="font-size:11px; color:#c9a96e; letter-spacing:2px; font-weight:800; margin-bottom:6px;">코로나 시기</div>
+        <div style="font-size:14px; color:#fff; line-height:1.6; font-weight:600;">
+          주택 규제 + 단단한 임대 시장<br>
+          → 빌딩 가격 단기 급등
+        </div>
+      </div>
+
+      <div style="border:1px solid rgba(231,76,60,0.4); border-radius:8px; padding:14px 16px; background:rgba(231,76,60,0.08);">
+        <div style="font-size:11px; color:#ff8a78; letter-spacing:2px; font-weight:800; margin-bottom:6px;">지금</div>
+        <div style="font-size:14px; color:#fff; line-height:1.6; font-weight:600;">
+          주택 규제 + <span style="color:#ff8a78;">약한 임대 시장</span><br>
+          → 자영업 폐업 ↑ · 공실 ↑
+        </div>
+      </div>
+
+      <div style="font-size:13px; color:rgba(255,255,255,0.7); line-height:1.6; margin-top:14px;">
+        임대 수요가 받쳐주지 않으면<br>매수자들도 신중해져요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 결론 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #0a0a0f;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">04 / 04</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="width:30px; height:2px; background:#c9a96e; margin-bottom:20px;"></div>
+
+      <div style="font-size:30px; font-weight:900; color:#fff; line-height:1.25; letter-spacing:-1.5px; margin-bottom:10px;">자금이 몰리는 자리는</div>
+      <div style="font-size:30px; font-weight:900; color:#c9a96e; line-height:1.25; letter-spacing:-1.5px; margin-bottom:28px;">핵심 입지뿐일 거예요.</div>
+
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.8; margin-bottom:18px;">
+        강남·성수·한남처럼<br>
+        임차 대기가 있는 자리만<br>
+        가격이 받쳐줘요.
+      </div>
+
+      <div style="padding:14px 16px; background:rgba(201,169,110,0.12); border-left:3px solid #c9a96e;">
+        <div style="font-size:14px; color:#c9a96e; font-weight:800; line-height:1.7;">
+          매수자는 임차 안정성.<br>
+          매도자는 핵심 입지 보존.
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px; color:rgba(255,255,255,0.6); font-weight:500; text-align:center;">@bsn__official · 빌사남</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'tax_corona_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 4; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

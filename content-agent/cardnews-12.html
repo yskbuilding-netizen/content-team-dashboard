@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 통임대로 약국이 들어왔다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.notice { width: 100%; max-width: 900px; background: #fff8e1; padding: 16px 20px; border-radius: 8px; border-left: 4px solid #c9a96e; margin-bottom: 20px; font-size: 14px; line-height: 1.6; color: #333; }
+.notice b { color: #0a0a0f; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.slash-h { font-size: 14px; color: #888; margin-bottom: 16px; font-weight: 500; letter-spacing: -0.3px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+.case-photo { width: 100%; height: 200px; border-radius: 6px; background-size: cover; background-position: center; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div class="notice">
+  📸 <b>이미지 저장 필수</b><br>
+  공유해주신 약국 사진 두 장을 다음 경로에 저장해주세요:<br>
+  <b>1번 사진</b>: <code>content-agent/images/owm1.jpg</code> (외관 정면)<br>
+  <b>2번 사진</b>: <code>content-agent/images/owm2.jpg</code> (외관 측면)<br>
+  저장 후 페이지 새로고침(F5) 하시면 사진이 표시됩니다.
+</div>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 7장)</button></div>
+
+<!-- 1장 표지 — 약국 사진 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('./images/owm1.jpg');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.35) 0%, rgba(10,10,15,0.85) 60%, rgba(10,10,15,0.97) 100%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:24px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.65); letter-spacing:2px;">EP. 12</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:54px; font-weight:900; color:#fff; line-height:1.15; margin-bottom:28px; letter-spacing:-2.5px;">
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 6px;">통임대</span>로<br>약국이 들어왔다.
+      </div>
+      <div style="width:60px; height:3px; background:#c9a96e;"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:13px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.65); letter-spacing:3px;">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 도입 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02 / 07</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 요즘 변화 /</div>
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.7; font-weight:500; margin-bottom:24px;">
+        성수동·안국 가보시면<br>통임대 약국이 늘었어요.
+      </div>
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.7; font-weight:900; letter-spacing:-0.5px;">
+        작은 매장이 아니에요.<br>
+        한 약국이 빌딩 전체를 써요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 왜 들어오나 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03 / 07</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 왜 약국이 통임대로 들어오나 /</div>
+      <div style="font-size:22px; color:#fff; line-height:1.6; font-weight:900; margin-bottom:18px; letter-spacing:-0.5px;">
+        이유는 <span style="color:#c9a96e;">외국인</span>이에요.
+      </div>
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.7; margin-bottom:14px;">
+        명동·성수·강남·안국 외국인 동선에서<br>K-약국이 핫해요.
+      </div>
+      <div style="padding:14px 16px; background:rgba(255,255,255,0.07); border-radius:6px;">
+        <div style="font-size:13px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:6px;">외국인 인기 K-약</div>
+        <div style="font-size:14px; color:#fff; line-height:1.6;">
+          후시딘 · 마데카솔 · 감기약<br>비타민 · 소화제
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 사례 — 옵티마웰니스뮤지엄 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">04 / 07</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-start; padding-top:8px;">
+      <div class="slash-h">/ 실제 사례 /</div>
+      <div class="case-photo" style="background-image: url('./images/owm2.jpg'); height:180px;"></div>
+      <div style="font-size:11px; color:#c9a96e; letter-spacing:2px; font-weight:800; margin-bottom:6px;">SEONGSU · 성수동</div>
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.3; font-weight:900; margin-bottom:10px; letter-spacing:-1px;">옵티마웰니스뮤지엄</div>
+      <div style="font-size:14px; color:#333; line-height:1.7;">
+        이름부터 "Wellness Museum"이에요.<br>
+        빌딩 한 층을 통째로 쓰면서<br>
+        미술관처럼 꾸몄어요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- 5장 브랜드 경험 공간 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">05 / 07</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 약국이 들어오는 새 방식 /</div>
+      <div style="font-size:24px; color:#fff; line-height:1.5; font-weight:500; margin-bottom:24px; letter-spacing:-0.5px;">
+        그냥 약 파는 매장이 아니라<br>
+        <span style="font-weight:900; color:#c9a96e;">브랜드 경험 공간</span>이에요.
+      </div>
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.8;">
+        약 사러 왔는데 화장품 사 가고<br>
+        인스타에 올리고 친구 데려오고.<br><br>
+        이런 매출이 높은 임대료를 감당해요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- 6장 통임대 의미 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">06 / 07</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 핵심은 "통임대" /</div>
+      <div style="font-size:18px; color:#0a0a0f; line-height:1.7; font-weight:500; margin-bottom:20px;">
+        한 매장이 그 층 전체 임대료를 감당한다는 뜻이에요.
+      </div>
+      <div style="font-size:18px; color:#333; line-height:1.7; margin-bottom:18px;">
+        분할 임대보다 단가가 더 높은데<br>
+        그걸 한 매장이 다 내요.
+      </div>
+      <div style="padding:14px 16px; background:#0a0a0f; border-radius:6px;">
+        <div style="font-size:14px; color:#c9a96e; font-weight:800; letter-spacing:0.5px; line-height:1.6;">
+          매출이 검증된 자리만 가능해요.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<!-- 7장 결론 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg-color" style="background: #c9a96e;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:2px;">07 / 07</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:11px; color:rgba(255,255,255,0.7); letter-spacing:4px; margin-bottom:18px; font-weight:700;">결론</div>
+      <div style="font-size:38px; font-weight:900; color:#fff; line-height:1.2; margin-bottom:6px; letter-spacing:-1.5px;">통임대가</div>
+      <div style="font-size:38px; font-weight:900; color:#1a1a1a; line-height:1.2; margin-bottom:24px; letter-spacing:-1.5px;">빌딩 매출의 거울이다.</div>
+      <div style="width:48px; height:3px; background:#fff; margin-bottom:24px; opacity:0.5;"></div>
+      <div style="font-size:16px; color:#fff; line-height:1.8; font-weight:500;">
+        매물 보러 가시면<br>
+        주변에 통임대가 뭐가 들어왔는지<br>
+        꼭 체크하세요.
+      </div>
+    </div>
+    <div style="font-size:13px; color:rgba(255,255,255,0.85); font-weight:600; text-align:center;">@bsn__official · 빌사남</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'pharmacy_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message + '\n\n로컬 이미지 사용 시 다운로드가 안 될 수 있어요. 그럴 때는 화면 캡처를 사용하세요.'); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 7; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

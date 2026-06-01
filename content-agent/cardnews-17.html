@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 주식·코인 돈으로 빌딩 사는 사람들</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.bsn { font-size:20px; font-weight:900; letter-spacing:1px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 3장)</button></div>
+
+<!-- 1장 표지 — 데이터 임팩트 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=900&q=80&auto=format&fit=crop');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.35) 0%, rgba(10,10,15,0.85) 50%, rgba(10,10,15,0.97) 90%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:#c9a96e; letter-spacing:3px; font-weight:800;">2026 시장 변화</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:3px; font-weight:800; margin-bottom:14px;">새 매수 주체의 등장</div>
+
+      <div style="font-size:36px; font-weight:500; color:#fff; line-height:1.15; letter-spacing:-1.2px; margin-bottom:6px;">주식·코인 돈으로</div>
+      <div style="font-size:48px; font-weight:900; color:#fff; line-height:1.05; letter-spacing:-2px; margin-bottom:6px;">빌딩 사는 사람</div>
+      <div style="font-size:48px; font-weight:900; color:#c9a96e; line-height:1.05; letter-spacing:-2px; margin-bottom:24px;">늘고 있어요.</div>
+
+      <!-- 데이터 박스 -->
+      <div style="padding:14px 16px; background:rgba(201,169,110,0.15); border-left:3px solid #c9a96e; border-radius:0 6px 6px 0;">
+        <div style="font-size:11px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:6px;">한 달 새 서울 부동산</div>
+        <div style="font-size:22px; color:#fff; font-weight:900; letter-spacing:-0.5px; margin-bottom:4px;">코인 자금 <span style="color:#c9a96e;">63억</span> 유입</div>
+        <div style="font-size:12px; color:rgba(255,255,255,0.75);">강남 3구가 43억 · 서초 단 1건 29억</div>
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px;">
+      <div style="font-size:12px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.65);">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 빌딩도 트로피 자산 3가지 이유 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02 / 03</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:14px; font-weight:700;">빌딩도 트로피 자산이 되는 이유</div>
+
+      <div style="font-size:26px; font-weight:900; color:#0a0a0f; line-height:1.3; letter-spacing:-1px; margin-bottom:22px;">
+        강남 <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 4px;">아파트만은</span><br>아니에요.
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="padding:13px 16px; background:#fff; border-radius:6px;">
+          <div style="font-size:12px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:4px;">REASON 01</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:700;">양도세 중과 무풍지대</div>
+        </div>
+        <div style="padding:13px 16px; background:#fff; border-radius:6px;">
+          <div style="font-size:12px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:4px;">REASON 02</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:700;">매월 임대 수익이 있다</div>
+        </div>
+        <div style="padding:13px 16px; background:#fff; border-radius:6px;">
+          <div style="font-size:12px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:4px;">REASON 03</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:700;">아파트보다 큰 상징성</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 결론 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #0a0a0f;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03 / 03</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="width:30px; height:2px; background:#c9a96e; margin-bottom:20px;"></div>
+
+      <div style="font-size:30px; font-weight:900; color:#fff; line-height:1.25; letter-spacing:-1.5px; margin-bottom:10px;">신규 자산가들이</div>
+      <div style="font-size:30px; font-weight:900; color:#c9a96e; line-height:1.25; letter-spacing:-1.5px; margin-bottom:28px;">빌딩 시장에 들어와요.</div>
+
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.8; margin-bottom:18px;">
+        코인·주식으로 30~50억 자산을<br>
+        만든 신규 자산가들이 진입 중이에요.
+      </div>
+
+      <div style="padding:14px 16px; background:rgba(201,169,110,0.12); border-left:3px solid #c9a96e;">
+        <div style="font-size:14px; color:#c9a96e; font-weight:800; line-height:1.7;">
+          매수자엔 자금 경쟁 시작점.<br>
+          매도자엔 매수 수요 살아있는 시기.
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px; color:rgba(255,255,255,0.6); font-weight:500; text-align:center;">@bsn__official · 빌사남</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'trophy_asset_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 3; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

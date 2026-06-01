@@ -492,7 +492,7 @@ app.post('/api/publish/all', async (req, res) => {
 });
 
 // ── 서버 시작 ──
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 app.listen(PORT, function() {
   console.log('');
   console.log('🚀 빌사남 콘텐츠 현황판 서버가 시작되었습니다!');

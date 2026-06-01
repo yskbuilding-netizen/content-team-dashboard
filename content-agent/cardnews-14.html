@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 빨대효과</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.bsn { font-size:20px; font-weight:900; letter-spacing:1px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 7장)</button></div>
+
+<!-- 1장 표지 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=900&q=80&auto=format&fit=crop');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.35) 0%, rgba(10,10,15,0.65) 40%, rgba(10,10,15,0.97) 80%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:2px;">EP. 14</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:4px; font-weight:800; margin-bottom:14px;">빨대효과의 진실</div>
+
+      <div style="font-size:36px; font-weight:500; color:#fff; line-height:1.15; letter-spacing:-1px; margin-bottom:8px;">같은 강남인데</div>
+      <div style="font-size:60px; font-weight:900; color:#c9a96e; line-height:1; letter-spacing:-2.5px; margin-bottom:6px;">100m 차이로</div>
+      <div style="font-size:46px; font-weight:900; color:#fff; line-height:1.05; letter-spacing:-2px; margin-bottom:24px;">빌딩값이 갈린다.</div>
+
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.6;">
+        한 블록 차이가 30~50% 임대료 격차를 만든다.
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:13px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.6);">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 빨대효과란 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:14px; font-weight:700;">빨대효과란</div>
+
+      <div style="font-size:26px; color:#0a0a0f; line-height:1.5; font-weight:500; margin-bottom:24px; letter-spacing:-0.5px;">
+        핵심 입지가 주변의<br>
+        <span style="font-weight:900;">수요를 다 빨아들이는</span> 현상.
+      </div>
+
+      <div style="padding:18px 20px; background:#fff; border-radius:8px;">
+        <div style="font-size:13px; color:#888; line-height:1.5; margin-bottom:8px; font-weight:600;">메인 도로</div>
+        <div style="font-size:14px; color:#0a0a0f; line-height:1.6; font-weight:500;">
+          강남대로 · 명동 메인<br>
+          성수 연무장길 · 한남대로
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 메인 vs 안쪽 비교 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500; letter-spacing:-0.3px;">한 블록 차이로 갈리는 것</div>
+
+      <div style="border:1px solid rgba(201,169,110,0.4); border-radius:8px; padding:18px 20px; margin-bottom:14px;">
+        <div style="font-size:11px; color:#c9a96e; letter-spacing:2px; font-weight:800; margin-bottom:8px;">메인 도로</div>
+        <div style="font-size:15px; color:#fff; line-height:1.7; font-weight:500;">
+          공실 한 달이면 채워짐<br>
+          임차 대기 줄이 있음
+        </div>
+      </div>
+
+      <div style="border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:18px 20px;">
+        <div style="font-size:11px; color:rgba(255,255,255,0.5); letter-spacing:2px; font-weight:800; margin-bottom:8px;">한 블록 안쪽</div>
+        <div style="font-size:15px; color:rgba(255,255,255,0.7); line-height:1.7;">
+          공실 6개월씩 지속<br>
+          임대료 절반 수준도
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 왜 일어나나 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">04</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:14px; font-weight:700;">왜 빨대효과가 일어나는가</div>
+
+      <div style="font-size:16px; color:#0a0a0f; line-height:1.9; font-weight:400;">
+        <div style="margin-bottom:14px;">
+          <span style="font-weight:900;">보행자 동선.</span><br>
+          <span style="color:#555;">사람들은 메인 도로로만 다녀요.</span>
+        </div>
+        <div style="margin-bottom:14px;">
+          <span style="font-weight:900;">임차 우선순위.</span><br>
+          <span style="color:#555;">좋은 임차인은 메인부터 잡아요.</span>
+        </div>
+        <div>
+          <span style="font-weight:900;">앵커스토어 효과.</span><br>
+          <span style="color:#555;">스타벅스·올리브영이 트래픽을 가져가요.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- 5장 함정 - 인용 카드 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">05</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:80px; color:#c9a96e; line-height:0.5; margin-bottom:20px; font-family:Georgia, serif;">"</div>
+
+      <div style="font-size:26px; color:#fff; line-height:1.5; font-weight:500; letter-spacing:-0.5px; margin-bottom:24px;">
+        강남이니까<br>
+        다 좋겠지.
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.2); padding-top:14px;">
+        <div style="font-size:13px; color:#c9a96e; font-weight:700; line-height:1.6;">
+          매수자가 가장 많이 빠지는 함정.<br>
+          이게 가장 위험한 생각이에요.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- 6장 체크 3가지 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:14px; font-weight:700;">매수 전 체크 세 가지</div>
+
+      <div style="font-size:16px; color:#333; line-height:1.7; font-weight:400;">
+        <div style="margin-bottom:18px; padding-left:18px; border-left:3px solid #c9a96e;">
+          <div style="font-size:15px; color:#0a0a0f; font-weight:900; margin-bottom:4px;">보행자 동선 직접 체감</div>
+          <div style="font-size:13px; color:#666;">평일·주말·낮·저녁 다 가보세요.</div>
+        </div>
+        <div style="margin-bottom:18px; padding-left:18px; border-left:3px solid #c9a96e;">
+          <div style="font-size:15px; color:#0a0a0f; font-weight:900; margin-bottom:4px;">앵커스토어와의 거리</div>
+          <div style="font-size:13px; color:#666;">100m 안인지 200m 밖인지가 결정적.</div>
+        </div>
+        <div style="padding-left:18px; border-left:3px solid #c9a96e;">
+          <div style="font-size:15px; color:#0a0a0f; font-weight:900; margin-bottom:4px;">인접 매물 임대료 비교</div>
+          <div style="font-size:13px; color:#666;">디스코·밸류맵으로 메인 vs 안쪽 비교.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<!-- 7장 결론 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg-color" style="background: #0a0a0f;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">07</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="width:30px; height:2px; background:#c9a96e; margin-bottom:20px;"></div>
+
+      <div style="font-size:36px; font-weight:900; color:#fff; line-height:1.2; letter-spacing:-1.5px; margin-bottom:8px;">빌딩은</div>
+      <div style="font-size:36px; font-weight:900; color:#fff; line-height:1.2; letter-spacing:-1.5px; margin-bottom:6px;">동 단위가 아니라</div>
+      <div style="font-size:36px; font-weight:900; color:#c9a96e; line-height:1.2; letter-spacing:-1.5px; margin-bottom:28px;">미터 단위로 봐라.</div>
+
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.8; font-weight:400;">
+        강남이니까, 성수니까.<br>
+        이런 식으로 큰 단위로 보면<br>
+        빨대효과 함정에 빠집니다.
+      </div>
+    </div>
+    <div style="font-size:12px; color:rgba(255,255,255,0.6); font-weight:500; text-align:center;">@bsn__official · 빌사남</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'straw_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 7; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

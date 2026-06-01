@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 빌딩 매수자가 어려진다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.bsn { font-size:20px; font-weight:900; letter-spacing:1px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+.bebas { font-family: 'Bebas Neue', sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 8장)</button></div>
+
+<!-- 1장 표지 — 강한 후크 + 사진 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('./images/bd1.jpg');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.3) 0%, rgba(10,10,15,0.5) 30%, rgba(10,10,15,0.95) 75%);"></div>
+
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:2px;">2026 시장 리포트</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:13px; color:#c9a96e; font-weight:800; letter-spacing:4px; margin-bottom:14px;">SCOOP</div>
+
+      <div style="font-size:62px; font-weight:900; color:#fff; line-height:0.95; letter-spacing:-3px; margin-bottom:14px;">강남 빌딩</div>
+      <div style="font-size:36px; font-weight:500; color:#fff; line-height:1.15; letter-spacing:-1px; margin-bottom:6px;">사는 사람이</div>
+      <div style="font-size:50px; font-weight:900; color:#c9a96e; line-height:1.05; letter-spacing:-2px; margin-bottom:24px;">어려졌다.</div>
+
+      <div style="font-size:16px; color:rgba(255,255,255,0.85); line-height:1.6; max-width:340px;">
+        6070이 내놓고 4050이 받는데<br>
+        이제 30대까지 들어와요.
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:13px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.6);">→</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 데이터 카드 — 세대 매트릭스 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:11px; color:#888; letter-spacing:3px; margin-bottom:14px; font-weight:800;">— 빌딩 시장 세대 매트릭스 —</div>
+
+      <div style="border-top:2px solid #0a0a0f; padding-top:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding-bottom:18px; border-bottom:1px solid rgba(0,0,0,0.15);">
+          <div>
+            <div style="font-size:13px; color:#888; margin-bottom:2px;">매도자</div>
+            <div style="font-size:34px; font-weight:900; color:#0a0a0f; letter-spacing:-1px;">60·70대</div>
+          </div>
+          <div style="font-size:13px; color:#999; font-weight:600;">정리·은퇴</div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding:18px 0; border-bottom:1px solid rgba(0,0,0,0.15);">
+          <div>
+            <div style="font-size:13px; color:#888; margin-bottom:2px;">주력 매수자</div>
+            <div style="font-size:34px; font-weight:900; color:#0a0a0f; letter-spacing:-1px;">40·50대</div>
+          </div>
+          <div style="font-size:13px; color:#999; font-weight:600;">자산 정점</div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:baseline; padding-top:18px;">
+          <div>
+            <div style="font-size:13px; color:#c9a96e; margin-bottom:2px; font-weight:700;">신규 매수자</div>
+            <div style="font-size:34px; font-weight:900; color:#0a0a0f; letter-spacing:-1px;">3<span style="color:#c9a96e;">0</span>대</div>
+          </div>
+          <div style="font-size:13px; color:#c9a96e; font-weight:700;">↑ 빠른 증가</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 6070 — 인터뷰 카드 (인용 스타일) -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:80px; color:#c9a96e; line-height:0.5; margin-bottom:20px; font-family:Georgia, serif;">"</div>
+
+      <div style="font-size:24px; color:#fff; line-height:1.5; font-weight:500; letter-spacing:-0.5px; margin-bottom:30px;">
+        세금이랑 관리가 더는 안 돼.<br>
+        몸 건강할 때<br>
+        정리하는 게 낫지.
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,0.2); padding-top:14px; display:flex; justify-content:space-between;">
+        <div style="font-size:13px; color:#c9a96e; font-weight:700;">— 매도자 인터뷰</div>
+        <div style="font-size:13px; color:rgba(255,255,255,0.5);">68세 · 강남구</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 — 6070 매도 4가지 이유 (가로 스플릿 레이아웃) -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content" style="padding:36px 30px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">04</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:30px; font-weight:900; color:#0a0a0f; line-height:1.2; margin-bottom:24px; letter-spacing:-1.2px;">
+        6070이<br>지금 정리하는 이유.
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+        <div style="padding:14px; background:#fff; border-radius:6px;">
+          <div style="font-size:11px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:6px;">01</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:700; line-height:1.4;">종부세<br>임대수익 잠식</div>
+        </div>
+        <div style="padding:14px; background:#fff; border-radius:6px;">
+          <div style="font-size:11px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:6px;">02</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:700; line-height:1.4;">임차 관리<br>육체적 부담</div>
+        </div>
+        <div style="padding:14px; background:#fff; border-radius:6px;">
+          <div style="font-size:11px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:6px;">03</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:700; line-height:1.4;">유동성 분산<br>현금 필요</div>
+        </div>
+        <div style="padding:14px; background:#fff; border-radius:6px;">
+          <div style="font-size:11px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:6px;">04</div>
+          <div style="font-size:14px; color:#0a0a0f; font-weight:700; line-height:1.4;">자녀 부담<br>미리 정리</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- 5장 — 4050 매수자 (세로 라인 강조) -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">05</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
+        <div style="font-size:40px; font-weight:900; color:#c9a96e; letter-spacing:-2px;">4050</div>
+        <div style="height:36px; width:1px; background:rgba(255,255,255,0.3);"></div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:1.4;">자산 축적 정점기<br>주력 매수층</div>
+      </div>
+
+      <div style="font-size:18px; color:#fff; line-height:1.7; font-weight:500; margin-bottom:18px;">
+        사업·직장에서 자산이 정점에 오르고<br>
+        은퇴 안정 수익원이 필요해지는 시기.
+      </div>
+
+      <div style="font-size:15px; color:rgba(255,255,255,0.7); line-height:1.7;">
+        지금 매입해서 20년 운영하면<br>자녀 세대까지 가는 자산이 돼요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- 6장 — 30대 신규 (강조 카드, 다른 색) -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #c9a96e;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.6); letter-spacing:2px;">06</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:11px; color:rgba(255,255,255,0.7); letter-spacing:3px; font-weight:800; margin-bottom:10px;">NEW PLAYER</div>
+      <div style="font-size:54px; font-weight:900; color:#fff; line-height:1; letter-spacing:-2.5px; margin-bottom:20px;">30대까지<br>들어왔다.</div>
+
+      <div style="font-size:14px; color:#fff; line-height:1.8; font-weight:600; opacity:0.95;">
+        <div style="margin-bottom:8px;">→ IT·스타트업·금융 자수성가</div>
+        <div style="margin-bottom:8px;">→ 부모 자산 활용 매입</div>
+        <div>→ 사업 매각 후 빌딩 갈아타기</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<!-- 7장 매물 특징 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">07</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:12px; font-weight:700;">시장에 풀린 매물의 특징</div>
+
+      <div style="font-size:34px; color:#0a0a0f; line-height:1.15; font-weight:900; letter-spacing:-1.5px; margin-bottom:6px;">핵심 입지에</div>
+      <div style="font-size:34px; color:#0a0a0f; line-height:1.15; font-weight:900; letter-spacing:-1.5px; margin-bottom:24px;">노후 빌딩이 많다.</div>
+
+      <div style="padding:16px 18px; background:#fff; border-radius:6px; margin-bottom:14px;">
+        <div style="font-size:13px; color:#888; line-height:1.5; margin-bottom:6px;">강남·압구정·청담·한남·성수</div>
+        <div style="font-size:14px; color:#0a0a0f; font-weight:600;">6070이 30~40년 전에 잡아둔 자리</div>
+      </div>
+
+      <div style="font-size:14px; color:#0a0a0f; line-height:1.6; font-weight:700;">
+        리모델링·신축으로 가치 창출 여지가 커요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장</button>
+</div>
+
+<!-- 8장 결론 -->
+<div class="card-wrapper">
+<div class="card" id="card-8">
+  <div class="bg-color" style="background: #0a0a0f;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="width:30px; height:2px; background:#c9a96e; margin-bottom:18px;"></div>
+
+      <div style="font-size:32px; font-weight:900; color:#fff; line-height:1.3; letter-spacing:-1.2px; margin-bottom:24px;">
+        매수 세대가<br>점점 어려지고 있어요.
+      </div>
+
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.8; font-weight:400; margin-bottom:18px;">
+        매물은 풍부해지고<br>
+        매수 수요는 다층화되는 시기예요.
+      </div>
+
+      <div style="font-size:15px; color:#c9a96e; line-height:1.7; font-weight:700;">
+        세대 교체 사이클을 이해하면<br>시장 타이밍이 보입니다.
+      </div>
+    </div>
+
+    <div style="font-size:12px; color:rgba(255,255,255,0.6); font-weight:500; text-align:center;">@bsn__official · 빌사남</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(8)">8장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'gen_shift_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 8; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

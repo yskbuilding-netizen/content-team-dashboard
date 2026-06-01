@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 입지가 곧 임차 수요다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #1a1a1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  padding: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+.card-wrapper { position: relative; }
+.card {
+  width: 432px;
+  height: 540px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content {
+  position: relative; z-index: 3;
+  width: 100%; height: 100%;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+}
+.slash-h { font-size: 14px; color: #888; margin-bottom: 16px; font-weight: 500; letter-spacing: -0.3px; }
+.body-p { font-size: 17px; line-height: 1.7; font-weight: 400; }
+.download-btn {
+  display: block; margin: 12px auto 0; padding: 9px 22px;
+  background: #c9a96e; color: #0a0a0f; border: none;
+  border-radius: 6px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+}
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button {
+  padding: 16px 48px; background: #c9a96e; color: #0a0a0f;
+  border: none; border-radius: 8px; font-size: 16px; font-weight: 900;
+  cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px;
+}
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all">
+  <button onclick="downloadAll()">전체 다운로드 (PNG 8장)</button>
+</div>
+
+<!-- 1장 표지 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=900&q=80&auto=format&fit=crop');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.4) 0%, rgba(10,10,15,0.85) 60%, rgba(10,10,15,0.97) 100%);"></div>
+
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:24px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.65); letter-spacing:2px;">EP. 09</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:48px; font-weight:900; color:#fff; line-height:1.15; margin-bottom:6px; letter-spacing:-2.5px;">
+        회사도 이제
+      </div>
+      <div style="font-size:48px; font-weight:900; color:#fff; line-height:1.15; margin-bottom:24px; letter-spacing:-2.5px;">
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 6px;">입지로 사람을</span>
+      </div>
+      <div style="font-size:48px; font-weight:900; color:#fff; line-height:1.15; margin-bottom:28px; letter-spacing:-2.5px;">
+        뽑는 시대.
+      </div>
+
+      <div style="width:60px; height:3px; background:#c9a96e; margin-bottom:22px;"></div>
+
+      <div style="font-size:16px; color:rgba(255,255,255,0.85); line-height:1.7;">
+        빌딩 가치가 어디서 갈리는지<br>
+        지금 바뀌고 있어요.
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:13px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.65); letter-spacing:3px;">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 도입 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 시장에서 들리는 얘기 /</div>
+
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.7; font-weight:500; margin-bottom:20px;">
+        요즘 직장인들이<br>
+        이직·취업 고민할 때<br>
+        <span style="font-weight:900;">사옥 위치</span>를 진지하게 봐요.
+      </div>
+
+      <div style="font-size:16px; color:#555; line-height:1.7;">
+        연봉만큼은 아니어도<br>
+        비슷한 우선순위로 따져요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 인용 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:60px; color:#c9a96e; font-weight:900; line-height:1; margin-bottom:8px;">"</div>
+      <div style="font-size:26px; color:#fff; line-height:1.5; font-weight:600; margin-bottom:30px; letter-spacing:-0.5px;">
+        출퇴근이 매일의 삶이라<br>
+        사옥 위치가<br>
+        정말 중요해요.
+      </div>
+
+      <div style="width:30px; height:2px; background:#c9a96e; margin-bottom:14px;"></div>
+      <div style="font-size:13px; color:rgba(255,255,255,0.6); line-height:1.6;">
+        한 세대만의 얘기가 아니에요.<br>
+        하이브리드 근무가 자리 잡으면서<br>
+        전 연령대로 퍼지는 흐름이에요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 양극화 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">04 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 시장이 이미 갈렸어요 /</div>
+
+      <div style="font-size:18px; color:#0a0a0f; line-height:1.7; margin-bottom:24px; font-weight:500;">
+        같은 오피스 시장 안에서<br>
+        두 그룹이 완전히 다르게 움직여요.
+      </div>
+
+      <div style="border-top:1px solid rgba(0,0,0,0.15); padding-top:18px;">
+        <div style="margin-bottom:18px;">
+          <div style="font-size:12px; color:#c9a96e; letter-spacing:2px; font-weight:800; margin-bottom:6px;">PRIME</div>
+          <div style="font-size:15px; color:#0a0a0f; line-height:1.7; font-weight:500;">
+            공실률 낮고 임대료 올라가고<br>거래도 활발해요.
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px; color:#888; letter-spacing:2px; font-weight:800; margin-bottom:6px;">NON-PRIME</div>
+          <div style="font-size:15px; color:#555; line-height:1.7;">
+            공실률 올라가고 임대료 정체되고<br>거래도 부진해요.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- 5장 이유 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">05 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 왜 입지가 결정적인가 /</div>
+
+      <div style="font-size:17px; color:#fff; line-height:2; font-weight:400;">
+        <div style="margin-bottom:14px;">출퇴근이 곧 삶의 질이에요.</div>
+        <div style="margin-bottom:14px;">동선 위 인프라가 일의 효율을 좌우해요.</div>
+        <div style="margin-bottom:14px;">사옥 주소가 곧 회사 이미지예요.</div>
+        <div>하이브리드 근무라 출근하는 날만이라도 좋은 데서 일하고 싶어요.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- 6장 빌딩주 시그널 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">06 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 빌딩주에게 주는 시그널 /</div>
+
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.6; font-weight:500; margin-bottom:24px; letter-spacing:-0.5px;">
+        기업이 입지로 사옥을 고르면<br>
+        결국 임차 수요가<br>
+        <span style="font-weight:900;">입지를 따라와요.</span>
+      </div>
+
+      <div style="font-size:16px; color:#555; line-height:1.8;">
+        외곽 빌딩은 임대료를 낮춰도<br>
+        임차인 잡기가 어려워져요.<br>
+        이게 양극화의 본질이에요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<!-- 7장 살아남는 입지 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">07 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 살아남는 입지 /</div>
+
+      <div style="font-size:17px; color:#fff; line-height:2.1; font-weight:400; margin-bottom:24px;">
+        <div>강남권 — 테헤란로, 강남역, 삼성동</div>
+        <div>광화문·시청권 — 종각, 을지로, 광화문</div>
+        <div>여의도 — IFC 일대 금융가</div>
+        <div>성수·한남 — 신흥 프리미엄 업무지구</div>
+      </div>
+
+      <div style="width:30px; height:2px; background:#c9a96e; margin-bottom:14px;"></div>
+      <div style="font-size:14px; color:rgba(255,255,255,0.6); line-height:1.6;">
+        SC제일은행, 하나증권 같은 대기업도<br>
+        도심으로 다시 회귀하고 있어요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장</button>
+</div>
+
+<!-- 8장 결론 -->
+<div class="card-wrapper">
+<div class="card" id="card-8">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">08 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 결론 /</div>
+
+      <div style="font-size:38px; font-weight:900; color:#0a0a0f; line-height:1.25; margin-bottom:8px; letter-spacing:-1.5px;">
+        싸게 사는 게 아니라
+      </div>
+      <div style="font-size:38px; font-weight:900; color:#0a0a0f; line-height:1.25; margin-bottom:30px; letter-spacing:-1.5px;">
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 4px;">잘 사는 게 답</span>이에요.
+      </div>
+
+      <div style="width:48px; height:3px; background:#0a0a0f; margin-bottom:22px;"></div>
+
+      <div style="font-size:16px; color:#333; line-height:1.8; font-weight:500;">
+        입지가 곧 임차 수요예요.<br>
+        임차 수요가 곧 빌딩 가치고요.
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:14px; border-top:1px solid rgba(0,0,0,0.1);">
+      <div style="font-size:12px; color:#0a0a0f; font-weight:600;">@bsn__official</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">빌사남</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(8)">8장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, {
+      scale: 2.5, width: 432, height: 540,
+      useCORS: true, allowTaint: true, backgroundColor: null, logging: false
+    });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'prime_office_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 8; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+
+</body>
+</html>

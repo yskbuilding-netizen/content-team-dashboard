@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 외국인이 오는 상권만 살아남는다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #111; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card {
+  width: 432px; height: 540px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.card .bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
+.card .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.card .content { position: relative; z-index: 2; width: 100%; height: 100%; padding: 36px; display: flex; flex-direction: column; }
+.bsn-logo { font-size: 18px; font-weight: 900; letter-spacing: 3px; color: #fff; }
+.bsn-logo-dark { color: #1a1a1a; }
+.download-btn { display: block; margin: 10px auto 0; padding: 8px 20px; background: #6c5ce7; color: #fff; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #5a4bd1; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 14px 40px; background: #c9a96e; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all">
+  <button onclick="downloadAll()">전체 다운로드 (PNG 8장)</button>
+</div>
+
+<!-- 1장 표지 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1538485399081-7191377e8241?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.75) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo">BSN.</div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:14px; color:rgba(255,255,255,0.6); margin-bottom:8px; font-weight:300;">같은 서울인데 왜 이렇게 다를까</div>
+      <div style="font-size:30px; font-weight:900; color:#fff; line-height:1.4;">외국인이 오는 상권만<br>살아남는다</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장 다운로드</button>
+</div>
+
+<!-- 2장 자영업 현실 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1555529771-835f59fc5efe?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(15,15,35,0.8) 0%, rgba(15,15,35,0.92) 100%);"></div>
+  <div class="content" style="justify-content:center;">
+    <div style="font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:12px;">2025년 자영업 폐업</div>
+    <div style="font-size:72px; font-weight:900; color:#e74c3c; line-height:1; margin-bottom:20px;">100만<span style="font-size:36px;">건</span></div>
+    <div style="font-size:19px; color:#fff; font-weight:700; line-height:1.6; margin-bottom:16px;">역대 최대치.</div>
+    <div style="font-size:15px; color:rgba(255,255,255,0.75); line-height:1.8;">주변에서도 카페 접었다, 식당 접었다.<br>이런 얘기가 너무 흔해졌다.</div>
+    <div style="position:absolute; bottom:24px; right:24px;"><span class="bsn-logo" style="font-size:14px; opacity:0.4;">BSN.</span></div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장 다운로드</button>
+</div>
+
+<!-- 3장 의외의 진실 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg" style="background: linear-gradient(135deg, #0a0a0a, #1a1a1a);"></div>
+  <div class="content" style="justify-content:center;">
+    <div style="font-size:16px; color:rgba(255,255,255,0.5); margin-bottom:20px; line-height:1.7;">근데 다 그런 건 아니다.<br>어떤 동네는 여전히 줄 서서 들어간다.</div>
+    <div style="font-size:28px; font-weight:900; color:#fff; line-height:1.4; margin-bottom:28px;">같은 서울인데<br>왜 이렇게 다를까.</div>
+    <div style="width:36px; height:2px; background:#c9a96e; margin-bottom:24px;"></div>
+    <div style="font-size:32px; font-weight:900; color:#c9a96e; letter-spacing:1px;">답은 하나, 외국인.</div>
+    <div style="position:absolute; bottom:24px; right:24px;"><span class="bsn-logo" style="font-size:14px; opacity:0.4;">BSN.</span></div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장 다운로드</button>
+</div>
+
+<!-- 4장 소비 인구 변화 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(255,255,255,0.93) 0%, rgba(245,245,240,0.96) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo bsn-logo-dark" style="margin-bottom:20px;">BSN.</div>
+    <div style="font-size:13px; color:#999; margin-bottom:6px;">소비의 주인공이 바뀌고 있다</div>
+    <div style="font-size:22px; font-weight:900; color:#1a1a1a; margin-bottom:28px; line-height:1.4;">내수만으론<br>더 이상 안 된다.</div>
+    <div style="background:rgba(231,76,60,0.08); border-left:3px solid #e74c3c; padding:14px 16px; margin-bottom:14px; border-radius:0 8px 8px 0;">
+      <div style="font-size:14px; font-weight:700; color:#e74c3c;">국내 소비 인구</div>
+      <div style="font-size:15px; color:#555; margin-top:4px;">젊은 층은 줄고 고령층은 늘어난다.</div>
+    </div>
+    <div style="background:rgba(46,204,113,0.1); border-left:3px solid #2ecc71; padding:14px 16px; border-radius:0 8px 8px 0;">
+      <div style="font-size:14px; font-weight:700; color:#2ecc71;">외국인 관광객</div>
+      <div style="font-size:15px; color:#555; margin-top:4px;">관광이 아니라 소비하러 온다.</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장 다운로드</button>
+</div>
+
+<!-- 5장 명동 사례 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%);"></div>
+  <div class="content" style="justify-content:flex-end;">
+    <div style="font-size:14px; color:#c9a96e; margin-bottom:6px; font-weight:700;">CASE. 명동</div>
+    <div style="font-size:28px; font-weight:900; color:#fff; margin-bottom:20px; line-height:1.4;">끝났다던 명동,<br>다시 살아났다.</div>
+    <div style="font-size:16px; color:rgba(255,255,255,0.9); line-height:1.9; margin-bottom:16px;">
+      코로나 때 공실률 <strong style="color:#e74c3c;">50%</strong>.<br>
+      지금은 <strong style="color:#4ecdc4;">한 자릿수</strong>까지 회복.
+    </div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.7); line-height:1.7;">올리브영 한 매장 하루 매출 1억.<br>바뀐 건 딱 하나, 외국인이 돌아왔다.</div>
+    <div style="text-align:right; margin-top:16px;"><span class="bsn-logo" style="font-size:14px; opacity:0.5;">BSN.</span></div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장 다운로드</button>
+</div>
+
+<!-- 6장 성수·청담 사례 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1604478579806-7e6d6e6b7fcf?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(15,15,35,0.85) 0%, rgba(15,15,35,0.92) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo" style="margin-bottom:16px;">BSN.</div>
+    <div style="font-size:14px; color:#c9a96e; margin-bottom:6px; font-weight:700;">CASE. 성수 · 강남역</div>
+    <div style="font-size:22px; font-weight:900; color:#fff; margin-bottom:24px; line-height:1.4;">여기도 외국인이<br>먹여살린다.</div>
+    <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.9;">
+      <strong style="color:#c9a96e;">성수동 연무장길</strong><br>
+      한국인보다 외국인이 더 많다.<br>
+      팝업 보러 줄 서고,<br>
+      인스타에서 봤다며 카페 찾아온다.<br><br>
+      <strong style="color:#c9a96e;">강남역 성형외과</strong><br>
+      대기실의 절반이 외국인.<br>
+      통역사가 따로 있고<br>
+      직원들이 3개 국어를 한다.
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장 다운로드</button>
+</div>
+
+<!-- 7장 판단 기준 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg" style="background: linear-gradient(135deg, #c0392b, #e74c3c);"></div>
+  <div class="content" style="justify-content:center;">
+    <div style="font-size:16px; color:rgba(255,255,255,0.7); margin-bottom:16px;">빌딩 보러 가서 하는 질문 하나.</div>
+    <div style="font-size:28px; font-weight:900; color:#fff; line-height:1.4; margin-bottom:24px;">"여기에 외국인이<br>왜 오는가?"</div>
+    <div style="width:40px; height:2px; background:rgba(255,255,255,0.3); margin-bottom:24px;"></div>
+    <div style="font-size:16px; color:rgba(255,255,255,0.9); line-height:1.8;">답이 나오는 상권은 계속 간다.<br>답이 없으면 한 번 더 생각할 입지다.</div>
+    <div style="position:absolute; bottom:24px; right:24px;"><span class="bsn-logo" style="font-size:14px; opacity:0.5;">BSN.</span></div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장 다운로드</button>
+</div>
+
+<!-- 8장 마무리 + 연락처 -->
+<div class="card-wrapper">
+<div class="card" id="card-8">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.8) 100%);"></div>
+  <div class="content" style="justify-content:center; text-align:center;">
+    <div style="font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:6px; letter-spacing:2px;">상업용 빌딩 투자의 모든 것</div>
+    <div style="font-size:42px; font-weight:900; color:#fff; letter-spacing:6px; margin-bottom:28px;">BSN.</div>
+    <div style="font-size:16px; color:rgba(255,255,255,0.8); line-height:2; margin-bottom:28px;">
+      명동, 성수, 한남, 청담, 도산공원.<br>
+      외국인이 일부러 찾아오는 곳.<br>
+      시장이 뒤집혀도 버티는 상권이다.
+    </div>
+    <div style="width:40px; height:1px; background:rgba(255,255,255,0.3); margin:0 auto 28px;"></div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.6); line-height:2.2;">
+      bsn.building@gmail.com<br>
+      YouTube 빌사남 TV
+    </div>
+    <div style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.35);">팔로우와 저장으로 인사이트를 받아보세요.</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(8)">8장 다운로드</button>
+</div>
+
+<script>
+function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null }).then(canvas => {
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'foreign-market_' + num + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  });
+}
+async function downloadAll() {
+  for (let i = 1; i <= 8; i++) {
+    downloadCard(i);
+    await new Promise(r => setTimeout(r, 500));
+  }
+}
+</script>
+
+</body>
+</html>

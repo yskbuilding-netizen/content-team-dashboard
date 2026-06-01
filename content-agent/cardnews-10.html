@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 사는 투자에서 채우는 투자로</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.slash-h { font-size: 14px; color: #888; margin-bottom: 16px; font-weight: 500; letter-spacing: -0.3px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 8장)</button></div>
+
+<!-- 1장 표지 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=900&q=80&auto=format&fit=crop');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.4) 0%, rgba(10,10,15,0.85) 60%, rgba(10,10,15,0.97) 100%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:24px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.65); letter-spacing:2px;">EP. 10</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:3px; margin-bottom:18px; font-weight:800;">꼬마빌딩 투자 공식이 바뀌었어요</div>
+      <div style="font-size:48px; font-weight:900; color:#fff; line-height:1.15; margin-bottom:6px; letter-spacing:-2.5px;">사는 게 아니라</div>
+      <div style="font-size:48px; font-weight:900; color:#fff; line-height:1.15; margin-bottom:28px; letter-spacing:-2.5px;">
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 6px;">채우는 거예요.</span>
+      </div>
+      <div style="width:60px; height:3px; background:#c9a96e; margin-bottom:22px;"></div>
+      <div style="font-size:16px; color:rgba(255,255,255,0.85); line-height:1.7;">
+        매입까지가 끝이던 시대는<br>이제 지나갔어요.
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:13px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.65); letter-spacing:3px;">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02 / 08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 시장이 바뀐 지점 /</div>
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.7; font-weight:500; margin-bottom:24px;">
+        예전엔<br>"어떤 빌딩을 살까"가<br>가장 큰 질문이었어요.
+      </div>
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.7; font-weight:900; letter-spacing:-0.5px;">
+        지금은<br>"어떻게 채울까"가 핵심이에요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03 / 08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 사는 투자 vs 채우는 투자 /</div>
+      <div style="border-top:1px solid rgba(255,255,255,0.15); padding-top:20px; margin-bottom:18px;">
+        <div style="font-size:12px; color:rgba(255,255,255,0.5); letter-spacing:2px; font-weight:800; margin-bottom:8px;">사는 투자</div>
+        <div style="font-size:18px; color:#fff; line-height:1.7; font-weight:500;">
+          매입까지가 목표.<br>좋은 매물 잡으면 끝.
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(201,169,110,0.4); padding-top:20px;">
+        <div style="font-size:12px; color:#c9a96e; letter-spacing:2px; font-weight:800; margin-bottom:8px;">채우는 투자</div>
+        <div style="font-size:18px; color:#fff; line-height:1.7; font-weight:600;">
+          매입은 시작.<br>운영이 진짜 일이에요.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">04 / 08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 왜 바뀌었나 /</div>
+      <div style="font-size:17px; color:#333; line-height:2; font-weight:400;">
+        <div style="margin-bottom:14px;"><span style="color:#0a0a0f; font-weight:900;">고금리.</span> 공실 한 달이면 그 달 이자가 그대로 손실이에요.</div>
+        <div style="margin-bottom:14px;"><span style="color:#0a0a0f; font-weight:900;">양극화.</span> 외곽은 임대료를 낮춰도 임차인이 안 들어와요.</div>
+        <div><span style="color:#0a0a0f; font-weight:900;">회복기 양상.</span> 안 팔리는 빌딩은 결국 운영을 안 한 빌딩이에요.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- 5장 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">05 / 08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 채우는 투자의 핵심 /</div>
+      <div style="font-size:18px; color:#fff; line-height:1.9; font-weight:500;">
+        <div style="margin-bottom:18px;">
+          <span style="color:#c9a96e; font-weight:900;">임차 운영.</span><br>
+          <span style="color:rgba(255,255,255,0.85); font-size:15px;">매입 직후 임차인 인터뷰부터.</span>
+        </div>
+        <div style="margin-bottom:18px;">
+          <span style="color:#c9a96e; font-weight:900;">가치 창출.</span><br>
+          <span style="color:rgba(255,255,255,0.85); font-size:15px;">1층 업종, 외관, 시설로 가치를 만들어요.</span>
+        </div>
+        <div>
+          <span style="color:#c9a96e; font-weight:900;">임차인 네트워크.</span><br>
+          <span style="color:rgba(255,255,255,0.85); font-size:15px;">좋은 임차인은 발품으로 찾아요.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- 6장 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">06 / 08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 같은 입지, 다른 결과 /</div>
+      <div style="font-size:20px; color:#0a0a0f; line-height:1.7; font-weight:500; margin-bottom:24px;">
+        잘 운영한 빌딩은<br>
+        같은 입지인데도<br>
+        <span style="font-weight:900;">매매가 1.5배</span>예요.
+      </div>
+      <div style="width:30px; height:2px; background:#0a0a0f; opacity:0.3; margin-bottom:14px;"></div>
+      <div style="font-size:15px; color:#555; line-height:1.7;">
+        임대료 안 올리고, 임차인 안 만나고,<br>
+        시설도 그대로 둔 빌딩은<br>
+        5년 뒤 가치가 그대로예요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<!-- 7장 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">07 / 08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 빌딩 보유 중이면 점검하세요 /</div>
+      <div style="font-size:18px; color:#fff; line-height:2; font-weight:400;">
+        <div style="margin-bottom:14px;">임차인을 직접 만난 적 있는지.</div>
+        <div style="margin-bottom:14px;">1층 업종이 5년 전과 같은지.</div>
+        <div>시설 점검이 언제였는지.</div>
+      </div>
+      <div style="margin-top:24px; width:30px; height:2px; background:#c9a96e; margin-bottom:14px;"></div>
+      <div style="font-size:14px; color:rgba(255,255,255,0.6); line-height:1.6;">
+        답하기 어려우면<br>운영을 안 하고 있다는 신호예요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장</button>
+</div>
+
+<!-- 8장 -->
+<div class="card-wrapper">
+<div class="card" id="card-8">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">08 / 08</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 결론 /</div>
+      <div style="font-size:38px; font-weight:900; color:#0a0a0f; line-height:1.25; margin-bottom:8px; letter-spacing:-1.5px;">매입은 50%,</div>
+      <div style="font-size:38px; font-weight:900; color:#0a0a0f; line-height:1.25; margin-bottom:30px; letter-spacing:-1.5px;">
+        나머지 <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 4px;">50%가 운영</span>이에요.
+      </div>
+      <div style="width:48px; height:3px; background:#0a0a0f; margin-bottom:22px;"></div>
+      <div style="font-size:16px; color:#333; line-height:1.8; font-weight:500;">
+        매입가가 가치를 만들지 않아요.<br>
+        운영 능력이 가치를 만들어요.
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:14px; border-top:1px solid rgba(0,0,0,0.1);">
+      <div style="font-size:12px; color:#0a0a0f; font-weight:600;">@bsn__official</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">빌사남</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(8)">8장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'fill_invest_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 8; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

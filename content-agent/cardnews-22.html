@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BSN 카드뉴스 편집기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#111; font-family:'Noto Sans KR',sans-serif; display:flex; min-height:100vh; }
+
+.main { flex:1; padding:36px 40px; display:flex; flex-wrap:wrap; gap:28px; justify-content:center; align-content:flex-start; }
+
+/* toolbar */
+.toolbar { width:100%; display:flex; justify-content:flex-end; gap:10px; padding-bottom:8px; }
+.btn-edit { padding:10px 22px; background:none; border:1px solid #c9a96e; color:#c9a96e; border-radius:3px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Noto Sans KR',sans-serif; letter-spacing:1px; transition:all .2s; }
+.btn-edit:hover, .btn-edit.active { background:#c9a96e; color:#0a0a0f; }
+.btn-dl-all { padding:10px 22px; background:#c9a96e; border:1px solid #c9a96e; color:#0a0a0f; border-radius:3px; font-size:13px; font-weight:900; cursor:pointer; font-family:'Noto Sans KR',sans-serif; letter-spacing:1px; }
+
+/* card wrapper */
+.card-wrap { position:relative; }
+.card { width:432px; height:540px; position:relative; overflow:hidden; border-radius:3px; box-shadow:0 16px 48px rgba(0,0,0,0.65); }
+.dl-btn { display:block; margin:10px auto 0; padding:7px 20px; background:none; border:1px solid #2a2a2a; color:#666; border-radius:3px; font-size:12px; font-family:'Noto Sans KR',sans-serif; cursor:pointer; transition:all .2s; }
+.dl-btn:hover { border-color:#c9a96e; color:#c9a96e; }
+
+/* ─── CARD 1 ─── */
+.c1 { background:#08080d; }
+.c1-stripe { position:absolute; left:0; top:0; width:3px; height:100%; background:#c9a96e; }
+.c1-body { position:relative; z-index:2; height:100%; padding:34px 34px 28px 44px; display:flex; flex-direction:column; justify-content:space-between; }
+.c1-tag { font-size:10px; color:rgba(255,255,255,.35); letter-spacing:3px; font-weight:500; }
+.c1-center { }
+.c1-q { font-size:12px; color:rgba(255,255,255,.4); margin-bottom:12px; letter-spacing:.3px; }
+.c1-h { font-size:62px; font-weight:900; color:#fff; line-height:.95; letter-spacing:-4px; }
+.c1-divider { width:32px; height:1px; background:rgba(255,255,255,.25); margin:20px 0 16px; }
+.c1-sub { font-size:14px; color:rgba(255,255,255,.55); margin-bottom:14px; }
+.c1-nums { display:flex; gap:24px; align-items:flex-end; }
+.c1-num { display:flex; flex-direction:column; gap:5px; }
+.c1-num-lbl { font-size:10px; letter-spacing:2px; font-weight:600; }
+.c1-num-val { font-size:40px; font-weight:900; line-height:1; letter-spacing:-2px; }
+.c1-foot { display:flex; justify-content:space-between; align-items:center; padding-top:14px; border-top:1px solid rgba(255,255,255,.08); }
+
+/* ─── CARD 2 ─── */
+.c2 { background:#f5f0e8; }
+.c2-mark { position:absolute; right:-18px; bottom:-40px; font-size:240px; font-weight:900; color:rgba(0,0,0,.04); line-height:1; pointer-events:none; z-index:1; letter-spacing:-12px; }
+.c2-body { position:relative; z-index:2; height:100%; padding:34px 34px 30px; display:flex; flex-direction:column; }
+.c2-tag { font-size:10px; color:#bbb; letter-spacing:3px; font-weight:600; margin-bottom:8px; }
+.c2-h { font-size:30px; font-weight:900; color:#0a0a0f; line-height:1.1; letter-spacing:-1.5px; margin-bottom:3px; }
+.c2-h span { color:#c9a96e; }
+.c2-cap { font-size:12px; color:#aaa; letter-spacing:.5px; margin-bottom:18px; }
+.c2-list { flex:1; display:flex; flex-direction:column; justify-content:center; }
+.c2-row { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px solid rgba(0,0,0,.07); }
+.c2-row:last-child { border-bottom:none; }
+.c2-rn { font-size:14px; color:#555; }
+.c2-rv { font-size:15px; font-weight:900; color:#0a0a0f; }
+.c2-box { margin-top:14px; padding:11px 14px; background:#0a0a0f; border-radius:3px; display:flex; justify-content:space-between; align-items:center; }
+.c2-box-lbl { font-size:11px; color:rgba(255,255,255,.5); }
+.c2-box-val { font-size:15px; color:#c9a96e; font-weight:900; }
+
+/* ─── CARD 3 ─── */
+.c3 { background:#0f0f12; }
+.c3-body { height:100%; display:flex; flex-direction:column; }
+.c3-top { padding:26px 26px 18px; border-bottom:1px solid rgba(255,255,255,.06); display:flex; justify-content:space-between; align-items:flex-start; }
+.c3-ttl { font-size:22px; font-weight:900; color:#fff; line-height:1.25; letter-spacing:-.8px; }
+.c3-pager { font-size:10px; color:rgba(255,255,255,.25); letter-spacing:2px; }
+.c3-cols { display:flex; flex:1; }
+.c3-col { flex:1; padding:22px 20px; display:flex; flex-direction:column; }
+.c3-col.l { border-right:1px solid rgba(255,255,255,.06); }
+.c3-col-lbl { font-size:10px; letter-spacing:2px; font-weight:700; margin-bottom:10px; }
+.c3-col.l .c3-col-lbl { color:rgba(255,255,255,.35); }
+.c3-col.r .c3-col-lbl { color:#c9a96e; }
+.c3-col-amt { font-size:40px; font-weight:900; line-height:1; letter-spacing:-2px; margin-bottom:8px; }
+.c3-col.l .c3-col-amt { color:rgba(255,255,255,.65); }
+.c3-col.r .c3-col-amt { color:#c9a96e; }
+.c3-col-desc { font-size:12px; line-height:1.65; }
+.c3-col.l .c3-col-desc { color:rgba(255,255,255,.38); }
+.c3-col.r .c3-col-desc { color:rgba(255,255,255,.6); }
+.c3-col-note { font-size:11px; line-height:1.6; margin-top:auto; }
+.c3-col.l .c3-col-note { color:rgba(255,255,255,.25); }
+.c3-col.r .c3-col-note { color:rgba(255,255,255,.45); }
+.c3-foot { padding:12px 20px; border-top:1px solid rgba(255,255,255,.06); font-size:12px; color:rgba(255,255,255,.4); }
+.c3-foot strong { color:#fff; }
+
+/* ─── CARD 4 ─── */
+.c4 { background:#f7f3eb; }
+.c4-body { height:100%; padding:34px; display:flex; flex-direction:column; }
+.c4-tag { font-size:10px; color:#bbb; letter-spacing:3px; font-weight:600; margin-bottom:22px; }
+.c4-pull { flex:1; display:flex; flex-direction:column; justify-content:center; gap:16px; }
+.c4-q { font-size:27px; font-weight:900; color:#0a0a0f; line-height:1.3; letter-spacing:-1px; }
+.c4-q em { color:#c9a96e; font-style:normal; }
+.c4-rule { width:30px; height:2px; background:rgba(0,0,0,.15); }
+.c4-pts { display:flex; flex-direction:column; gap:9px; }
+.c4-pt { font-size:13px; color:#666; line-height:1.6; padding-left:12px; border-left:2px solid rgba(0,0,0,.1); }
+.c4-pt.main { color:#0a0a0f; font-weight:600; border-left-color:#c9a96e; }
+.c4-callout { padding:11px 14px; background:#0a0a0f; border-radius:3px; }
+.c4-callout-text { font-size:13px; color:#c9a96e; font-weight:700; line-height:1.55; }
+.c4-handle { font-size:11px; color:#ccc; margin-top:16px; letter-spacing:1px; }
+
+/* ─── CARD 5 ─── */
+.c5 { background:#c9a96e; }
+.c5-body { height:100%; padding:38px 34px; display:flex; flex-direction:column; justify-content:space-between; }
+.c5-lbl { font-size:10px; color:rgba(255,255,255,.65); letter-spacing:4px; font-weight:700; }
+.c5-main { flex:1; display:flex; flex-direction:column; justify-content:center; }
+.c5-l1 { font-size:48px; font-weight:900; color:rgba(255,255,255,.9); line-height:1.05; letter-spacing:-3px; }
+.c5-l2 { font-size:48px; font-weight:900; color:#1a1a1a; line-height:1.05; letter-spacing:-3px; margin-bottom:26px; }
+.c5-rule { width:36px; height:2px; background:rgba(255,255,255,.4); margin-bottom:20px; }
+.c5-txt { font-size:16px; color:rgba(255,255,255,.9); line-height:1.9; }
+.c5-txt strong { font-weight:900; color:#fff; }
+.c5-ft { font-size:12px; color:rgba(255,255,255,.65); letter-spacing:1px; font-weight:600; }
+
+/* ─── EDIT PANEL ─── */
+.panel { width:300px; min-width:300px; background:#161616; border-left:1px solid #222; padding:24px 18px; overflow-y:auto; display:none; flex-direction:column; gap:18px; }
+.panel.open { display:flex; }
+.panel-hd { display:flex; justify-content:space-between; align-items:center; }
+.panel-ttl { color:#fff; font-size:13px; font-weight:700; letter-spacing:1px; }
+.panel-x { background:none; border:none; color:#555; font-size:22px; cursor:pointer; line-height:1; padding:0; }
+.panel-x:hover { color:#fff; }
+
+.drop-zone { border:1.5px dashed #2a2a2a; border-radius:4px; padding:14px; text-align:center; cursor:pointer; transition:border-color .2s; }
+.drop-zone:hover { border-color:#c9a96e; }
+.drop-zone input { display:none; }
+.drop-zone p { font-size:11px; color:#555; }
+.drop-zone strong { color:#c9a96e; display:block; margin-bottom:3px; font-size:12px; }
+
+.p-section { border-bottom:1px solid #222; padding-bottom:14px; }
+.p-sec-ttl { font-size:10px; color:#555; letter-spacing:2px; font-weight:700; margin-bottom:10px; }
+.f { margin-bottom:8px; }
+.f label { font-size:10px; color:#444; display:block; margin-bottom:3px; }
+.f input, .f textarea {
+  width:100%; background:#0d0d0d; border:1px solid #222; border-radius:3px;
+  color:#bbb; font-size:12px; font-family:'Noto Sans KR',sans-serif;
+  padding:6px 9px; resize:vertical; transition:border-color .2s;
+}
+.f input:focus, .f textarea:focus { outline:none; border-color:#c9a96e; }
+.btn-export { background:none; border:1px solid #2a2a2a; border-radius:3px; color:#555; font-size:12px; font-family:'Noto Sans KR',sans-serif; padding:8px; cursor:pointer; width:100%; transition:all .2s; }
+.btn-export:hover { border-color:#c9a96e; color:#c9a96e; }
+</style>
+</head>
+<body>
+
+<div class="main">
+  <div class="toolbar">
+    <button class="btn-edit" id="btnEdit" onclick="togglePanel()">PD 편집</button>
+    <button class="btn-dl-all" onclick="downloadAll()">전체 PNG 저장</button>
+  </div>
+
+  <!-- 1장 -->
+  <div class="card-wrap">
+    <div class="card c1" id="card-1">
+      <div class="c1-stripe"></div>
+      <div class="c1-body">
+        <div class="c1-tag" id="c1-tag">2026년 5월 시장 분석</div>
+        <div class="c1-center">
+          <div class="c1-q" id="c1-q">"양도세 중과 부활 한 달"</div>
+          <div class="c1-h" id="c1-h">돈은<br>어디로?</div>
+          <div class="c1-divider"></div>
+          <div class="c1-sub" id="c1-sub">같은 한 달, 두 시장의 정반대 풍경</div>
+          <div class="c1-nums">
+            <div class="c1-num">
+              <div class="c1-num-lbl" style="color:rgba(255,255,255,.4)" id="c1-lbl1">주택 매물</div>
+              <div class="c1-num-val" style="color:rgba(255,255,255,.7)" id="c1-n1">-5,190</div>
+            </div>
+            <div class="c1-num">
+              <div class="c1-num-lbl" style="color:#c9a96e" id="c1-lbl2">강남 빌딩</div>
+              <div class="c1-num-val" style="color:#c9a96e" id="c1-n2">+1.55조</div>
+            </div>
+          </div>
+        </div>
+        <div class="c1-foot">
+          <div style="font-size:12px;color:rgba(255,255,255,.6)" id="c1-handle">@bsn__official</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);letter-spacing:2px">SWIPE →</div>
+        </div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadCard(1)">PNG 저장</button>
+  </div>
+
+  <!-- 2장 -->
+  <div class="card-wrap">
+    <div class="card c2" id="card-2">
+      <div class="c2-mark" id="c2-mark">10조</div>
+      <div class="c2-body">
+        <div class="c2-tag" id="c2-tag">서울시 자료 · 2026년 1~4월</div>
+        <div class="c2-h">서울 상업용 부동산 <span id="c2-amt">10조 거래</span></div>
+        <div class="c2-cap" id="c2-cap">자치구별 거래액 — 강남이 압도적 1위</div>
+        <div class="c2-list">
+          <div class="c2-row"><span class="c2-rn">강남구</span><span class="c2-rv" id="c2-r1">1.55조</span></div>
+          <div class="c2-row"><span class="c2-rn">서초구</span><span class="c2-rv" id="c2-r2">0.91조</span></div>
+          <div class="c2-row"><span class="c2-rn">중구</span><span class="c2-rv" id="c2-r3">0.78조</span></div>
+          <div class="c2-row"><span class="c2-rn">성동구</span><span class="c2-rv" id="c2-r4">0.62조</span></div>
+          <div class="c2-row"><span class="c2-rn">용산구</span><span class="c2-rv" id="c2-r5">0.55조</span></div>
+        </div>
+        <div class="c2-box">
+          <div class="c2-box-lbl" id="c2-box-lbl">5월 거래 증가율</div>
+          <div class="c2-box-val" id="c2-box-val">+25.3%</div>
+        </div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadCard(2)">PNG 저장</button>
+  </div>
+
+  <!-- 3장 -->
+  <div class="card-wrap">
+    <div class="card c3" id="card-3">
+      <div class="c3-body">
+        <div class="c3-top">
+          <div class="c3-ttl" id="c3-ttl">세금 하나로<br>흐름이 갈린다.</div>
+          <div class="c3-pager">03 / 05</div>
+        </div>
+        <div class="c3-cols">
+          <div class="c3-col l">
+            <div class="c3-col-lbl">주택 (2주택)</div>
+            <div class="c3-col-amt" id="c3-l-amt">최대 82.5%</div>
+            <div class="c3-col-desc" id="c3-l-desc">기본세율 + 20%p 중과<br>(지방세 포함)</div>
+            <div class="c3-col-note" id="c3-l-note">5월 9일 중과 부활<br>매물 5,190건 증발</div>
+          </div>
+          <div class="c3-col r">
+            <div class="c3-col-lbl">상업용 빌딩</div>
+            <div class="c3-col-amt" id="c3-r-amt">6~45%</div>
+            <div class="c3-col-desc" id="c3-r-desc">일반세율 적용<br>중과 대상 아님</div>
+            <div class="c3-col-note" id="c3-r-note">장기보유공제 최대 30%<br>법인 명의 시 22%</div>
+          </div>
+        </div>
+        <div class="c3-foot" id="c3-foot">같은 100억 매각 시 — <strong>손에 쥐는 돈 30~40억 차이</strong></div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadCard(3)">PNG 저장</button>
+  </div>
+
+  <!-- 4장 -->
+  <div class="card-wrap">
+    <div class="card c4" id="card-4">
+      <div class="c4-body">
+        <div class="c4-tag" id="c4-tag">돈이 빌딩으로 가는 이유</div>
+        <div class="c4-pull">
+          <div class="c4-q" id="c4-q">세금만의<br>문제가 <em>아니다.</em></div>
+          <div class="c4-rule"></div>
+          <div class="c4-pts">
+            <div class="c4-pt main" id="c4-p1">기준금리 2.50% 동결 — 대출 부담 안정</div>
+            <div class="c4-pt" id="c4-p2">성수·도산·한남 임대료 20~30% 상승</div>
+            <div class="c4-pt" id="c4-p3">핵심 상권 공실률 5% 미만</div>
+          </div>
+          <div class="c4-callout">
+            <div class="c4-callout-text" id="c4-callout">주택에 묶였던 자금이<br>빌딩으로 이동 중.</div>
+          </div>
+        </div>
+        <div class="c4-handle" id="c4-handle">@bsn__official</div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadCard(4)">PNG 저장</button>
+  </div>
+
+  <!-- 5장 -->
+  <div class="card-wrap">
+    <div class="card c5" id="card-5">
+      <div class="c5-body">
+        <div class="c5-lbl" id="c5-lbl">결론</div>
+        <div class="c5-main">
+          <div class="c5-l1" id="c5-l1">흐름은 시작됐다.</div>
+          <div class="c5-l2" id="c5-l2">준비된 자에게만<br>기회다.</div>
+          <div class="c5-rule"></div>
+          <div class="c5-txt" id="c5-txt">환금성 살아있는 지역.<br>임대 검증된 상권.<br><strong>가치 창출 가능한 물건.</strong></div>
+        </div>
+        <div class="c5-ft" id="c5-ft">@bsn__official · 빌사남</div>
+      </div>
+    </div>
+    <button class="dl-btn" onclick="downloadCard(5)">PNG 저장</button>
+  </div>
+</div>
+
+<!-- PD 편집 패널 -->
+<div class="panel" id="panel">
+  <div class="panel-hd">
+    <div class="panel-ttl">PD 편집 패널</div>
+    <button class="panel-x" onclick="togglePanel()">×</button>
+  </div>
+
+  <div class="drop-zone" onclick="document.getElementById('fileInput').click()">
+    <input type="file" id="fileInput" accept=".json" onchange="loadJSON(event)">
+    <p><strong>JSON 파일 불러오기</strong>클릭하여 선택</p>
+  </div>
+
+  <div class="p-section">
+    <div class="p-sec-ttl">1장 — 표지</div>
+    <div class="f"><label>태그</label><input id="f-c1-tag" oninput="s('c1-tag',this.value)" value="실전 수익 분석"></div>
+    <div class="f"><label>질문</label><input id="f-c1-q" oninput="s('c1-q',this.value)" value='"40억에 사서 100억에 팔면"'></div>
+    <div class="f"><label>헤드라인</label><textarea id="f-c1-h" oninput="sh('c1-h',this.value)" rows="2">60억
+벌었다.</textarea></div>
+    <div class="f"><label>서브</label><input id="f-c1-sub" oninput="s('c1-sub',this.value)" value="근데 손에 남는 건"></div>
+    <div class="f"><label>개인 금액</label><input id="f-c1-n1" oninput="s('c1-n1',this.value)" value="30억"></div>
+    <div class="f"><label>법인 금액</label><input id="f-c1-n2" oninput="s('c1-n2',this.value)" value="40억"></div>
+  </div>
+
+  <div class="p-section">
+    <div class="p-sec-ttl">2장 — 부대비용</div>
+    <div class="f"><label>태그</label><input id="f-c2-tag" oninput="s('c2-tag',this.value)" value="8년 보유 기준"></div>
+    <div class="f"><label>총액</label><input id="f-c2-amt" oninput="s('c2-amt',this.value)" value="약 10억"></div>
+    <div class="f"><label>캡션</label><input id="f-c2-cap" oninput="s('c2-cap',this.value)" value="차익 60억 — 부대비용 10억 = 과세 대상 50억"></div>
+    <div class="f"><label>취득세</label><input id="f-c2-r1" oninput="s('c2-r1',this.value)" value="1.8억"></div>
+    <div class="f"><label>중개·법무</label><input id="f-c2-r2" oninput="s('c2-r2',this.value)" value="0.5억"></div>
+    <div class="f"><label>리모델링</label><input id="f-c2-r3" oninput="s('c2-r3',this.value)" value="6.5억"></div>
+    <div class="f"><label>재산세</label><input id="f-c2-r4" oninput="s('c2-r4',this.value)" value="0.8억"></div>
+    <div class="f"><label>매각 중개</label><input id="f-c2-r5" oninput="s('c2-r5',this.value)" value="0.9억"></div>
+    <div class="f"><label>합산</label><input id="f-c2-box-val" oninput="s('c2-box-val',this.value)" value="≈ 10.5억"></div>
+  </div>
+
+  <div class="p-section">
+    <div class="p-sec-ttl">3장 — 개인 vs 법인</div>
+    <div class="f"><label>타이틀</label><textarea id="f-c3-ttl" oninput="sh('c3-ttl',this.value)" rows="2">명의 하나로
+10억이 갈린다.</textarea></div>
+    <div class="f"><label>개인 세금</label><input id="f-c3-l-amt" oninput="s('c3-l-amt',this.value)" value="약 20억"></div>
+    <div class="f"><label>개인 설명</label><textarea id="f-c3-l-desc" oninput="sh('c3-l-desc',this.value)" rows="2">양도세 49.5%
+(5억 초과 + 지방세)</textarea></div>
+    <div class="f"><label>개인 주석</label><textarea id="f-c3-l-note" oninput="sh('c3-l-note',this.value)" rows="2">장기보유특별공제
+8년 16% 적용</textarea></div>
+    <div class="f"><label>법인 세금</label><input id="f-c3-r-amt" oninput="s('c3-r-amt',this.value)" value="약 10억"></div>
+    <div class="f"><label>법인 설명</label><textarea id="f-c3-r-desc" oninput="sh('c3-r-desc',this.value)" rows="2">법인세 + 지방세
+22% 적용</textarea></div>
+    <div class="f"><label>법인 주석</label><textarea id="f-c3-r-note" oninput="sh('c3-r-note',this.value)" rows="2">장특공 없음
+세율 절반 이하</textarea></div>
+    <div class="f"><label>하단 메모</label><input id="f-c3-foot" oninput="sh('c3-foot',this.value)" value="과세 대상 50억 기준 — <strong>절세 차이 10억</strong>"></div>
+  </div>
+
+  <div class="p-section">
+    <div class="p-sec-ttl">4장 — 법인 매력</div>
+    <div class="f"><label>태그</label><input id="f-c4-tag" oninput="s('c4-tag',this.value)" value="법인의 진짜 매력"></div>
+    <div class="f"><label>인용구</label><textarea id="f-c4-q" oninput="sh('c4-q',this.value)" rows="2">세율 차이만이
+다가 &lt;em&gt;아니다.&lt;/em&gt;</textarea></div>
+    <div class="f"><label>포인트 1</label><input id="f-c4-p1" oninput="s('c4-p1',this.value)" value="법인 차익은 그대로 다음 빌딩 매수에 쓴다."></div>
+    <div class="f"><label>포인트 2</label><input id="f-c4-p2" oninput="s('c4-p2',this.value)" value="개인 계좌로 출금하는 매수자는 거의 없다."></div>
+    <div class="f"><label>포인트 3</label><input id="f-c4-p3" oninput="s('c4-p3',this.value)" value="자산이 눈덩이처럼 불어나는 구조."></div>
+    <div class="f"><label>박스 문구</label><textarea id="f-c4-callout" oninput="sh('c4-callout',this.value)" rows="2">가족 법인이면
+증여·상속까지 풀린다.</textarea></div>
+  </div>
+
+  <div class="p-section">
+    <div class="p-sec-ttl">5장 — 결론</div>
+    <div class="f"><label>레이블</label><input id="f-c5-lbl" oninput="s('c5-lbl',this.value)" value="결론"></div>
+    <div class="f"><label>1줄</label><input id="f-c5-l1" oninput="s('c5-l1',this.value)" value="매입 명의를"></div>
+    <div class="f"><label>2줄</label><input id="f-c5-l2" oninput="s('c5-l2',this.value)" value="매입 전에 설계하라."></div>
+    <div class="f"><label>본문</label><textarea id="f-c5-txt" oninput="sh('c5-txt',this.value)" rows="3">같은 거래에서
+명의 하나 차이로
+&lt;strong&gt;10억이 갈린다.&lt;/strong&gt;</textarea></div>
+    <div class="f"><label>푸터</label><input id="f-c5-ft" oninput="s('c5-ft',this.value)" value="@bsn__official · 빌사남"></div>
+  </div>
+
+  <button class="btn-export" onclick="exportJSON()">JSON 내보내기</button>
+</div>
+
+<script>
+function togglePanel() {
+  document.getElementById('panel').classList.toggle('open');
+  document.getElementById('btnEdit').classList.toggle('active');
+}
+
+function s(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function sh(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = val.replace(/\n/g, '<br>');
+}
+
+function loadJSON(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => {
+    try {
+      const data = JSON.parse(evt.target.result);
+      Object.entries(data).forEach(([key, val]) => {
+        const inp = document.getElementById('f-' + key);
+        if (inp) inp.value = val;
+        const card = document.getElementById(key);
+        if (card) {
+          if (val.includes('<') || val.includes('\n')) sh(key, val);
+          else s(key, val);
+        }
+      });
+    } catch { alert('JSON 형식 오류'); }
+  };
+  reader.readAsText(file);
+}
+
+function exportJSON() {
+  const ids = [
+    'c1-tag','c1-q','c1-h','c1-sub','c1-n1','c1-n2',
+    'c2-tag','c2-amt','c2-cap','c2-r1','c2-r2','c2-r3','c2-r4','c2-r5','c2-box-val',
+    'c3-ttl','c3-l-amt','c3-l-desc','c3-l-note','c3-r-amt','c3-r-desc','c3-r-note','c3-foot',
+    'c4-tag','c4-q','c4-p1','c4-p2','c4-p3','c4-callout',
+    'c5-lbl','c5-l1','c5-l2','c5-txt','c5-ft'
+  ];
+  const data = {};
+  ids.forEach(id => {
+    const inp = document.getElementById('f-' + id);
+    if (inp) data[id] = inp.value;
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], {type:'application/json'}));
+  a.download = 'cardnews-content.json';
+  a.click();
+}
+
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const c = await html2canvas(card, { scale:2.5, width:432, height:540, useCORS:true, allowTaint:true, backgroundColor:null, logging:false });
+    const out = document.createElement('canvas');
+    out.width = 1080; out.height = 1350;
+    out.getContext('2d').drawImage(c, 0, 0, 1080, 1350);
+    const a = document.createElement('a');
+    a.download = 'bsn_' + String(num).padStart(2,'0') + '.png';
+    a.href = out.toDataURL('image/png');
+    a.click();
+  } catch(e) { alert('저장 실패: ' + e.message); }
+}
+
+async function downloadAll() {
+  for (let i = 1; i <= 5; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 700));
+  }
+}
+</script>
+</body>
+</html>

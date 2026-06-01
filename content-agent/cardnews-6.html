@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 호재라고 다 호재가 아니다</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #111; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 4px; }
+.card .bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
+.card .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.card .content { position: relative; z-index: 2; width: 100%; height: 100%; padding: 36px; display: flex; flex-direction: column; }
+.bsn-logo { font-size: 18px; font-weight: 900; letter-spacing: 3px; color: #fff; }
+.bsn-logo-dark { color: #1a1a1a; }
+.download-btn { display: block; margin: 10px auto 0; padding: 8px 20px; background: #6c5ce7; color: #fff; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #5a4bd1; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 14px 40px; background: #c9a96e; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all">
+  <button onclick="downloadAll()">전체 다운로드 (PNG 8장)</button>
+</div>
+
+<!-- 1장 표지 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg" style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);"></div>
+  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background: radial-gradient(circle at 30% 40%, rgba(201,169,110,0.15) 0%, transparent 50%);"></div>
+  <div class="content">
+    <div class="bsn-logo">BSN.</div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:140px; font-weight:900; color:#c9a96e; line-height:0.95; margin-bottom:24px; letter-spacing:-4px;">공실.</div>
+      <div style="width:44px; height:3px; background:#c9a96e; margin-bottom:22px;"></div>
+      <div style="font-size:26px; font-weight:900; color:#fff; line-height:1.4;">대형 쇼핑몰 옆 상가는<br>왜 늘어날까</div>
+    </div>
+    <div style="font-size:12px; color:rgba(255,255,255,0.3); letter-spacing:2px;">SWIPE →</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장 다운로드</button>
+</div>
+
+<!-- 2장 문제 제기 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg" style="background: linear-gradient(135deg, #1a1a2e, #16213e);"></div>
+  <div class="content" style="justify-content:center;">
+    <div class="bsn-logo" style="position:absolute; top:36px; left:36px;">BSN.</div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:12px;">상담에서 자주 받는 질문</div>
+    <div style="font-size:22px; font-weight:900; color:#fff; line-height:1.5; margin-bottom:24px;">"여기 지하철 들어온대요.<br>빌딩값 오르겠죠?"</div>
+    <div style="width:40px; height:2px; background:#c9a96e; margin-bottom:24px;"></div>
+    <div style="font-size:17px; color:#c9a96e; font-weight:700; line-height:1.7;">내 답은 이거다.<br>"그거 꼭 좋은 소식은 아닐 수도 있어요."</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장 다운로드</button>
+</div>
+
+<!-- 3장 신분당선 사례 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(15,15,35,0.85) 0%, rgba(15,15,35,0.94) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo" style="margin-bottom:16px;">BSN.</div>
+    <div style="font-size:13px; color:#c9a96e; margin-bottom:6px; font-weight:700;">CASE 1. 신분당선</div>
+    <div style="font-size:22px; font-weight:900; color:#fff; margin-bottom:20px; line-height:1.4;">판교·광교가 강남이랑<br>바로 연결됐다.</div>
+    <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.9; margin-bottom:18px;">
+      판교 아파트값은 올랐다.<br>
+      근데 정작 큰 상권은<br>
+      판교가 아니라 <strong style="color:#c9a96e;">강남역</strong>이다.
+    </div>
+    <div style="padding:14px; background:rgba(0,0,0,0.3); border-radius:8px;">
+      <div style="font-size:13px; color:rgba(255,255,255,0.7); margin-bottom:3px;">판교 사는 사람들이</div>
+      <div style="font-size:14px; color:#fff; font-weight:700;">약속을 강남에서 잡으니까.</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장 다운로드</button>
+</div>
+
+<!-- 4장 지하철의 진짜 역할 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg" style="background: linear-gradient(135deg, #0a0a0a, #1a1a1a);"></div>
+  <div class="content" style="justify-content:center;">
+    <div class="bsn-logo" style="position:absolute; top:36px; left:36px;">BSN.</div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:16px;">지하철의 진짜 역할</div>
+    <div style="font-size:26px; font-weight:900; color:#fff; line-height:1.4; margin-bottom:24px;">"강한 상권으로<br>사람을 빨아들이는 통로"</div>
+    <div style="width:40px; height:2px; background:#c9a96e; margin-bottom:24px;"></div>
+    <div style="font-size:16px; color:rgba(255,255,255,0.8); line-height:1.9;">
+      원래 강한 상권은 더 강해지고<br>
+      애매한 상권은 더 약해진다.<br>
+      양극화가 심해진다.
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장 다운로드</button>
+</div>
+
+<!-- 5장 롯데타워 사례 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1582375321319-b4b1c91f6d17?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(183,28,28,0.8) 0%, rgba(183,28,28,0.92) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo" style="margin-bottom:16px;">BSN.</div>
+    <div style="font-size:13px; color:rgba(255,255,255,0.8); margin-bottom:6px; font-weight:700;">CASE 2. 대형 쇼핑몰</div>
+    <div style="font-size:22px; font-weight:900; color:#fff; margin-bottom:20px; line-height:1.4;">롯데타워가 들어오자<br>주변 상권이 죽었다.</div>
+    <div style="font-size:15px; color:rgba(255,255,255,0.9); line-height:1.9; margin-bottom:18px;">
+      쇼핑몰, 영화관, 호텔, 전망대.<br>
+      사람들이 들어가면<br>
+      나올 이유가 없다.
+    </div>
+    <div style="padding:14px; background:rgba(0,0,0,0.3); border-radius:8px;">
+      <div style="font-size:14px; color:#fff; font-weight:700;">"빨대 효과"</div>
+      <div style="font-size:13px; color:rgba(255,255,255,0.85); margin-top:3px;">주변 골목 상권의 소비를 흡수한다.</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장 다운로드</button>
+</div>
+
+<!-- 6장 진짜 호재 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(255,255,255,0.93) 0%, rgba(245,245,240,0.96) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo bsn-logo-dark" style="margin-bottom:20px;">BSN.</div>
+    <div style="font-size:13px; color:#999; margin-bottom:6px;">그럼 진짜 호재는</div>
+    <div style="font-size:24px; font-weight:900; color:#1a1a1a; margin-bottom:24px; line-height:1.4;">사람을 데려오는<br>시설이다.</div>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      <div style="padding:12px 14px; background:#f5f5f0; border-left:3px solid #2ecc71; border-radius:0 8px 8px 0;">
+        <div style="font-size:14px; font-weight:700; color:#1a1a1a;">오피스 빌딩 입주</div>
+        <div style="font-size:13px; color:#666; margin-top:2px;">직장인 수천 명이 주변 상권을 떠받친다</div>
+      </div>
+      <div style="padding:12px 14px; background:#f5f5f0; border-left:3px solid #3498db; border-radius:0 8px 8px 0;">
+        <div style="font-size:14px; font-weight:700; color:#1a1a1a;">호텔 신축</div>
+        <div style="font-size:13px; color:#666; margin-top:2px;">투숙객이 지역에 돈을 풀어놓는다</div>
+      </div>
+      <div style="padding:12px 14px; background:#f5f5f0; border-left:3px solid #c9a96e; border-radius:0 8px 8px 0;">
+        <div style="font-size:14px; font-weight:700; color:#1a1a1a;">공원·산책로 조성</div>
+        <div style="font-size:13px; color:#666; margin-top:2px;">체류시간이 길어진다 (연남동 숲길 사례)</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장 다운로드</button>
+</div>
+
+<!-- 7장 핵심 질문 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg" style="background: linear-gradient(135deg, #c9a96e, #9e7f4b);"></div>
+  <div class="content" style="justify-content:center;">
+    <div class="bsn-logo" style="position:absolute; top:36px; left:36px;">BSN.</div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.7); margin-bottom:16px; font-weight:700;">호재 뉴스 볼 때마다</div>
+    <div style="font-size:26px; font-weight:900; color:#fff; line-height:1.5; margin-bottom:24px;">"이 시설이<br>사람을 데려오나,<br>빼가나?"</div>
+    <div style="width:40px; height:2px; background:rgba(255,255,255,0.4); margin-bottom:24px;"></div>
+    <div style="font-size:15px; color:rgba(255,255,255,0.9); line-height:1.9;">
+      이 질문 하나면<br>
+      진짜 호재인지 독인지<br>
+      판단이 선다.
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장 다운로드</button>
+</div>
+
+<!-- 8장 마무리 -->
+<div class="card-wrapper">
+<div class="card" id="card-8">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.8) 100%);"></div>
+  <div class="content" style="justify-content:center; text-align:center;">
+    <div style="font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:6px; letter-spacing:2px;">상업용 빌딩 투자의 모든 것</div>
+    <div style="font-size:42px; font-weight:900; color:#fff; letter-spacing:6px; margin-bottom:28px;">BSN.</div>
+    <div style="font-size:16px; color:rgba(255,255,255,0.85); line-height:2; margin-bottom:28px;">
+      빌딩 매입 검토할 때<br>
+      호재 뉴스 하나에 휘둘리지 마라.<br>
+      사람의 흐름 방향을 먼저 봐라.
+    </div>
+    <div style="width:40px; height:1px; background:rgba(255,255,255,0.3); margin:0 auto 28px;"></div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.6); line-height:2.2;">
+      bsn.building@gmail.com<br>
+      YouTube 빌사남 TV
+    </div>
+    <div style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.35);">팔로우와 저장으로 인사이트를 받아보세요.</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(8)">8장 다운로드</button>
+</div>
+
+<script>
+function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null }).then(canvas => {
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'trap-development_' + num + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  });
+}
+async function downloadAll() {
+  for (let i = 1; i <= 8; i++) {
+    downloadCard(i);
+    await new Promise(r => setTimeout(r, 500));
+  }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "content-team-dashboard",
+  "version": "1.0.0",
+  "description": "BSN 콘텐츠팀 대시보드",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

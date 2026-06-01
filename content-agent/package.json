@@ -1,0 +1,21 @@
+{
+  "name": "bsn-content-agent",
+  "version": "1.0.0",
+  "description": "빌사남 부동산 콘텐츠 자동 생성 에이전트",
+  "main": "agent.js",
+  "scripts": {
+    "start": "node agent.js",
+    "generate": "node -e \"require('./generator').test()\"",
+    "publish-test": "node -e \"require('./publisher').test()\""
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.4.5",
+    "express": "^5.2.1",
+    "multer": "^2.1.1",
+    "node-cron": "^4.2.1"
+  }
+}

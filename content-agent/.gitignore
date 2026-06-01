@@ -1,0 +1,27 @@
+# 환경변수 (API 키, 비밀번호) - Railway는 웹에서 설정
+.env
+.env.local
+.env.*.local
+../.env
+../../.env
+
+# 드래프트 (임시 파일)
+drafts/
+
+# Node 모듈
+node_modules/
+
+# 로그
+*.log
+npm-debug.log*
+
+# OS 파일
+Thumbs.db
+.DS_Store
+
+# 대용량 파일 (Git에 올리면 안 됨)
+columns/*.pdf
+columns/빌딩 투자의 모든 것.txt
+
+# Railway
+.railway/

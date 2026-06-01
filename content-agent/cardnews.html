@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 지금, 빌딩 사도 될까?</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #111; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+
+.card-wrapper { position: relative; }
+.card {
+  width: 432px; height: 540px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.card .bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+.card .overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+.card .content {
+  position: relative;
+  z-index: 2;
+  width: 100%; height: 100%;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+}
+.bsn-logo {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #fff;
+}
+.bsn-logo-dark {
+  color: #1a1a1a;
+}
+
+.download-btn {
+  display: block;
+  margin: 10px auto 0;
+  padding: 8px 20px;
+  background: #6c5ce7;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.download-btn:hover { background: #5a4bd1; }
+.download-all {
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+}
+.download-all button {
+  padding: 14px 40px;
+  background: #c9a96e;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all">
+  <button onclick="downloadAll()">전체 다운로드 (PNG 8장)</button>
+</div>
+
+<!-- 1장 - 표지 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.6) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo">BSN.</div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:14px; color:rgba(255,255,255,0.6); margin-bottom:8px; font-weight:300;">3년 전과 완전히 달라진 빌딩 시장</div>
+      <div style="font-size:32px; font-weight:900; color:#fff; line-height:1.4;">지금,<br>빌딩 사도 될까?</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장 다운로드</button>
+</div>
+
+<!-- 2장 - 시장 변화 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.75) 100%);"></div>
+  <div class="content" style="justify-content: flex-end;">
+    <div style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); border-radius: 10px; padding: 28px;">
+      <div style="font-size:22px; font-weight:900; color:#fff; line-height:1.5; margin-bottom:14px;">3년 전, 시장은<br>얼어붙어 있었다.</div>
+      <div style="font-size:15px; color:rgba(255,255,255,0.75); line-height:1.8;">대출금리가 두 배로 뛰니까<br>다들 관망 모드. 거래량은 반토막.</div>
+      <div style="margin-top:16px; font-size:17px; font-weight:700; color:#4ecdc4;">요즘은 다르다.<br>매물 보러 가자는 연락이 확 늘었다.</div>
+    </div>
+    <div style="text-align:right; margin-top:12px;"><span class="bsn-logo" style="font-size:14px; opacity:0.5;">BSN.</span></div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장 다운로드</button>
+</div>
+
+<!-- 3장 - 환금성 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1464938050520-ef2571d0f6bf?w=1200&q=80'); background-position: center top;"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 70%);"></div>
+  <div class="content" style="justify-content: flex-end;">
+    <div style="font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:10px; font-weight:300;">빌딩 투자에서 제일 먼저 봐야 하는 것</div>
+    <div style="font-size:52px; font-weight:900; color:#c9a96e; letter-spacing:4px; margin-bottom:16px;">환금성</div>
+    <div style="font-size:17px; color:rgba(255,255,255,0.8); line-height:1.8;">내가 팔고 싶을 때<br>진짜 팔리는 건물인가.<br>이게 전부다.</div>
+    <div style="text-align:right; margin-top:16px;"><span class="bsn-logo" style="font-size:14px; opacity:0.5;">BSN.</span></div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장 다운로드</button>
+</div>
+
+<!-- 4장 - 지역 비교 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(245,245,240,0.95) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo bsn-logo-dark" style="margin-bottom:20px;">BSN.</div>
+    <div style="font-size:13px; color:#999; margin-bottom:6px;">같은 서울이라도</div>
+    <div style="font-size:24px; font-weight:900; color:#1a1a1a; margin-bottom:28px; line-height:1.4;">결과가 완전히 다르다.</div>
+    <div style="flex:1;">
+      <div style="background:rgba(46,204,113,0.1); border-left:3px solid #2ecc71; padding:14px 16px; margin-bottom:12px; border-radius:0 8px 8px 0;">
+        <div style="font-size:15px; font-weight:700; color:#2ecc71;">성수, 한남, 도산공원, 강남</div>
+        <div style="font-size:14px; color:#555; margin-top:4px;">시장이 얼어붙어도 매수자가 줄을 선다.</div>
+      </div>
+      <div style="background:rgba(231,76,60,0.08); border-left:3px solid #e74c3c; padding:14px 16px; margin-bottom:20px; border-radius:0 8px 8px 0;">
+        <div style="font-size:15px; font-weight:700; color:#e74c3c;">외곽의 애매한 건물</div>
+        <div style="font-size:14px; color:#555; margin-top:4px;">급매로 내놔도 전화 한 통 없다.</div>
+      </div>
+    </div>
+    <div style="font-size:18px; font-weight:700; color:#1a1a1a;">거래되는 곳만 사야 한다.</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장 다운로드</button>
+</div>
+
+<!-- 5장 - 90% 경고 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(180,30,30,0.85) 0%, rgba(120,20,20,0.92) 100%);"></div>
+  <div class="content" style="justify-content: center; text-align: left;">
+    <div style="font-size:86px; font-weight:900; color:#fff; line-height:1; margin-bottom:12px;">90%</div>
+    <div style="font-size:20px; font-weight:700; color:#fff; line-height:1.6; margin-bottom:20px;">내가 본 손해 케이스.<br>열에 아홉이 같은 실수였다.</div>
+    <div style="font-size:16px; color:rgba(255,255,255,0.8); line-height:1.8;">싸게 사려다 입지를 포기한 것.<br><br>싼 건물엔 다 이유가 있다.<br>결국 헐값에 다시 내놓게 된다.</div>
+    <div style="position:absolute; bottom:20px; right:24px;"><span class="bsn-logo" style="font-size:14px; opacity:0.4;">BSN.</span></div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장 다운로드</button>
+</div>
+
+<!-- 6장 - 준비 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(255,255,255,0.93) 0%, rgba(245,245,240,0.96) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo bsn-logo-dark" style="margin-bottom:16px;">BSN.</div>
+    <div style="font-size:13px; color:#999; margin-bottom:6px;">지금 당장 사라는 게 아니다.</div>
+    <div style="font-size:22px; font-weight:900; color:#1a1a1a; margin-bottom:24px; line-height:1.4;">지금은 준비할 때다.</div>
+    <div style="flex:1;">
+      <div style="display:flex; align-items:flex-start; margin-bottom:18px;">
+        <div style="width:28px; height:28px; background:#1a1a1a; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px; margin-right:12px; flex-shrink:0; margin-top:2px;">1</div>
+        <div>
+          <div style="font-size:17px; font-weight:700; color:#1a1a1a; margin-bottom:3px;">자금 상황 정리</div>
+          <div style="font-size:14px; color:#888; line-height:1.5;">어디까지 갈 수 있는지 숫자로 파악하자.</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:flex-start; margin-bottom:18px;">
+        <div style="width:28px; height:28px; background:#1a1a1a; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px; margin-right:12px; flex-shrink:0; margin-top:2px;">2</div>
+        <div>
+          <div style="font-size:17px; font-weight:700; color:#1a1a1a; margin-bottom:3px;">은행 세 곳은 돌아보자</div>
+          <div style="font-size:14px; color:#888; line-height:1.5;">같은 금액인데 조건이 다르다.</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:flex-start;">
+        <div style="width:28px; height:28px; background:#1a1a1a; color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px; margin-right:12px; flex-shrink:0; margin-top:2px;">3</div>
+        <div>
+          <div style="font-size:17px; font-weight:700; color:#1a1a1a; margin-bottom:3px;">투자 지역 좁히기</div>
+          <div style="font-size:14px; color:#888; line-height:1.5;">서울 전체 놓고 고민하면 답 안 나온다.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장 다운로드</button>
+</div>
+
+<!-- 7장 - 타이밍 -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(15,15,35,0.88) 0%, rgba(15,15,35,0.94) 100%);"></div>
+  <div class="content">
+    <div class="bsn-logo" style="margin-bottom:16px;">BSN.</div>
+    <div style="font-size:13px; color:rgba(255,255,255,0.5); margin-bottom:6px;">대출도 타이밍이다.</div>
+    <div style="font-size:22px; font-weight:900; color:#fff; margin-bottom:28px; line-height:1.4;">시기에 따라<br>조건이 달라진다.</div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:16px;">
+      <div style="display:flex; align-items:center;">
+        <div style="width:10px; height:10px; border-radius:50%; background:#2ecc71; margin-right:12px;"></div>
+        <div style="font-size:16px; font-weight:700; color:#2ecc71; width:60px;">연초</div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.6);">한도 새로 풀린다. 가장 좋은 시기.</div>
+      </div>
+      <div style="display:flex; align-items:center;">
+        <div style="width:10px; height:10px; border-radius:50%; background:#3498db; margin-right:12px;"></div>
+        <div style="font-size:16px; font-weight:700; color:#3498db; width:60px;">상반기</div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.6);">아직 괜찮다. 여유 있을 때.</div>
+      </div>
+      <div style="display:flex; align-items:center;">
+        <div style="width:10px; height:10px; border-radius:50%; background:#f39c12; margin-right:12px;"></div>
+        <div style="font-size:16px; font-weight:700; color:#f39c12; width:60px;">7월</div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.6);">하반기 예산 시작. 놓쳤으면 여기.</div>
+      </div>
+      <div style="display:flex; align-items:center;">
+        <div style="width:10px; height:10px; border-radius:50%; background:#e74c3c; margin-right:12px;"></div>
+        <div style="font-size:16px; font-weight:700; color:#e74c3c; width:60px;">연말</div>
+        <div style="font-size:14px; color:rgba(255,255,255,0.6);">한도 소진. 조건 나빠진다.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장 다운로드</button>
+</div>
+
+<!-- 8장 - 마무리 + 연락처 -->
+<div class="card-wrapper">
+<div class="card" id="card-8">
+  <div class="bg" style="background-image: url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1200&q=80');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.8) 100%);"></div>
+  <div class="content" style="justify-content:center; text-align:center;">
+    <div style="font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:6px; letter-spacing:2px;">상업용 빌딩 투자의 모든 것</div>
+    <div style="font-size:42px; font-weight:900; color:#fff; letter-spacing:6px; margin-bottom:28px;">BSN.</div>
+    <div style="font-size:16px; color:rgba(255,255,255,0.8); line-height:2; margin-bottom:28px;">
+      좋은 입지를 제값에 사고<br>
+      팔릴 때 팔리는 곳을 고르고<br>
+      감당되는 만큼만 빌리기.
+    </div>
+    <div style="width:40px; height:1px; background:rgba(255,255,255,0.3); margin:0 auto 28px;"></div>
+    <div style="font-size:14px; color:rgba(255,255,255,0.6); line-height:2.2;">
+      bsn.building@gmail.com<br>
+      YouTube 빌사남 TV
+    </div>
+    <div style="margin-top:24px; font-size:12px; color:rgba(255,255,255,0.35);">팔로우와 저장으로 인사이트를 받아보세요.</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(8)">8장 다운로드</button>
+</div>
+
+<script>
+function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  html2canvas(card, {
+    scale: 2.5,
+    width: 432,
+    height: 540,
+    useCORS: true,
+    allowTaint: true,
+    backgroundColor: null
+  }).then(canvas => {
+    const resized = document.createElement('canvas');
+    resized.width = 1080;
+    resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'cardnews_' + num + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  });
+}
+async function downloadAll() {
+  for (let i = 1; i <= 8; i++) {
+    downloadCard(i);
+    await new Promise(r => setTimeout(r, 500));
+  }
+}
+</script>
+
+</body>
+</html>

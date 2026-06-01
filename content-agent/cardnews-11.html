@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 왜 파시나요</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.slash-h { font-size: 14px; color: #888; margin-bottom: 16px; font-weight: 500; letter-spacing: -0.3px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 6장)</button></div>
+
+<!-- 1장 표지 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1518057111178-44a106bad636?w=900&q=80&auto=format&fit=crop');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.4) 0%, rgba(10,10,15,0.85) 60%, rgba(10,10,15,0.97) 100%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:24px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.65); letter-spacing:2px;">EP. 11</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:3px; margin-bottom:18px; font-weight:800;">매물 보러 갈 때 던질 한 마디</div>
+      <div style="font-size:64px; font-weight:900; color:#fff; line-height:1.1; margin-bottom:6px; letter-spacing:-3px;">"왜</div>
+      <div style="font-size:64px; font-weight:900; color:#fff; line-height:1.1; margin-bottom:28px; letter-spacing:-3px;">
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 8px;">파시나요?"</span>
+      </div>
+      <div style="width:60px; height:3px; background:#c9a96e; margin-bottom:22px;"></div>
+      <div style="font-size:16px; color:rgba(255,255,255,0.85); line-height:1.7;">
+        이 한 마디가<br>협상의 절반을 결정해요.
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:13px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.65); letter-spacing:3px;">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 매물 보러 갈 때 /</div>
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.7; font-weight:500; margin-bottom:24px;">
+        평수, 수익률, 매매가는<br>매물지에 다 적혀 있어요.
+      </div>
+      <div style="font-size:22px; color:#0a0a0f; line-height:1.7; font-weight:900; letter-spacing:-0.5px;">
+        매도자한테 직접<br>물어볼 게 따로 있어요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 매도 사유별 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 매도 사유별 협상 여지 /</div>
+      <div style="font-size:16px; color:#fff; line-height:1.9; font-weight:400;">
+        <div style="margin-bottom:14px;">
+          <span style="color:#c9a96e; font-weight:800;">이혼·상속</span> — 시간이 급해요. 협상 여지 큼.
+        </div>
+        <div style="margin-bottom:14px;">
+          <span style="color:#c9a96e; font-weight:800;">잔금·자녀 자금</span> — 정해진 금액 위론 협상 가능.
+        </div>
+        <div style="margin-bottom:14px;">
+          <span style="color:#c9a96e; font-weight:800;">세금 부담</span> — 빨리 정리하고 싶어해요.
+        </div>
+        <div>
+          <span style="color:rgba(255,255,255,0.5); font-weight:800;">시세 차익</span> — 거의 안 빠져요.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 행간 읽기 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">04 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 답변에서 행간을 읽으세요 /</div>
+      <div style="font-size:18px; color:#0a0a0f; line-height:1.8; font-weight:500; margin-bottom:20px;">
+        직접적으로 안 알려주는<br>매도자가 많아요.
+      </div>
+      <div style="font-size:18px; color:#333; line-height:1.8; font-weight:400;">
+        근데 표정, 말투, 답변 속도에서<br>
+        <span style="color:#0a0a0f; font-weight:900;">다 보여요.</span>
+      </div>
+      <div style="margin-top:24px; font-size:15px; color:#555; line-height:1.7;">
+        그래서 직접 만나야 해요.<br>
+        부동산 통해서만 듣지 마세요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- 5장 시그널 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">05 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#c9a96e; margin-bottom:22px; font-weight:500;">/ 답변 시그널 /</div>
+      <div style="font-size:18px; color:#fff; line-height:1.9; font-weight:400; margin-bottom:18px;">
+        <span style="color:#c9a96e; font-weight:800;">즉답해요?</span><br>
+        <span style="color:rgba(255,255,255,0.85); font-size:15px;">진짜 그 사유. 가격 빠질 가능성 큼.</span>
+      </div>
+      <div style="font-size:18px; color:#fff; line-height:1.9; font-weight:400;">
+        <span style="color:#c9a96e; font-weight:800;">답을 흐려요?</span><br>
+        <span style="color:rgba(255,255,255,0.85); font-size:15px;">다른 사정 있어요. 한 번 더 시도해볼 만함.</span>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- 6장 결론 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">06 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div class="slash-h">/ 결론 /</div>
+      <div style="font-size:36px; font-weight:900; color:#0a0a0f; line-height:1.25; margin-bottom:8px; letter-spacing:-1.5px;">한 마디가</div>
+      <div style="font-size:36px; font-weight:900; color:#0a0a0f; line-height:1.25; margin-bottom:30px; letter-spacing:-1.5px;">
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 4px;">억 단위</span>를 만들어요.
+      </div>
+      <div style="width:48px; height:3px; background:#0a0a0f; margin-bottom:22px;"></div>
+      <div style="font-size:16px; color:#333; line-height:1.8; font-weight:500;">
+        매물지엔 평수만 적혀 있어요.<br>
+        "왜 파시나요"는 매도자만 알아요.
+      </div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:14px; border-top:1px solid rgba(0,0,0,0.1);">
+      <div style="font-size:12px; color:#0a0a0f; font-weight:600;">@bsn__official</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">빌사남</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'why_sell_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 6; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

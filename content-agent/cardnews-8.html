@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 로드뷰 활용법</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #1a1a1a;
+  font-family: 'Noto Sans KR', sans-serif;
+  padding: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+.card-wrapper { position: relative; }
+
+.card {
+  width: 432px;
+  height: 540px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+
+.content {
+  position: relative; z-index: 3;
+  width: 100%; height: 100%;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 다운로드 버튼 */
+.download-btn {
+  display: block;
+  margin: 12px auto 0;
+  padding: 9px 22px;
+  background: #c9a96e;
+  color: #0a0a0f;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button {
+  padding: 16px 48px;
+  background: #c9a96e;
+  color: #0a0a0f;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  font-family: 'Noto Sans KR', sans-serif;
+  letter-spacing: 1px;
+}
+.download-all button:hover { background: #b8975d; }
+</style>
+</head>
+<body>
+
+<div class="download-all">
+  <button onclick="downloadAll()">전체 다운로드 (PNG 8장)</button>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 1장 표지 — 매거진 타이포 중심                       -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=900&q=80&auto=format&fit=crop');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.55) 0%, rgba(10,10,15,0.78) 55%, rgba(10,10,15,0.97) 100%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:24px; font-weight:900; color:#fff; letter-spacing:1px; text-shadow:0 2px 8px rgba(0,0,0,0.6);">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.85); letter-spacing:2px; text-shadow:0 2px 8px rgba(0,0,0,0.6);">EP. 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:3px; margin-bottom:16px; font-weight:900; text-shadow:0 2px 8px rgba(0,0,0,0.8);">매물지에 안 적힌 진짜 정보</div>
+
+      <div style="font-size:52px; font-weight:900; color:#fff; line-height:1.1; margin-bottom:6px; letter-spacing:-2.5px; text-shadow:0 4px 16px rgba(0,0,0,0.7);">
+        빌딩 사기 전,
+      </div>
+      <div style="font-size:52px; font-weight:900; color:#fff; line-height:1.1; margin-bottom:24px; letter-spacing:-2.5px; text-shadow:0 4px 16px rgba(0,0,0,0.7);">
+        딱 <span style="background: linear-gradient(180deg, transparent 55%, #c9a96e 55%); padding: 0 6px; color:#fff;">5분.</span>
+      </div>
+
+      <div style="width:60px; height:3px; background:#c9a96e; margin-bottom:18px;"></div>
+
+      <div style="font-size:17px; color:#fff; line-height:1.7; font-weight:600; margin-bottom:22px; text-shadow:0 2px 8px rgba(0,0,0,0.7);">
+        잘못된 매입 절반을<br>
+        막아주는 5분짜리 작업.
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:13px; color:#fff; font-weight:700; text-shadow:0 2px 6px rgba(0,0,0,0.6);">@bsn__official</div>
+      <div style="font-size:12px; color:rgba(255,255,255,0.85); letter-spacing:3px; text-shadow:0 2px 6px rgba(0,0,0,0.6);">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 2장 매물지의 한계                                   -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">02 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:rgba(255,255,255,0.55); margin-bottom:14px; letter-spacing:1px;">매물지에 적혀 있는 것</div>
+      <div style="font-size:32px; font-weight:900; color:#fff; line-height:1.3; margin-bottom:30px;">
+        고작<br>세 가지뿐.
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:30px;">
+        <div style="padding:18px 22px; background:rgba(255,255,255,0.08); border-radius:8px; font-size:18px; color:#fff; font-weight:500;">임대수익률</div>
+        <div style="padding:18px 22px; background:rgba(255,255,255,0.08); border-radius:8px; font-size:18px; color:#fff; font-weight:500;">매매가</div>
+        <div style="padding:18px 22px; background:rgba(255,255,255,0.08); border-radius:8px; font-size:18px; color:#fff; font-weight:500;">평수</div>
+      </div>
+
+      <div style="font-size:16px; color:#c9a96e; font-weight:700; line-height:1.6;">
+        진짜 중요한 정보는<br>싹 다 빠져 있다.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 3장 로드뷰 소개                                     -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">03 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:14px; color:#888; margin-bottom:14px; letter-spacing:1px;">15년치 데이터의 힘</div>
+      <div style="font-size:38px; font-weight:900; color:#0a0a0f; line-height:1.2; margin-bottom:8px; letter-spacing:-1.5px;">로드뷰</div>
+      <div style="font-size:38px; font-weight:900; color:#0a0a0f; line-height:1.2; margin-bottom:28px; letter-spacing:-1.5px;">
+        <span style="background: linear-gradient(180deg, transparent 60%, #c9a96e 60%); padding: 0 4px;">히스토리.</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 16px; background:#fff; border-radius:8px;">
+          <div style="width:42px; height:42px; background:#03c75a; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <span style="font-weight:900; font-size:20px; color:#fff;">N</span>
+          </div>
+          <div>
+            <div style="font-size:15px; color:#0a0a0f; font-weight:700;">네이버 로드뷰</div>
+            <div style="font-size:13px; color:#888; margin-top:2px;">2010년 9월부터</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px; padding:14px 16px; background:#fff; border-radius:8px;">
+          <div style="width:42px; height:42px; background:#fee500; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+            <span style="font-weight:900; font-size:20px; color:#0a0a0f;">K</span>
+          </div>
+          <div>
+            <div style="font-size:15px; color:#0a0a0f; font-weight:700;">카카오맵 로드뷰</div>
+            <div style="font-size:13px; color:#888; margin-top:2px;">2008년부터</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:14px; color:#555; line-height:1.7; padding:14px 16px; background:rgba(0,0,0,0.05); border-radius:8px;">
+      매물지에 없는 진짜 정보가<br>여기 다 남아 있다.
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 4장 CHECK 01 공실 기간                              -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">04 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="margin-bottom:18px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-size:11px; color:#c9a96e; letter-spacing:2px; font-weight:800;">CHECK 01</div>
+          <div style="flex:1; height:1px; background:rgba(201,169,110,0.3);"></div>
+        </div>
+        <div style="font-size:34px; font-weight:900; color:#fff; letter-spacing:-1.5px; line-height:1.1;">공실 기간</div>
+      </div>
+
+      <div style="width:100%; padding:14px 16px; background:rgba(255,255,255,0.05); border:1px solid rgba(201,169,110,0.3); border-radius:8px; margin-bottom:14px;">
+        <div style="font-size:10px; color:#c9a96e; letter-spacing:2px; font-weight:800; margin-bottom:10px;">▶ ROADVIEW HISTORY</div>
+        <div style="display:flex; justify-content:space-between; gap:6px;">
+          <div style="flex:1; padding:9px 4px; background:rgba(231,76,60,0.18); border-radius:5px; text-align:center;">
+            <div style="font-size:11px; color:rgba(255,255,255,0.6); font-weight:700; margin-bottom:4px;">2022</div>
+            <div style="font-size:11px; color:#ff7268; font-weight:800;">임대문의</div>
+          </div>
+          <div style="flex:1; padding:9px 4px; background:rgba(231,76,60,0.18); border-radius:5px; text-align:center;">
+            <div style="font-size:11px; color:rgba(255,255,255,0.6); font-weight:700; margin-bottom:4px;">2023</div>
+            <div style="font-size:11px; color:#ff7268; font-weight:800;">임대문의</div>
+          </div>
+          <div style="flex:1; padding:9px 4px; background:rgba(231,76,60,0.18); border-radius:5px; text-align:center;">
+            <div style="font-size:11px; color:rgba(255,255,255,0.6); font-weight:700; margin-bottom:4px;">2024</div>
+            <div style="font-size:11px; color:#ff7268; font-weight:800;">임대문의</div>
+          </div>
+          <div style="flex:1; padding:9px 4px; background:rgba(231,76,60,0.3); border:1px solid #e74c3c; border-radius:5px; text-align:center;">
+            <div style="font-size:11px; color:#fff; font-weight:800; margin-bottom:4px;">2025</div>
+            <div style="font-size:11px; color:#fff; font-weight:800;">임대문의</div>
+          </div>
+        </div>
+        <div style="margin-top:10px; font-size:11px; color:rgba(255,255,255,0.55); text-align:center;">같은 현수막 — 3년째 같은 자리</div>
+      </div>
+
+      <div style="padding:14px 16px; background:rgba(231,76,60,0.18); border-left:3px solid #e74c3c; border-radius:0 8px 8px 0;">
+        <div style="font-size:12px; color:#ff7268; margin-bottom:4px; font-weight:800; letter-spacing:1px;">중개사는 이렇게 말한다</div>
+        <div style="font-size:15px; color:#fff; font-weight:600; margin-bottom:8px;">"최근에 임차인이 나갔어요"</div>
+        <div style="font-size:14px; color:#c9a96e; font-weight:800;">로드뷰는 거짓말 안 한다.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 5장 CHECK 02 건물 변화                              -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#0a0a0f; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">05 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="margin-bottom:18px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-size:11px; color:#c9a96e; letter-spacing:2px; font-weight:800;">CHECK 02</div>
+          <div style="flex:1; height:1px; background:rgba(0,0,0,0.15);"></div>
+        </div>
+        <div style="font-size:34px; font-weight:900; color:#0a0a0f; letter-spacing:-1.5px; line-height:1.1;">건물 변화</div>
+      </div>
+
+      <div style="font-size:16px; color:#333; line-height:1.7; margin-bottom:18px;">
+        같은 자리인데 5년 전과<br>지금이 완전히 다른 경우.
+      </div>
+
+      <div style="width:100%; padding:14px 16px; background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:8px; margin-bottom:16px;">
+        <div style="font-size:10px; color:#888; letter-spacing:2px; font-weight:800; margin-bottom:10px;">▶ ROADVIEW HISTORY</div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="flex:1; padding:12px 8px; background:#f5f0e6; border-radius:6px; text-align:center;">
+            <div style="font-size:11px; color:#999; font-weight:700; margin-bottom:6px;">2018</div>
+            <div style="font-size:13px; color:#555; font-weight:700; line-height:1.4;">낡은 벽돌<br>좁은 입구</div>
+          </div>
+          <div style="color:#c9a96e; font-weight:900; font-size:22px;">→</div>
+          <div style="flex:1; padding:12px 8px; background:#0a0a0f; border-radius:6px; text-align:center;">
+            <div style="font-size:11px; color:#c9a96e; font-weight:700; margin-bottom:6px;">2025</div>
+            <div style="font-size:13px; color:#fff; font-weight:700; line-height:1.4;">모던 사옥<br>통유리 매장</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:14px; color:#555; line-height:1.7;">
+        건물주 운영 전략과<br>지역 가치 추세가 한눈에 보인다.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 6장 CHECK 03 상권 흐름                              -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">06 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="margin-bottom:18px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <div style="font-size:11px; color:#c9a96e; letter-spacing:2px; font-weight:800;">CHECK 03</div>
+          <div style="flex:1; height:1px; background:rgba(201,169,110,0.3);"></div>
+        </div>
+        <div style="font-size:34px; font-weight:900; color:#fff; letter-spacing:-1.5px; line-height:1.1;">상권 흐름</div>
+      </div>
+
+      <div style="width:100%; padding:14px 16px; background:rgba(255,255,255,0.05); border:1px solid rgba(201,169,110,0.3); border-radius:8px; margin-bottom:14px;">
+        <div style="font-size:10px; color:#c9a96e; letter-spacing:2px; font-weight:800; margin-bottom:10px;">▶ ROADVIEW HISTORY</div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <div style="flex:1; padding:10px 4px; background:rgba(255,255,255,0.06); border-radius:5px; text-align:center;">
+            <div style="font-size:11px; color:rgba(255,255,255,0.55); font-weight:700; margin-bottom:4px;">2015</div>
+            <div style="font-size:11px; color:#fff; font-weight:700;">활기</div>
+          </div>
+          <div style="color:rgba(255,255,255,0.3); font-size:14px;">›</div>
+          <div style="flex:1; padding:10px 4px; background:rgba(255,255,255,0.06); border-radius:5px; text-align:center;">
+            <div style="font-size:11px; color:rgba(255,255,255,0.55); font-weight:700; margin-bottom:4px;">2020</div>
+            <div style="font-size:11px; color:#fff; font-weight:700;">변화</div>
+          </div>
+          <div style="color:rgba(255,255,255,0.3); font-size:14px;">›</div>
+          <div style="flex:1; padding:10px 4px; background:rgba(201,169,110,0.25); border:1px solid #c9a96e; border-radius:5px; text-align:center;">
+            <div style="font-size:11px; color:#c9a96e; font-weight:800; margin-bottom:4px;">2025</div>
+            <div style="font-size:11px; color:#fff; font-weight:800;">현재</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:7px;">
+        <div style="padding:11px 14px; background:rgba(255,255,255,0.1); border-radius:6px; font-size:14px; color:#fff; font-weight:500;">옆 건물 식당이 그대로인가</div>
+        <div style="padding:11px 14px; background:rgba(255,255,255,0.1); border-radius:6px; font-size:14px; color:#fff; font-weight:500;">프랜차이즈 진출입 패턴</div>
+        <div style="padding:11px 14px; background:rgba(255,255,255,0.1); border-radius:6px; font-size:14px; color:#fff; font-weight:500;">공실 증감 추이</div>
+      </div>
+    </div>
+
+    <div style="font-size:15px; color:#c9a96e; font-weight:800; line-height:1.5;">
+      성장 중인지 쇠퇴 중인지<br>한눈에 보인다.
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 7장 결론                                           -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="card-wrapper">
+<div class="card" id="card-7">
+  <div class="bg-color" style="background: #c9a96e;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div style="font-size:22px; font-weight:900; color:#fff; letter-spacing:1px;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.55); letter-spacing:2px;">07 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:11px; color:rgba(255,255,255,0.7); letter-spacing:4px; margin-bottom:18px; font-weight:700;">결론</div>
+
+      <div style="font-size:42px; font-weight:900; color:#fff; line-height:1.2; margin-bottom:8px; letter-spacing:-1.5px;">매물 보러 가기 전</div>
+      <div style="font-size:42px; font-weight:900; color:#fff; line-height:1.2; margin-bottom:30px; letter-spacing:-1.5px;">
+        딱 <span style="color:#1a1a1a;">5분.</span>
+      </div>
+
+      <div style="width:48px; height:3px; background:#fff; margin-bottom:24px; opacity:0.5;"></div>
+
+      <div style="font-size:17px; color:#fff; line-height:1.8;">
+        <div style="margin-bottom:10px; font-weight:500; opacity:0.9;">세 가지만 보면 된다.</div>
+        <div style="font-size:18px; font-weight:900;">공실 기간 · 건물 변화 · 상권 흐름</div>
+      </div>
+    </div>
+
+    <div style="font-size:14px; color:rgba(255,255,255,0.85); line-height:1.6; font-weight:500;">
+      이 5분이 수억 원 손실을 막는다.
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(7)">7장</button>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- 8장 마무리                                         -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<div class="card-wrapper">
+<div class="card" id="card-8">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content" style="text-align:center;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div></div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">08 / 08</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+      <div style="font-size:11px; color:rgba(255,255,255,0.45); letter-spacing:4px; margin-bottom:16px;">상업용 빌딩 투자의 모든 것</div>
+
+      <div style="font-size:60px; font-weight:900; color:#fff; letter-spacing:8px; margin-bottom:30px;">BSN.</div>
+
+      <div style="width:48px; height:3px; background:#c9a96e; margin-bottom:30px;"></div>
+
+      <div style="font-size:16px; color:rgba(255,255,255,0.85); line-height:1.9; margin-bottom:36px; max-width:340px;">
+        매물지에 안 적힌 진짜 정보는<br>
+        로드뷰가 알려준다.<br>
+        <span style="color:#c9a96e; font-weight:700;">데이터는 거짓말 안 한다.</span>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="font-size:13px; color:rgba(255,255,255,0.6); letter-spacing:0.5px;">bsn.building@gmail.com</div>
+        <div style="font-size:13px; color:rgba(255,255,255,0.6); letter-spacing:0.5px;">YouTube · 빌사남 TV</div>
+      </div>
+    </div>
+
+    <div style="font-size:11px; color:rgba(255,255,255,0.3); letter-spacing:2px;">팔로우와 저장으로 인사이트를 받아보세요</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(8)">8장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, {
+      scale: 2.5, width: 432, height: 540,
+      useCORS: true, allowTaint: true, backgroundColor: null, logging: false
+    });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'roadview_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 8; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 500));
+  }
+}
+</script>
+
+</body>
+</html>

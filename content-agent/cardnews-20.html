@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>카드뉴스 - 가로수길 10년 시리즈 EP01</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; font-family: 'Noto Sans KR', sans-serif; padding: 40px; display: flex; flex-wrap: wrap; gap: 30px; justify-content: center; }
+.card-wrapper { position: relative; }
+.card { width: 432px; height: 540px; position: relative; overflow: hidden; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.bg-color { position: absolute; inset: 0; }
+.overlay { position: absolute; inset: 0; }
+.content { position: relative; z-index: 3; width: 100%; height: 100%; padding: 40px 36px; display: flex; flex-direction: column; }
+.bsn { font-size:20px; font-weight:900; letter-spacing:1px; }
+.download-btn { display: block; margin: 12px auto 0; padding: 9px 22px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+.download-btn:hover { background: #b8975d; }
+.download-all { width: 100%; text-align: center; padding: 20px; }
+.download-all button { padding: 16px 48px; background: #c9a96e; color: #0a0a0f; border: none; border-radius: 8px; font-size: 16px; font-weight: 900; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; letter-spacing: 1px; }
+.download-all button:hover { background: #b8975d; }
+.timeline-row { display:flex; justify-content:space-between; align-items:center; padding:9px 14px; border-radius:5px; margin-bottom:7px; }
+</style>
+</head>
+<body>
+
+<div class="download-all"><button onclick="downloadAll()">전체 다운로드 (PNG 6장)</button></div>
+
+<!-- 1장 표지 — 애플스토어 사진 -->
+<div class="card-wrapper">
+<div class="card" id="card-1">
+  <div class="bg-img" style="background-image: url('./images/garosu_imdae_crop.jpg');"></div>
+  <div class="overlay" style="background: linear-gradient(180deg, rgba(10,10,15,0.3) 0%, rgba(10,10,15,0.85) 50%, rgba(10,10,15,0.97) 90%);"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="display:inline-block; padding:4px 10px; background:#c9a96e; color:#0a0a0f; font-size:10px; font-weight:800; letter-spacing:2px; border-radius:3px;">SERIES EP. 01</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:flex-end;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:3px; font-weight:800; margin-bottom:14px;">가로수길 10년 변화</div>
+
+      <div style="font-size:34px; font-weight:500; color:#fff; line-height:1.15; letter-spacing:-1.2px; margin-bottom:6px;">한 자리,</div>
+      <div style="font-size:54px; font-weight:900; color:#c9a96e; line-height:1.05; letter-spacing:-2.5px; margin-bottom:18px;">세 번의 손바뀜.</div>
+
+      <div style="font-size:16px; color:#fff; line-height:1.5; font-weight:700; margin-bottom:14px;">
+        강호동 → MC몽 → 노홍철
+      </div>
+
+      <div style="font-size:14px; color:rgba(255,255,255,0.85); line-height:1.6;">
+        가로수길 빌딩 7년이<br>
+        무엇을 말해주는가.
+      </div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-top:10px;">
+      <div style="font-size:12px; color:#fff; font-weight:500;">@bsn__official</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.65);">SWIPE →</div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(1)">1장</button>
+</div>
+
+<!-- 2장 10년 타임라인 (박스 형태) -->
+<div class="card-wrapper">
+<div class="card" id="card-2">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">02 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:18px; font-weight:700;">가로수길 평당가 10년 타임라인</div>
+
+      <div class="timeline-row" style="background:rgba(46,204,113,0.18); border-left:3px solid #2ecc71;">
+        <div style="font-size:12px; color:#27ae60; font-weight:800;">2016</div>
+        <div style="font-size:14px; color:#0a0a0f; font-weight:700;">평당 1억 안팎</div>
+      </div>
+      <div class="timeline-row" style="background:rgba(201,169,110,0.25); border-left:3px solid #c9a96e;">
+        <div style="font-size:12px; color:#a8884e; font-weight:800;">2018 — 정점</div>
+        <div style="font-size:16px; color:#0a0a0f; font-weight:900;">평당 3억대</div>
+      </div>
+      <div class="timeline-row" style="background:rgba(255,165,0,0.18); border-left:3px solid #f39c12;">
+        <div style="font-size:12px; color:#d68910; font-weight:800;">2019~2022 — 균열</div>
+        <div style="font-size:14px; color:#0a0a0f; font-weight:700;">젠트리·코로나 · 거래 정지</div>
+      </div>
+      <div class="timeline-row" style="background:rgba(231,76,60,0.18); border-left:3px solid #e74c3c;">
+        <div style="font-size:12px; color:#c0392b; font-weight:800;">2024 — 회복기 거래</div>
+        <div style="font-size:14px; color:#0a0a0f; font-weight:700;">평당 2억대 거래 시작</div>
+      </div>
+      <div class="timeline-row" style="background:rgba(0,0,0,0.08); border-left:3px solid #555;">
+        <div style="font-size:12px; color:#555; font-weight:800;">2026 — 노홍철 152억 매입</div>
+        <div style="font-size:14px; color:#0a0a0f; font-weight:700;">새 사이클의 시작</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(2)">2장</button>
+</div>
+
+<!-- 3장 2018 정점 -->
+<div class="card-wrapper">
+<div class="card" id="card-3">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">03 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:2px; margin-bottom:14px; font-weight:700;">정점의 순간</div>
+
+      <div style="font-size:24px; color:#fff; font-weight:900; line-height:1.3; letter-spacing:-0.8px; margin-bottom:24px;">
+        2018년, 가로수길에<br>
+        <span style="color:#c9a96e;">애플스토어</span>가 들어왔다.
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div style="padding:11px 14px; background:rgba(255,255,255,0.07); border-radius:5px;">
+          <div style="font-size:13px; color:#fff;">평당가 <span style="color:#c9a96e; font-weight:900;">3억대</span> 매물 등장</div>
+        </div>
+        <div style="padding:11px 14px; background:rgba(255,255,255,0.07); border-radius:5px;">
+          <div style="font-size:13px; color:#fff;">한 채 <span style="color:#c9a96e; font-weight:900;">200~300억대</span> 거래 흔함</div>
+        </div>
+        <div style="padding:11px 14px; background:rgba(255,255,255,0.07); border-radius:5px;">
+          <div style="font-size:13px; color:#fff;">1층 임대료 <span style="color:#c9a96e; font-weight:900;">평당 100만원</span> 돌파</div>
+        </div>
+      </div>
+
+      <div style="font-size:13px; color:rgba(255,255,255,0.7); line-height:1.6; margin-top:14px;">
+        2016년 진입자 기준 자산이 2~3배가 됐어요.
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(3)">3장</button>
+</div>
+
+<!-- 4장 무너진 이유 -->
+<div class="card-wrapper">
+<div class="card" id="card-4">
+  <div class="bg-color" style="background: #f5f0e6;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#0a0a0f;">BSN.</div>
+      <div style="font-size:11px; color:#999; letter-spacing:2px;">04 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#888; letter-spacing:2px; margin-bottom:14px; font-weight:700;">정점 이후 무너진 흐름</div>
+
+      <div style="font-size:24px; color:#0a0a0f; font-weight:900; line-height:1.3; letter-spacing:-0.8px; margin-bottom:22px;">
+        2019년부터<br>
+        구조가 흔들렸어요.
+      </div>
+
+      <div style="font-size:15px; color:#333; line-height:1.9; margin-bottom:14px;">
+        <div><span style="font-weight:900;">젠트리피케이션</span> — 임대료가 너무 빨리 오름</div>
+        <div><span style="font-weight:900;">임차인 이탈</span> — 브랜드들이 성수·한남으로</div>
+        <div><span style="font-weight:900;">코로나 충격</span> — 외국인 관광객 끊김</div>
+      </div>
+
+      <div style="padding:12px 14px; background:#fff; border-left:3px solid #e74c3c; border-radius:0 6px 6px 0;">
+        <div style="font-size:13px; color:#0a0a0f; font-weight:700;">평당가 정점 대비 30~40% 하락.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(4)">4장</button>
+</div>
+
+<!-- 5장 현재 — 노홍철 사례 -->
+<div class="card-wrapper">
+<div class="card" id="card-5">
+  <div class="bg-color" style="background: #1a1a1a;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">05 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="font-size:13px; color:#c9a96e; letter-spacing:2px; margin-bottom:14px; font-weight:700;">2026년 4월, 새 손바뀜</div>
+
+      <div style="font-size:28px; color:#fff; font-weight:900; line-height:1.25; letter-spacing:-1px; margin-bottom:18px;">
+        노홍철이 가로수길에<br>
+        <span style="color:#c9a96e; font-size:42px;">152억</span> 빌딩 매입.
+      </div>
+
+      <div style="font-size:13px; color:rgba(255,255,255,0.85); line-height:1.9; margin-bottom:14px; padding:12px 14px; background:rgba(255,255,255,0.06); border-radius:5px;">
+        <div style="font-size:11px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:6px;">세 번의 손바뀜</div>
+        강호동 → MC몽 → 노홍철<br>
+        <span style="color:rgba(255,255,255,0.6);">MC몽은 1년 5개월 만에 14억 손실 매각</span>
+      </div>
+
+      <div style="padding:14px 16px; background:rgba(201,169,110,0.12); border-left:3px solid #c9a96e;">
+        <div style="font-size:13px; color:#c9a96e; font-weight:800; line-height:1.6;">
+          영향력 있는 인물이 들어오면<br>
+          콘텐츠로 사람을 다시 모을 수 있어요.<br>
+          <span style="color:rgba(255,255,255,0.85); font-weight:500;">앞으로 어떻게 변할지 지켜볼 만한 자리예요.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(5)">5장</button>
+</div>
+
+<!-- 6장 정리 + 다음편 예고 -->
+<div class="card-wrapper">
+<div class="card" id="card-6">
+  <div class="bg-color" style="background: #0a0a0f;"></div>
+  <div class="content">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div class="bsn" style="color:#fff;">BSN.</div>
+      <div style="font-size:11px; color:rgba(255,255,255,0.4); letter-spacing:2px;">06 / 06</div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+      <div style="width:30px; height:2px; background:#c9a96e; margin-bottom:20px;"></div>
+
+      <div style="font-size:28px; font-weight:900; color:#fff; line-height:1.3; letter-spacing:-1.2px; margin-bottom:8px;">10년 사이클이</div>
+      <div style="font-size:28px; font-weight:900; color:#c9a96e; line-height:1.3; letter-spacing:-1.2px; margin-bottom:24px;">주는 교훈.</div>
+
+      <div style="font-size:15px; color:rgba(255,255,255,0.85); line-height:1.8; margin-bottom:24px;">
+        핫플레이스라고 영원하지 않아요.<br>
+        정점에서 매수한 사람은<br>
+        10년 지나도 본전을 못 찾을 수 있어요.
+      </div>
+
+      <div style="padding:14px 16px; background:rgba(201,169,110,0.12); border-left:3px solid #c9a96e;">
+        <div style="font-size:12px; color:#c9a96e; font-weight:800; letter-spacing:1px; margin-bottom:4px;">NEXT EP. 02</div>
+        <div style="font-size:14px; color:#fff; font-weight:700; line-height:1.5;">
+          정점에서 무너진 구조적 이유<br>
+          — 코로나만이 원인이 아니다
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px; color:rgba(255,255,255,0.6); font-weight:500; text-align:center;">@bsn__official · 빌사남</div>
+  </div>
+</div>
+<button class="download-btn" onclick="downloadCard(6)">6장</button>
+</div>
+
+<script>
+async function downloadCard(num) {
+  const card = document.getElementById('card-' + num);
+  try {
+    const canvas = await html2canvas(card, { scale: 2.5, width: 432, height: 540, useCORS: true, allowTaint: true, backgroundColor: null, logging: false });
+    const resized = document.createElement('canvas');
+    resized.width = 1080; resized.height = 1350;
+    const ctx = resized.getContext('2d');
+    ctx.drawImage(canvas, 0, 0, 1080, 1350);
+    const link = document.createElement('a');
+    link.download = 'garosu_ep01_' + String(num).padStart(2, '0') + '.png';
+    link.href = resized.toDataURL('image/png');
+    link.click();
+  } catch (e) { alert('실패: ' + e.message); }
+}
+async function downloadAll() {
+  for (let i = 1; i <= 6; i++) {
+    await downloadCard(i);
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+</script>
+</body>
+</html>

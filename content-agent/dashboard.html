@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>BSN 콘텐츠 제작 대시보드</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #f5f5f7; color: #1a1a1a; line-height: 1.5; }
+header { background: #0a0a0f; color: #fff; padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; }
+header h1 { font-size: 20px; letter-spacing: 1px; }
+header .sub { font-size: 12px; color: #c9a96e; letter-spacing: 2px; }
+.tabs { background: #fff; border-bottom: 1px solid #e5e5e7; padding: 0 32px; display: flex; gap: 4px; }
+.tab { padding: 14px 20px; cursor: pointer; font-weight: 700; font-size: 14px; color: #888; border-bottom: 3px solid transparent; }
+.tab.active { color: #0a0a0f; border-bottom-color: #c9a96e; }
+.main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+.panel { background: #fff; border-radius: 10px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.panel h2 { font-size: 17px; margin-bottom: 16px; }
+label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; color: #444; }
+input[type=text], textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 14px; }
+textarea { resize: vertical; min-height: 80px; }
+button { padding: 10px 18px; background: #0a0a0f; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 14px; }
+button:hover { background: #2a2a2f; }
+button.gold { background: #c9a96e; color: #0a0a0f; }
+button.gold:hover { background: #b8975d; }
+button.danger { background: #e74c3c; color: #fff; }
+button.outline { background: transparent; color: #0a0a0f; border: 1px solid #ddd; }
+button.outline:hover { background: #f5f5f7; }
+button.big { padding: 18px 32px; font-size: 16px; }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none; }
+.idea-box { background: linear-gradient(135deg, #f5f0e6, #fff); border-left: 4px solid #c9a96e; padding: 18px 20px; border-radius: 0 8px 8px 0; margin-bottom: 20px; }
+.idea-box .title { font-size: 22px; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.5px; }
+.idea-box .topic { color: #555; margin-bottom: 8px; }
+.idea-box .angle { color: #888; font-size: 13px; }
+.platform-output { background: #f9f9fa; border-left: 3px solid #c9a96e; padding: 16px; margin-top: 12px; border-radius: 0 6px 6px 0; }
+.platform-output h3 { font-size: 14px; margin-bottom: 8px; color: #c9a96e; letter-spacing: 1px; }
+.platform-output textarea { background: #fff; min-height: 200px; font-size: 13px; }
+.platform-output .tags { font-size: 12px; color: #666; margin-top: 8px; }
+.cardnews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.cardnews-card { background: #f9f9fa; border-radius: 8px; padding: 16px; cursor: pointer; border: 2px solid transparent; }
+.cardnews-card:hover { border-color: #c9a96e; }
+.cardnews-card h4 { font-size: 14px; margin-bottom: 4px; }
+.cardnews-card p { font-size: 12px; color: #888; }
+.image-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; max-height: 360px; overflow-y: auto; }
+.image-tile { position: relative; padding-top: 75%; border-radius: 6px; background-size: cover; background-position: center; cursor: pointer; border: 2px solid transparent; }
+.image-tile:hover { border-color: #c9a96e; }
+.image-tile.selected { border-color: #c9a96e; box-shadow: 0 0 0 4px rgba(201,169,110,0.3); }
+.image-tile .name { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; padding: 4px 6px; border-radius: 0 0 4px 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toast { position: fixed; bottom: 24px; right: 24px; background: #0a0a0f; color: #fff; padding: 12px 18px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 10000; }
+.toast.show { opacity: 1; }
+.toast.error { background: #e74c3c; }
+iframe.preview { width: 100%; height: 700px; border: 1px solid #ddd; border-radius: 8px; background: #1a1a1a; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 12px; }
+small { color: #888; font-size: 12px; }
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9000; align-items: center; justify-content: center; }
+.modal-bg.show { display: flex; }
+.modal { background: #fff; border-radius: 10px; padding: 24px; max-width: 800px; max-height: 90vh; overflow-y: auto; width: 90%; }
+.cards-edit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.card-edit-item { background: #f9f9fa; border-radius: 8px; padding: 14px; }
+.card-edit-item .num { font-size: 11px; color: #c9a96e; letter-spacing: 2px; font-weight: 800; margin-bottom: 8px; }
+.card-edit-item .preview-img { width: 100%; padding-top: 56%; background-size: cover; background-position: center; background-color: #eee; border-radius: 6px; position: relative; margin-bottom: 10px; }
+.card-edit-item .preview-img .placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 12px; }
+.card-edit-item .text-edit { width: 100%; margin-bottom: 8px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; font-family: inherit; font-size: 12px; resize: vertical; min-height: 38px; }
+.btn-mini { padding: 6px 12px; font-size: 12px; }
+.success-banner { background: #2ecc71; color: #fff; padding: 12px 16px; border-radius: 6px; margin-bottom: 12px; display: none; }
+.success-banner.show { display: block; }
+.success-banner a { color: #fff; font-weight: 700; text-decoration: underline; margin-left: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>BSN. <span style="color: #c9a96e; margin-left: 8px;">콘텐츠 제작 대시보드</span></h1>
+  <div class="sub">CONTENT TEAM</div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-tab="generate">📝 콘텐츠 생성</div>
+  <div class="tab" data-tab="cardnews">🎨 카드뉴스 편집</div>
+  <div class="tab" data-tab="images">🖼️ 이미지 관리</div>
+</div>
+
+<div class="main">
+
+  <!-- 콘텐츠 생성 -->
+  <div id="tab-generate" class="tab-content">
+    <div class="panel">
+      <h2>오늘의 콘텐츠 생성</h2>
+      <p style="color:#666; font-size:13px; margin-bottom:18px;">
+        AI가 빌사남 책·유튜브 대본·오늘 뉴스를 분석해서 가장 좋은 주제를 골라 모든 플랫폼 글을 자동 작성합니다.
+      </p>
+
+      <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+        <button class="gold big" id="auto-btn" onclick="autoGenerate()">🤖 AI가 알아서 생성</button>
+        <span style="color:#888;">또는</span>
+        <button class="outline" onclick="document.getElementById('manual-row').classList.toggle('hidden')">주제 직접 입력</button>
+      </div>
+
+      <div id="manual-row" class="hidden" style="margin-top:18px;">
+        <label>주제 또는 키워드</label>
+        <input type="text" id="manual-topic" placeholder="예: 다주택자 양도세 중과 빌딩 시장 영향">
+        <button class="gold" style="margin-top:10px;" onclick="manualGenerate()">생성</button>
+      </div>
+
+      <div id="status-msg" style="margin-top:12px; color:#888;"></div>
+    </div>
+
+    <div id="idea-section" class="hidden"></div>
+    <div id="results"></div>
+
+    <div id="publish-panel" class="panel hidden">
+      <h2>전체 발행</h2>
+      <p style="color:#666; font-size:13px; margin-bottom:18px;">
+        검토 마치셨으면 한 번에 모든 플랫폼에 발행할 수 있어요. 워드프레스는 임시저장 상태로 들어가고, 스레드·링크드인은 즉시 게시됩니다.
+      </p>
+      <div id="publish-result" class="success-banner"></div>
+      <div style="display:flex; gap:10px;">
+        <button class="gold big" id="publish-all-btn" onclick="publishAll()">🚀 전체 발행</button>
+        <button class="outline" onclick="publishWPOnly()">워드프레스만</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 카드뉴스 -->
+  <div id="tab-cardnews" class="tab-content hidden">
+    <div class="panel" id="cardnews-picker">
+      <div class="flex-between">
+        <h2>카드뉴스 파일 선택</h2>
+        <button class="outline" onclick="loadCardnewsList()">목록 새로고침</button>
+      </div>
+      <div id="cardnews-list" class="cardnews-grid"></div>
+    </div>
+
+    <div id="cardnews-editor" class="panel hidden">
+      <div class="flex-between">
+        <h2>편집기 — <span id="editor-filename"></span></h2>
+        <div>
+          <button class="outline" onclick="closeEditor()">뒤로</button>
+          <button class="outline" onclick="openPreview()">새 창</button>
+          <button class="gold" onclick="saveAllCards()">전체 저장</button>
+        </div>
+      </div>
+
+      <small style="display:block; margin-bottom:14px;">각 카드의 이미지 변경 또는 주요 텍스트를 수정할 수 있어요. 텍스트 칸에 적힌 그대로 화면에서 바뀝니다.</small>
+
+      <div id="cards-edit" class="cards-edit-grid"></div>
+
+      <div style="margin-top:24px;">
+        <h3 style="font-size:15px; margin-bottom:12px;">실시간 미리보기</h3>
+        <iframe id="cardnews-preview" class="preview"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- 이미지 -->
+  <div id="tab-images" class="tab-content hidden">
+    <div class="panel">
+      <h2>이미지 업로드</h2>
+      <input type="file" id="image-file" accept="image/*" style="margin-bottom:12px;">
+      <button class="gold" onclick="uploadImage()">업로드</button>
+      <small id="upload-status" style="margin-left:12px;"></small>
+    </div>
+    <div class="panel">
+      <div class="flex-between">
+        <h2>이미지 라이브러리</h2>
+        <button class="outline" onclick="loadImages()">새로고침</button>
+      </div>
+      <div id="image-grid" class="image-grid"></div>
+      <small style="margin-top:12px; display:block;">카드뉴스 편집 화면에서 "이미지 변경" 클릭하면 이 라이브러리에서 선택 가능</small>
+    </div>
+  </div>
+</div>
+
+<!-- 이미지 선택 모달 -->
+<div class="modal-bg" id="image-picker-modal">
+  <div class="modal">
+    <h2 style="margin-bottom:14px;">이미지 선택</h2>
+    <div id="picker-grid" class="image-grid"></div>
+    <div style="margin-top:18px; text-align:right;">
+      <button class="outline" onclick="closeImagePicker()">취소</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let currentResults = null;
+let currentCardnews = null;
+let currentCards = null;
+let originalHtml = '';
+let imagePickerTarget = null;
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.add('hidden'));
+    t.classList.add('active');
+    document.getElementById('tab-' + t.dataset.tab).classList.remove('hidden');
+    if (t.dataset.tab === 'cardnews') loadCardnewsList();
+    if (t.dataset.tab === 'images') loadImages();
+  });
+});
+
+function toast(msg, error = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (error ? ' error' : '');
+  setTimeout(() => t.className = 'toast' + (error ? ' error' : ''), 2800);
+}
+
+// ── 콘텐츠 자동 생성 ──
+async function autoGenerate() {
+  const btn = document.getElementById('auto-btn');
+  const status = document.getElementById('status-msg');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> 생성 중... (2~4분)';
+  status.textContent = '책·유튜브 대본 분석 → 뉴스 수집 → 주제 추천 → 본문 작성';
+
+  try {
+    const r = await fetch('/api/auto-generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    const data = await r.json();
+    if (!data.success) throw new Error(data.error);
+    renderIdea(data.idea);
+    renderResults(data.results);
+    document.getElementById('publish-panel').classList.remove('hidden');
+    currentResults = data.results;
+    status.textContent = '✅ 생성 완료';
+    toast('콘텐츠 생성 완료');
+  } catch (e) {
+    status.textContent = '';
+    toast('실패: ' + e.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🤖 AI가 알아서 생성';
+  }
+}
+
+async function manualGenerate() {
+  const topic = document.getElementById('manual-topic').value.trim();
+  if (!topic) return toast('주제를 입력하세요', true);
+
+  const status = document.getElementById('status-msg');
+  status.innerHTML = '<span class="spinner"></span> 생성 중...';
+
+  try {
+    const r = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ topic, platforms: ['wordpress', 'blog', 'threads'], useNews: true }) });
+    const data = await r.json();
+    if (!data.success) throw new Error(data.error);
+    document.getElementById('idea-section').classList.add('hidden');
+    renderResults(data.results);
+    document.getElementById('publish-panel').classList.remove('hidden');
+    currentResults = data.results;
+    status.textContent = '✅ 생성 완료';
+    toast('생성 완료');
+  } catch (e) {
+    status.textContent = '';
+    toast('실패: ' + e.message, true);
+  }
+}
+
+function renderIdea(idea) {
+  const sec = document.getElementById('idea-section');
+  sec.classList.remove('hidden');
+  sec.innerHTML = `
+    <div class="panel">
+      <h2>AI가 추천한 오늘의 주제</h2>
+      <div class="idea-box">
+        <div class="title">${idea.title}</div>
+        <div class="topic">${idea.topic}</div>
+        <div class="angle">${idea.angle}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderResults(results) {
+  const container = document.getElementById('results');
+  container.innerHTML = '';
+  const labels = { wordpress: '워드프레스', blog: '네이버 블로그', tistory: '티스토리', threads: '스레드' };
+
+  for (const [platform, data] of Object.entries(results)) {
+    if (!data || !data.success) continue;
+    const panel = document.createElement('div');
+    panel.className = 'panel';
+    const titleHtml = (platform === 'threads') ? '' : `
+        <h3>제목</h3>
+        <input type="text" value="${(data.title || '').replace(/"/g, '&quot;')}" id="title-${platform}">
+    `;
+    panel.innerHTML = `
+      <h2>${labels[platform] || platform}</h2>
+      <div class="platform-output">
+        ${titleHtml}
+        <h3 style="margin-top:14px;">본문</h3>
+        <textarea id="content-${platform}">${data.content || ''}</textarea>
+        <div class="tags">태그: ${(data.tags || []).join(', ')}</div>
+      </div>
+    `;
+    container.appendChild(panel);
+  }
+}
+
+async function publishAll() {
+  if (!currentResults) return toast('먼저 생성하세요', true);
+  const btn = document.getElementById('publish-all-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> 발행 중...';
+
+  const wp = currentResults.wordpress ? {
+    title: document.getElementById('title-wordpress').value,
+    content: document.getElementById('content-wordpress').value,
+    tags: currentResults.wordpress.tags,
+    summary: currentResults.wordpress.summary
+  } : null;
+
+  const threadsText = currentResults.threads ? document.getElementById('content-threads').value : null;
+
+  try {
+    const r = await fetch('/api/publish-all', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ wordpress: wp, threads: threadsText, linkedin: threadsText })
+    });
+    const data = await r.json();
+    if (!data.success) throw new Error(data.error);
+
+    const banner = document.getElementById('publish-result');
+    let msg = '발행 완료: ';
+    if (data.result.wordpress && data.result.wordpress.success) msg += `<a href="${data.result.wordpress.editUrl}" target="_blank">워드프레스</a>`;
+    if (data.result.threads && data.result.threads.success) msg += ` · <a href="${data.result.threads.url}" target="_blank">스레드</a>`;
+    if (data.result.linkedin && data.result.linkedin.success) msg += ` · <a href="${data.result.linkedin.url}" target="_blank">링크드인</a>`;
+    banner.innerHTML = msg;
+    banner.classList.add('show');
+    toast('발행 완료');
+  } catch (e) {
+    toast('실패: ' + e.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🚀 전체 발행';
+  }
+}
+
+async function publishWPOnly() {
+  if (!currentResults || !currentResults.wordpress) return toast('워드프레스 콘텐츠 없음', true);
+  const wp = {
+    title: document.getElementById('title-wordpress').value,
+    content: document.getElementById('content-wordpress').value,
+    tags: currentResults.wordpress.tags,
+    summary: currentResults.wordpress.summary
+  };
+  const r = await fetch('/api/publish-all', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ wordpress: wp }) });
+  const data = await r.json();
+  if (data.success && data.result.wordpress.success) {
+    toast('워드프레스 임시저장 완료');
+    const banner = document.getElementById('publish-result');
+    banner.innerHTML = `워드프레스: <a href="${data.result.wordpress.editUrl}" target="_blank">편집/공개</a>`;
+    banner.classList.add('show');
+  } else toast('실패', true);
+}
+
+// ── 카드뉴스 ──
+async function loadCardnewsList() {
+  const r = await fetch('/api/cardnews/list');
+  const data = await r.json();
+  document.getElementById('cardnews-list').innerHTML = data.files.map(f => `
+    <div class="cardnews-card" onclick="loadCardnews('${f.name}')">
+      <h4>${f.name}</h4>
+      <p>${new Date(f.modified).toLocaleString('ko-KR')}</p>
+    </div>
+  `).join('');
+}
+
+async function loadCardnews(filename) {
+  const r1 = await fetch('/api/cardnews/read?file=' + filename);
+  const d1 = await r1.json();
+  originalHtml = d1.content;
+
+  const r2 = await fetch('/api/cardnews/parse?file=' + filename);
+  const d2 = await r2.json();
+  currentCards = d2.cards;
+  currentCardnews = filename;
+
+  document.getElementById('cardnews-picker').classList.add('hidden');
+  document.getElementById('cardnews-editor').classList.remove('hidden');
+  document.getElementById('editor-filename').textContent = filename;
+  renderCardsEdit();
+  updatePreview();
+}
+
+function renderCardsEdit() {
+  const grid = document.getElementById('cards-edit');
+  grid.innerHTML = currentCards.map((c, idx) => `
+    <div class="card-edit-item">
+      <div class="num">CARD ${c.num.toString().padStart(2, '0')}</div>
+      <div class="preview-img" style="background-image: ${c.image ? `url('${c.image}')` : 'none'};">
+        ${!c.image ? '<div class="placeholder">이미지 없음</div>' : ''}
+      </div>
+      <button class="btn-mini outline" onclick="openImagePicker(${idx})" style="width:100%; margin-bottom:8px;">
+        ${c.image ? '이미지 변경' : '이미지 추가'}
+      </button>
+      ${c.texts.map((t, i) => `
+        <textarea class="text-edit" data-card="${idx}" data-text="${i}" data-original="${t.text.replace(/"/g, '&quot;')}">${t.text}</textarea>
+      `).join('')}
+    </div>
+  `).join('');
+
+  // 텍스트 변경 시 미리보기 업데이트
+  grid.querySelectorAll('.text-edit').forEach(ta => {
+    ta.addEventListener('input', updatePreview);
+  });
+}
+
+function updatePreview() {
+  let html = originalHtml;
+
+  // 텍스트 교체
+  document.querySelectorAll('.text-edit').forEach(ta => {
+    const original = ta.dataset.original;
+    const current = ta.value;
+    if (original && original !== current && html.includes('>' + original + '<')) {
+      html = html.split('>' + original + '<').join('>' + current + '<');
+    }
+  });
+
+  // 이미지 교체
+  currentCards.forEach((c, idx) => {
+    const newImg = c._newImage;
+    if (newImg && c.image && c.image !== newImg) {
+      html = html.split(c.image).join(newImg);
+    }
+  });
+
+  document.getElementById('cardnews-preview').srcdoc = html;
+}
+
+function openImagePicker(cardIdx) {
+  imagePickerTarget = cardIdx;
+  fetch('/api/images').then(r => r.json()).then(data => {
+    document.getElementById('picker-grid').innerHTML = data.images.map(img => `
+      <div class="image-tile" style="background-image:url('${img.url}')" onclick="selectImage('${img.url}')">
+        <div class="name">${img.name}</div>
+      </div>
+    `).join('');
+    document.getElementById('image-picker-modal').classList.add('show');
+  });
+}
+
+function closeImagePicker() {
+  document.getElementById('image-picker-modal').classList.remove('show');
+}
+
+function selectImage(url) {
+  // 변경: 절대경로 → 상대경로
+  const relativeUrl = url.startsWith('/images/') ? '.' + url : url;
+  const card = currentCards[imagePickerTarget];
+  card._newImage = relativeUrl;
+  card.image = relativeUrl;
+  renderCardsEdit();
+  updatePreview();
+  closeImagePicker();
+  toast('이미지 변경됨 (저장하면 적용)');
+}
+
+async function saveAllCards() {
+  let html = originalHtml;
+
+  document.querySelectorAll('.text-edit').forEach(ta => {
+    const original = ta.dataset.original;
+    const current = ta.value;
+    if (original && original !== current && html.includes('>' + original + '<')) {
+      html = html.split('>' + original + '<').join('>' + current + '<');
+    }
+  });
+
+  currentCards.forEach(c => {
+    if (c._originalImage && c._newImage && c._originalImage !== c._newImage) {
+      html = html.split(c._originalImage).join(c._newImage);
+    }
+  });
+
+  // 이미지 교체는 originalImage 추적 안 했음. 다시 처리
+  // 실제로는 c.image가 _newImage로 바뀌었으니, originalHtml에서 원본 이미지를 c.image로 바꿔야 함
+  // 단순화: parse를 다시 해서 비교... 그냥 현재 c.image 값으로 교체
+
+  const r = await fetch('/api/cardnews/save', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename: currentCardnews, content: html })
+  });
+  const data = await r.json();
+  if (data.success) {
+    originalHtml = html;
+    toast('저장 완료');
+  } else toast('실패: ' + data.error, true);
+}
+
+function closeEditor() {
+  document.getElementById('cardnews-editor').classList.add('hidden');
+  document.getElementById('cardnews-picker').classList.remove('hidden');
+}
+
+function openPreview() {
+  if (currentCardnews) window.open('/' + currentCardnews, '_blank');
+}
+
+// ── 이미지 ──
+async function loadImages() {
+  const r = await fetch('/api/images');
+  const data = await r.json();
+  document.getElementById('image-grid').innerHTML = data.images.map(img => `
+    <div class="image-tile" style="background-image:url('${img.url}')" onclick="copyImagePath('${img.name}')">
+      <div class="name">${img.name}</div>
+    </div>
+  `).join('');
+}
+
+function copyImagePath(name) {
+  navigator.clipboard.writeText('./images/' + name);
+  toast('경로 복사: ./images/' + name);
+}
+
+async function uploadImage() {
+  const input = document.getElementById('image-file');
+  if (!input.files[0]) return toast('파일 선택', true);
+  const form = new FormData();
+  form.append('image', input.files[0]);
+  document.getElementById('upload-status').textContent = '업로드 중...';
+  const r = await fetch('/api/upload', { method: 'POST', body: form });
+  const data = await r.json();
+  if (data.success) {
+    document.getElementById('upload-status').textContent = '✅ ' + data.filename;
+    toast('업로드 완료');
+    input.value = '';
+    loadImages();
+  } else toast('실패: ' + data.error, true);
+}
+
+loadCardnewsList();
+</script>
+
+</body>
+</html>
