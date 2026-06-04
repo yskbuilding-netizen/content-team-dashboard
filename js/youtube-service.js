@@ -31,17 +31,14 @@ const YouTubeService = {
   },
 
   async apiCall(endpoint, params) {
-    const key = this.getApiKey();
-    if (!key) throw new Error('API 키가 설정되지 않았습니다.');
+    // 서버 프록시를 통해 호출 (CORS/레퍼러 문제 우회)
+    const qs = new URLSearchParams(params).toString();
+    const url = `/api/youtube/${endpoint}?${qs}`;
 
-    const url = new URL(`${this.API_BASE}/${endpoint}`);
-    params.key = key;
-    Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
-
-    const res = await fetch(url.toString());
+    const res = await fetch(url);
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      const msg = err?.error?.message || `HTTP ${res.status}`;
+      const msg = err?.error?.message || err?.error || `HTTP ${res.status}`;
       throw new Error(msg);
     }
     return res.json();

@@ -17,8 +17,8 @@
     <div style="background:#1a1a2e;padding:40px;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3);text-align:center;width:320px;">
       <div style="font-size:48px;margin-bottom:16px;">📋</div>
       <h2 style="color:#e8e8f0;margin-bottom:24px;font-size:20px;">콘텐츠팀 현황판</h2>
-      <input id="login-id" type="text" placeholder="아이디" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #333;border-radius:8px;background:#0f0f23;color:#e8e8f0;font-size:15px;box-sizing:border-box;">
-      <input id="login-pw" type="password" placeholder="비밀번호" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #333;border-radius:8px;background:#0f0f23;color:#e8e8f0;font-size:15px;box-sizing:border-box;">
+      <input id="login-id" type="text" placeholder="아이디" autocomplete="off" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #333;border-radius:8px;background:#0f0f23;color:#e8e8f0;font-size:15px;box-sizing:border-box;">
+      <input id="login-pw" type="text" placeholder="비밀번호" autocomplete="off" style="width:100%;padding:12px;margin-bottom:12px;border:1px solid #333;border-radius:8px;background:#0f0f23;color:#e8e8f0;font-size:15px;box-sizing:border-box;-webkit-text-security:disc;">
       <label style="display:flex;align-items:center;gap:8px;margin-bottom:16px;color:#8a8aa8;font-size:13px;cursor:pointer;">
         <input type="checkbox" id="login-auto" checked style="accent-color:#667eea;"> 자동 로그인
       </label>
@@ -72,14 +72,11 @@
           <span class="nav-icon">📸</span>
           <span class="nav-text">Instagram</span>
         </li>
-        <li class="nav-item" data-page="ai-agent-new">
-          <span class="nav-icon">💡</span>
-          <span class="nav-text">콘텐츠 추천</span>
-        </li>
-        <li class="nav-item" data-page="blog-wp">
-          <span class="nav-icon">📝</span>
-          <span class="nav-text">블로그/WP</span>
-        </li>
+        <!-- 콘텐츠 발행: 추후 활성화 -->
+        <!--<li class="nav-item" data-page="publish">
+          <span class="nav-icon">🚀</span>
+          <span class="nav-text">콘텐츠 발행</span>
+        </li>-->
       </ul>
       <div class="sidebar-footer">© 2026 BSN 콘텐츠팀</div>
     </nav>
@@ -94,79 +91,21 @@
       <!-- ═══ Calendar + 업무입력 통합 ═══ -->
       <section id="calendar-page" class="page">
         <div class="page-header">
-          <h1>📅 업무 / 캘린더</h1>
-          <div class="cal-header-right">
-            <div class="cal-view-toggle">
-              <button class="cal-view-btn active" id="cal-view-week">주간</button>
-              <button class="cal-view-btn" id="cal-view-month">월간</button>
-            </div>
-            <div class="week-nav">
-              <button id="prev-week">◀</button>
-              <span class="week-label" id="cal-week-label"></span>
-              <button id="next-week">▶</button>
-            </div>
+          <h1>📅 캘린더</h1>
+          <div class="cal-header-right" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <button id="prev-week" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);padding:6px 10px;cursor:pointer;font-size:14px;">◀</button>
+            <span id="cal-week-label" style="font-size:15px;font-weight:700;min-width:120px;text-align:center;"></span>
+            <button id="next-week" style="background:none;border:1px solid var(--border);border-radius:6px;color:var(--text-secondary);padding:6px 10px;cursor:pointer;font-size:14px;">▶</button>
+            <button id="cal-view-week" class="cal-view-btn" style="display:none;">주간</button>
+            <button id="cal-view-month" class="cal-view-btn active" style="display:none;">월간</button>
             <button class="btn btn-primary btn-sm" onclick="Calendar.openAddModal()">+ 업무 추가</button>
           </div>
         </div>
-        <!-- Team Sync Banner -->
-        <div class="team-sync-banner" id="team-sync-banner">
-          <div class="team-sync-info">
-            <span id="team-sync-status">🔒 로컬 저장 중</span>
-          </div>
-          <button class="btn btn-sm btn-primary" id="team-sync-btn">팀 공유 설정</button>
-        </div>
-        <!-- Team Sync Setup -->
-        <div class="team-sync-setup" id="team-sync-setup" style="display:none">
-          <div class="team-sync-card">
-            <h3>👥 팀 캘린더 공유</h3>
-            <p>Firebase를 연결하면 팀원들과 실시간으로 캘린더를 공유할 수 있습니다.</p>
-            <div class="yt-setup-steps" style="margin-bottom:14px">
-              <div class="yt-step">1. <a href="https://console.firebase.google.com/" target="_blank">Firebase Console</a> → 프로젝트 생성</div>
-              <div class="yt-step">2. Realtime Database 만들기 → 테스트 모드로 시작</div>
-              <div class="yt-step">3. 프로젝트 설정 → 웹 앱 추가 → config 복사</div>
-            </div>
-            <div class="yt-key-input-row" style="margin-bottom:8px">
-              <input type="text" id="firebase-url-input" placeholder="Firebase DB URL (예: https://xxx.firebaseio.com)">
-            </div>
-            <div class="yt-key-input-row" style="margin-bottom:8px">
-              <input type="text" id="firebase-key-input" placeholder="API Key">
-            </div>
-            <div class="yt-key-input-row" style="margin-bottom:8px">
-              <input type="text" id="team-name-input" placeholder="내 이름 (예: 홍길동)">
-            </div>
-            <div style="display:flex;gap:8px">
-              <button class="btn btn-primary" id="team-save-btn">연결</button>
-              <button class="btn btn-secondary" id="team-cancel-btn">취소</button>
-            </div>
-            <div class="yt-status" id="team-status" style="display:none"></div>
-          </div>
+        <div style="background:var(--card-bg);border-radius:8px;padding:8px 14px;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-muted);">
+          <span>✅ 서버 자동 저장 · PD끼리 실시간 공유</span>
+          <span style="margin-left:auto;">날짜 클릭 → 일정 추가 · ✕ → 삭제</span>
         </div>
         <div class="calendar-grid" id="calendar-grid"></div>
-
-        <!-- 업로드 예정 / 촬영 일정 (2열 정리) -->
-        <div class="upload-planner-grid">
-          <div class="up-section">
-            <div class="up-section-header">
-              <h3>📤 이번 주 업로드 예정</h3>
-              <button class="btn btn-primary btn-sm" onclick="UploadPlanner.openModal('this')">+ 추가</button>
-            </div>
-            <div class="up-list" id="up-this-week"></div>
-          </div>
-          <div class="up-section">
-            <div class="up-section-header">
-              <h3>📅 다음 주 업로드 예정</h3>
-              <button class="btn btn-primary btn-sm" onclick="UploadPlanner.openModal('next')">+ 추가</button>
-            </div>
-            <div class="up-list" id="up-next-week"></div>
-          </div>
-          <div class="up-section up-section-full">
-            <div class="up-section-header">
-              <h3>🎬 촬영 일정</h3>
-              <button class="btn btn-primary btn-sm" onclick="UploadPlanner.openShootModal()">+ 추가</button>
-            </div>
-            <div class="up-list" id="up-shoots"></div>
-          </div>
-        </div>
 
         <!-- 업로드 추가/편집 모달 -->
         <div class="modal-overlay" id="upload-modal">
@@ -258,8 +197,8 @@
         </div>
         <div class="page-body">
 
-          <!-- Channel Select -->
-          <div id="yt-channel-select">
+          <!-- Channel Select (기본 숨김 — 채널 목록 버튼 눌러야 표시) -->
+          <div id="yt-channel-select" style="display:none;">
             <div class="channel-select-grid">
               <div class="channel-select-card" onclick="ContentBoard.selectChannel('bilsanam')">
                 <div class="cs-icon">🏢</div>
@@ -321,14 +260,14 @@
             <!-- Quick Stats Row -->
             <div class="yt-quick-stats" id="yt-quick-stats"></div>
 
-            <!-- AI 통계 분석 (자동) -->
+            <!-- AI 통계 분석 (자동 + 수동) -->
             <div class="ai-auto-section">
               <div class="ai-auto-header">
                 <h3 class="yt-section-title">🤖 AI 통계 분석</h3>
-                <button class="btn btn-sm btn-secondary" id="ai-auto-retry" onclick="ContentBoard.runAutoAI()" style="display:none">다시 분석</button>
+                <button class="btn btn-sm btn-secondary" id="ai-auto-retry" onclick="ContentBoard.runAutoAI()" style="display:none;">다시 분석</button>
               </div>
-              <div id="ai-auto-result">
-                <div class="ai-loading"><div class="yt-spinner"></div> AI가 채널 데이터를 분석 중입니다...</div>
+              <div id="ai-auto-result" style="color:#8a8aa8;font-size:13px;padding:8px 0;">
+                채널 데이터 로딩 후 자동 분석됩니다...
               </div>
             </div>
 
@@ -493,7 +432,7 @@
                 <button class="bsn-channel-link" onclick="App.switchPage('content-board');ContentBoard.selectChannel('bilsanam');">상세 →</button>
               </div>
               <div class="bsn-channel-stats" id="dash-bilsanam-stats">
-                <div class="empty-state" style="padding:20px;"><div class="empty-icon">⏳</div><p>로딩 중…</p></div>
+                <div style="padding:20px;text-align:center;color:#8a8aa8;">자동 로딩 중...</div>
               </div>
               <div class="bsn-channel-recent" id="dash-bilsanam-recent"></div>
             </div>
@@ -509,7 +448,7 @@
                 <button class="bsn-channel-link" onclick="App.switchPage('content-board');ContentBoard.selectChannel('seoulspace');">상세 →</button>
               </div>
               <div class="bsn-channel-stats" id="dash-seoulspace-stats">
-                <div class="empty-state" style="padding:20px;"><div class="empty-icon">⏳</div><p>로딩 중…</p></div>
+                <div style="padding:20px;text-align:center;color:#8a8aa8;">자동 로딩 중...</div>
               </div>
               <div class="bsn-channel-recent" id="dash-seoulspace-recent"></div>
             </div>
@@ -525,32 +464,20 @@
                 <button class="bsn-channel-link" onclick="App.switchPage('instagram');">상세 →</button>
               </div>
               <div class="bsn-channel-stats" id="dash-instagram-stats">
-                <div class="empty-state" style="padding:20px;"><div class="empty-icon">⏳</div><p>로딩 중…</p></div>
+                <div style="padding:20px;text-align:center;color:#8a8aa8;">자동 로딩 중...</div>
               </div>
               <div class="bsn-channel-recent" id="dash-instagram-recent"></div>
             </div>
           </div>
 
-          <!-- 채널별 업로드 현황 -->
-          <div class="pd-summary-section">
-            <div class="pd-summary-header">
-              <h2>📺 채널별 업로드 현황</h2>
-              <button class="btn btn-secondary btn-sm" onclick="App.switchPage('calendar')">캘린더에서 편집 →</button>
-            </div>
-            <div class="channel-schedule-grid" id="dash-channel-schedule"></div>
-          </div>
-
-          <!-- PD별 업무 요약 -->
-          <div class="pd-summary-section">
+          <!-- PD별 업무 현황 (캘린더 연동) -->
+          <div class="pd-summary-section" style="margin-top:20px;">
             <div class="pd-summary-header">
               <h2>👥 PD별 업무 현황</h2>
-              <button class="btn btn-secondary btn-sm" onclick="UploadPlanner.openModal('this')">+ 업로드 추가</button>
+              <button class="btn btn-secondary btn-sm" onclick="App.switchPage('calendar')">캘린더에서 편집 →</button>
             </div>
             <div class="pd-cards-grid" id="dash-pd-summary"></div>
           </div>
-
-          <!-- 수동 통계 입력 영역 (기존 유지) -->
-          <div class="stats-cards" id="stats-cards" style="margin-top:24px;"></div>
 
         </div>
       </section>
@@ -1175,6 +1102,117 @@
         </div>
       </section>
 
+      <!-- ═══ 콘텐츠 발행 (글 + 카드뉴스 통합) ═══ -->
+      <section id="publish-page" class="page">
+        <div class="page-header">
+          <h1>🚀 콘텐츠 발행</h1>
+        </div>
+
+        <!-- AI 추천 주제 -->
+        <div style="background:var(--card-bg);border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <h3 style="margin:0;font-size:15px;">💡 AI 추천 주제</h3>
+            <button class="btn btn-sm btn-secondary" onclick="Publisher.refreshTopics()">🔄 새 주제</button>
+          </div>
+          <div id="pub-topics" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="pub-topic-chip" onclick="Publisher.useTopic(this)">2026 하반기 꼬마빌딩 투자 전망</span>
+            <span class="pub-topic-chip" onclick="Publisher.useTopic(this)">신사동 vs 성수동 상가 수익률 비교</span>
+            <span class="pub-topic-chip" onclick="Publisher.useTopic(this)">빌딩 매입 시 반드시 확인할 5가지</span>
+            <span class="pub-topic-chip" onclick="Publisher.useTopic(this)">월세 1억 받는 건물주가 되려면?</span>
+            <span class="pub-topic-chip" onclick="Publisher.useTopic(this)">소액 빌딩 투자, 10억으로 시작하기</span>
+            <span class="pub-topic-chip" onclick="Publisher.useTopic(this)">공실률 낮추는 임차인 유치 전략</span>
+          </div>
+        </div>
+
+        <!-- 탭: 글 발행 / 카드뉴스 -->
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <button class="btn pub-tab-btn active" onclick="Publisher.switchTab('text')" data-tab="text">📝 글 발행 (6개 플랫폼)</button>
+          <button class="btn pub-tab-btn" onclick="Publisher.switchTab('cardnews')" data-tab="cardnews">🎨 카드뉴스 제작</button>
+        </div>
+
+        <!-- ─── 탭1: 글 발행 ─── -->
+        <div id="pub-tab-text">
+          <div style="background:var(--card-bg);border-radius:12px;padding:20px;margin-bottom:20px;">
+            <div style="display:flex;gap:8px;margin-bottom:12px;">
+              <button class="btn btn-sm pub-src-btn active" onclick="Publisher.switchSource('manual')" data-src="manual">직접 입력</button>
+              <button class="btn btn-sm pub-src-btn" onclick="Publisher.switchSource('youtube')" data-src="youtube">유튜브 영상 기반</button>
+            </div>
+            <div id="pub-src-manual">
+              <input type="text" id="pub-title" placeholder="제목" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;margin-bottom:8px;box-sizing:border-box;">
+              <textarea id="pub-content" rows="4" placeholder="핵심 키워드나 내용만 입력하면 AI가 각 플랫폼에 맞게 작성합니다." style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;resize:vertical;box-sizing:border-box;"></textarea>
+            </div>
+            <div id="pub-src-youtube" style="display:none;">
+              <div id="pub-yt-list" style="max-height:200px;overflow-y:auto;"></div>
+            </div>
+            <button class="btn btn-primary" onclick="Publisher.generateAll()" style="margin-top:12px;" id="pub-gen-btn">🤖 6개 플랫폼 동시 생성</button>
+            <div id="pub-loading" style="display:none;padding:12px;text-align:center;color:var(--text-muted);">
+              <div class="yt-spinner" style="display:inline-block;margin-right:8px;"></div> AI가 플랫폼별 콘텐츠를 생성 중...
+            </div>
+          </div>
+          <div id="pub-results" style="display:none;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;">
+              <div class="pub-card" id="pub-card-blog"><div class="pub-card-header"><span>📝 네이버 블로그</span><button class="btn btn-sm btn-primary" onclick="Publisher.copy('blog')">복사</button></div><div class="pub-card-body" id="pub-body-blog"></div></div>
+              <div class="pub-card" id="pub-card-wordpress"><div class="pub-card-header"><span>🌐 WordPress</span><button class="btn btn-sm btn-primary" onclick="Publisher.copy('wordpress')">복사</button></div><div class="pub-card-body" id="pub-body-wordpress"></div></div>
+              <div class="pub-card" id="pub-card-threads"><div class="pub-card-header"><span>🧵 Threads</span><button class="btn btn-sm btn-primary" onclick="Publisher.copy('threads')">복사</button></div><div class="pub-card-body" id="pub-body-threads"></div></div>
+              <div class="pub-card" id="pub-card-linkedin"><div class="pub-card-header"><span>💼 LinkedIn</span><button class="btn btn-sm btn-primary" onclick="Publisher.copy('linkedin')">복사</button></div><div class="pub-card-body" id="pub-body-linkedin"></div></div>
+              <div class="pub-card" id="pub-card-tistory"><div class="pub-card-header"><span>📖 티스토리</span><button class="btn btn-sm btn-primary" onclick="Publisher.copy('tistory')">복사</button></div><div class="pub-card-body" id="pub-body-tistory"></div></div>
+              <div class="pub-card" id="pub-card-instagram"><div class="pub-card-header"><span>📸 Instagram 캡션</span><button class="btn btn-sm btn-primary" onclick="Publisher.copy('instagram')">복사</button></div><div class="pub-card-body" id="pub-body-instagram"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── 탭2: 카드뉴스 제작 ─── -->
+        <div id="pub-tab-cardnews" style="display:none;">
+          <div style="background:var(--card-bg);border-radius:12px;padding:20px;margin-bottom:20px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;">
+              <div style="flex:1;min-width:200px;">
+                <label style="font-size:12px;color:var(--text-muted);">주제</label>
+                <input type="text" id="cne-topic" placeholder="위 추천 주제를 클릭하거나 직접 입력" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;box-sizing:border-box;">
+              </div>
+              <div style="width:80px;">
+                <label style="font-size:12px;color:var(--text-muted);">장수</label>
+                <select id="cne-pages" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);"><option value="5">5장</option><option value="7" selected>7장</option><option value="10">10장</option></select>
+              </div>
+              <div style="width:100px;">
+                <label style="font-size:12px;color:var(--text-muted);">스타일</label>
+                <select id="cne-style" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);"><option value="modern">모던</option><option value="bold">볼드</option><option value="soft">소프트</option><option value="data">데이터</option></select>
+              </div>
+              <button class="btn btn-primary" onclick="CardNewsEditor.generate()" id="cne-gen-btn">🤖 AI 생성</button>
+              <button class="btn btn-secondary" onclick="CardNewsEditor.downloadAll()" style="display:none;" id="cne-download-all">💾 전체 저장</button>
+            </div>
+            <div id="cne-loading" style="display:none;padding:16px;text-align:center;color:var(--text-muted);"><div class="yt-spinner" style="display:inline-block;margin-right:8px;"></div> AI가 카드뉴스를 만들고 있습니다...</div>
+          </div>
+          <div id="cne-workspace" style="display:none;">
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+              <div id="cne-card-list" style="display:flex;flex-direction:column;gap:8px;width:100px;flex-shrink:0;"></div>
+              <div style="flex:1;min-width:300px;">
+                <div id="cne-preview" style="width:400px;max-width:100%;aspect-ratio:1;background:#1a1a2e;border-radius:12px;overflow:hidden;position:relative;margin:0 auto;"></div>
+              </div>
+              <div id="cne-props" style="width:240px;flex-shrink:0;background:var(--card-bg);border-radius:12px;padding:16px;">
+                <h4 style="margin:0 0 12px;">✏️ 편집</h4>
+                <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);">제목</label><textarea id="cne-edit-headline" rows="2" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:14px;resize:vertical;box-sizing:border-box;" oninput="CardNewsEditor.updateCard()"></textarea></div>
+                <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);">보조 텍스트</label><textarea id="cne-edit-subtext" rows="2" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px;resize:vertical;box-sizing:border-box;" oninput="CardNewsEditor.updateCard()"></textarea></div>
+                <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);">데이터 포인트</label><input id="cne-edit-data" type="text" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px;box-sizing:border-box;" oninput="CardNewsEditor.updateCard()"></div>
+                <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);">배경색</label>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <span class="cne-color-btn" style="background:rgba(20,20,40,0.85);" onclick="CardNewsEditor.setBg(this)" data-bg="rgba(20,20,40,0.85)"></span>
+                    <span class="cne-color-btn" style="background:rgba(0,0,0,0.75);" onclick="CardNewsEditor.setBg(this)" data-bg="rgba(0,0,0,0.75)"></span>
+                    <span class="cne-color-btn" style="background:rgba(255,255,255,0.88);" onclick="CardNewsEditor.setBg(this)" data-bg="rgba(255,255,255,0.88)"></span>
+                    <span class="cne-color-btn" style="background:rgba(10,25,47,0.88);" onclick="CardNewsEditor.setBg(this)" data-bg="rgba(10,25,47,0.88)"></span>
+                    <span class="cne-color-btn" style="background:rgba(50,0,30,0.85);" onclick="CardNewsEditor.setBg(this)" data-bg="rgba(50,0,30,0.85)"></span>
+                    <span class="cne-color-btn" style="background:rgba(0,50,30,0.85);" onclick="CardNewsEditor.setBg(this)" data-bg="rgba(0,50,30,0.85)"></span>
+                  </div>
+                </div>
+                <div style="margin-bottom:12px;"><label style="font-size:12px;color:var(--text-muted);">배경 이미지 (영문)</label>
+                  <div style="display:flex;gap:4px;"><input id="cne-edit-imgquery" type="text" placeholder="modern building" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:12px;box-sizing:border-box;"><button class="btn btn-sm btn-primary" onclick="CardNewsEditor.changeImage()">변경</button></div>
+                </div>
+                <button class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="CardNewsEditor.downloadCurrent()">💾 이 카드 저장</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -1275,7 +1313,7 @@
       <div class="modal-close-row">
         <button class="btn-icon" onclick="ContentBoard.closeVideoAnalysis()" title="닫기">✕</button>
       </div>
-      <div id="video-analysis-content"></div>
+      <div id="va-content"></div>
     </div>
   </div>
 
@@ -1341,6 +1379,133 @@
   <script src="js/analytics.js"></script>
   <script src="js/marketing.js"></script>
   <script src="js/blog-wp.js"></script>
+  <script src="js/cardnews-editor.js"></script>
+  <script src="js/publisher.js"></script>
   <script src="js/app.js"></script>
+  <script>
+  // 대시보드 자동 로딩 — 다른 모듈 에러와 무관하게 독립 실행
+  (function() {
+    function loadDash() {
+      fetch('/api/dashboard-data').then(function(r){return r.json()}).then(function(data) {
+        if (data.bilsanam) renderYT(data.bilsanam, 'dash-bilsanam-stats', 'dash-bilsanam-recent');
+        if (data.seoulspace) renderYT(data.seoulspace, 'dash-seoulspace-stats', 'dash-seoulspace-recent');
+      }).catch(function(e) {
+        var el = document.getElementById('dash-bilsanam-stats');
+        if (el) el.innerHTML = '<div style="padding:12px;color:#ff6b6b;font-size:13px;">로딩 실패: '+e.message+'</div>';
+      });
+    }
+    function fmt(n) {
+      if (!n) return '0';
+      n = Number(n);
+      if (n >= 10000) return (n/10000).toFixed(1)+'만';
+      if (n >= 1000) return (n/1000).toFixed(1)+'K';
+      return n.toLocaleString();
+    }
+    function renderYT(d, statsId, recentId) {
+      var s = document.getElementById(statsId);
+      var r = document.getElementById(recentId);
+      if (!s) return;
+      var info = d.channelInfo;
+      if (!info) { s.innerHTML = '<div style="padding:12px;color:#8a8aa8;">데이터 없음</div>'; return; }
+      var vids = d.videos || [];
+      var subs = Number(info.subscriberCount||0);
+      var views = Number(info.viewCount||0);
+      var cnt = Number(info.videoCount||vids.length||0);
+      s.innerHTML =
+        '<div class="bsn-stat-item"><div class="bsn-stat-value">'+fmt(subs)+'</div><div class="bsn-stat-label">구독자</div></div>'+
+        '<div class="bsn-stat-item"><div class="bsn-stat-value">'+fmt(views)+'</div><div class="bsn-stat-label">총 조회수</div></div>'+
+        '<div class="bsn-stat-item"><div class="bsn-stat-value">'+cnt+'</div><div class="bsn-stat-label">영상 수</div></div>';
+      if (r && vids.length > 0) {
+        r.innerHTML = '<div class="bsn-recent-title">최근 영상</div>' +
+          vids.slice(0,3).map(function(v) {
+            return '<a href="https://youtube.com/watch?v='+v.id+'" target="_blank" class="bsn-recent-item">'+
+              (v.thumbnail?'<img class="bsn-recent-thumb" src="'+v.thumbnail+'" loading="lazy">':'')+
+              '<div class="bsn-recent-info"><div class="bsn-recent-title-text">'+v.title+'</div>'+
+              '<div class="bsn-recent-meta">👁 '+fmt(v.viewCount)+' · 👍 '+fmt(v.likeCount)+'</div></div></a>';
+          }).join('');
+      }
+    }
+    function loadPdSummary() {
+      fetch('/api/tasks').then(function(r){return r.json()}).then(function(tasks) {
+        var el = document.getElementById('dash-pd-summary');
+        if (!el || !tasks || tasks.length === 0) {
+          if (el) el.innerHTML = '<div style="padding:20px;text-align:center;color:#8a8aa8;">캘린더에서 업무를 추가하면 PD별로 자동 표시됩니다.</div>';
+          return;
+        }
+        var today = new Date(); today.setHours(0,0,0,0);
+        var colors = {'기획':'#667eea','촬영':'#ff4444','편집':'#ff8a00','업로드':'#48cae4','미팅':'#9b59b6','마케팅':'#e1306c','기타':'#888'};
+        var pdMap = {};
+        var dayN = ['일','월','화','수','목','금','토'];
+        tasks.forEach(function(t) {
+          var pdRaw = t.pd || '';
+          if (!pdRaw || pdRaw === '미지정') return;
+          var pdNames = pdRaw.split(/[,、]\s*/);
+          pdNames.forEach(function(pd) {
+            pd = pd.trim();
+            if (!pd) return;
+          if (!pdMap[pd]) pdMap[pd] = {up:[],past:[]};
+          var d = new Date(t.date+'T00:00:00');
+          if (d >= today) pdMap[pd].up.push(t); else pdMap[pd].past.push(t);
+          }); // pdNames forEach
+        });
+        var html = Object.keys(pdMap).filter(function(pd){return pdMap[pd].up.length>0||pdMap[pd].past.length>0}).map(function(pd) {
+          var data = pdMap[pd];
+          var upcoming = data.up.sort(function(a,b){return a.date.localeCompare(b.date)}).slice(0,5);
+          var past = data.past.sort(function(a,b){return b.date.localeCompare(a.date)}).slice(0,3);
+          var rows = function(list,dim) {
+            return list.map(function(t) {
+              var d=new Date(t.date+'T00:00:00'); var c=colors[t.category]||'#888';
+              var timeStr=''; if(t.time){timeStr=t.time; if(t.timeEnd) timeStr+='~'+t.timeEnd;}
+              var updated = t.serverTime ? ' · ' + new Date(t.serverTime).toLocaleDateString('ko') + ' 등록' : '';
+              return '<div style="display:flex;gap:8px;align-items:center;padding:5px 0;font-size:14px;border-bottom:1px solid #ffffff08;'+(dim?'opacity:0.5;':'')+'">'+
+                '<span style="min-width:55px;color:#8a8aa8;font-size:13px;">'+(d.getMonth()+1)+'/'+d.getDate()+'('+dayN[d.getDay()]+')</span>'+
+                (timeStr?'<span style="color:#667eea;font-size:12px;background:#667eea15;padding:2px 6px;border-radius:4px;">'+timeStr+'</span>':'')+
+                '<span style="color:'+c+';font-size:15px;">'+(t.categoryEmoji||'📌')+'</span>'+
+                '<span onclick="Calendar.openEdit(\''+t.id+'\')" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;font-weight:500;" title="클릭하여 수정">'+t.text+'<span style="font-size:10px;color:#555;font-weight:400;">'+updated+'</span></span>'+
+                '<span onclick="Storage.deleteTask(\''+t.id+'\');window._refreshPdSummary();" style="cursor:pointer;color:#666;font-size:12px;padding:4px;opacity:0.4;" onmouseover="this.style.opacity=1;this.style.color=\'#ff4444\'" onmouseout="this.style.opacity=0.4;this.style.color=\'#666\'">✕</span></div>';
+            }).join('');
+          };
+          return '<div class="pd-card">'+
+            '<div class="pd-card-header"><div class="pd-avatar">'+pd.charAt(0)+'</div><div class="pd-info"><div class="pd-name">'+pd+'</div><div class="pd-stats">예정 '+data.up.length+'건'+(data.past.length?' · 완료 '+data.past.length+'건':'')+'</div></div></div>'+
+            (upcoming.length?'<div style="padding:8px 12px;"><div style="font-size:11px;color:#8a8aa8;margin-bottom:4px;">📤 예정</div>'+rows(upcoming,false)+'</div>':'')+
+            (past.length?'<div style="padding:4px 12px 8px;"><div style="font-size:11px;color:#8a8aa8;margin-bottom:4px;">✅ 완료</div>'+rows(past,true)+'</div>':'')+
+          '</div>';
+        }).join('');
+        el.innerHTML = html || '<div style="padding:20px;text-align:center;color:#8a8aa8;">캘린더에서 업무를 추가하면 PD별로 자동 표시됩니다.</div>';
+      }).catch(function(){});
+    }
+    function loadIG() {
+      var s = document.getElementById('dash-instagram-stats');
+      var r = document.getElementById('dash-instagram-recent');
+      if (!s) return;
+      fetch('/api/ig/proxy/me?fields=id,username').then(function(res){return res.json()}).then(function(me) {
+        if (me.error || !me.id) { s.innerHTML='<div style="padding:12px;color:#8a8aa8;">인스타 연결 안됨</div>'; return; }
+        return fetch('/api/ig/proxy/'+me.id+'?fields=name,username,followers_count,media_count').then(function(res){return res.json()}).then(function(p) {
+          if (p.error) return;
+          s.innerHTML =
+            '<div class="bsn-stat-item"><div class="bsn-stat-value">'+fmt(p.followers_count)+'</div><div class="bsn-stat-label">팔로워</div></div>'+
+            '<div class="bsn-stat-item"><div class="bsn-stat-value">'+fmt(p.media_count)+'</div><div class="bsn-stat-label">게시물</div></div>'+
+            '<div class="bsn-stat-item"><div class="bsn-stat-value">@'+(p.username||'')+'</div><div class="bsn-stat-label">계정</div></div>';
+          return fetch('/api/ig/proxy/'+me.id+'/media?fields=id,caption,like_count,comments_count,permalink,thumbnail_url,media_url&limit=3').then(function(res){return res.json()}).then(function(media) {
+            if (!r || !media.data) return;
+            r.innerHTML = '<div class="bsn-recent-title">최근 게시물</div>' +
+              media.data.map(function(m) {
+                var img = m.thumbnail_url || m.media_url || '';
+                var cap = (m.caption||'').slice(0,30);
+                return '<a href="'+(m.permalink||'#')+'" target="_blank" class="bsn-recent-item">'+
+                  (img?'<img class="bsn-recent-thumb" src="'+img+'" loading="lazy">':'')+
+                  '<div class="bsn-recent-info"><div class="bsn-recent-title-text">'+cap+'</div>'+
+                  '<div class="bsn-recent-meta">❤ '+fmt(m.like_count)+' · 💬 '+fmt(m.comments_count)+'</div></div></a>';
+              }).join('');
+          });
+        });
+      }).catch(function(){ if(s) s.innerHTML='<div style="padding:12px;color:#8a8aa8;">인스타 로딩 실패</div>'; });
+    }
+    // 페이지 로드 후 실행
+    setTimeout(function(){ loadDash(); loadIG(); loadPdSummary(); }, 1000);
+    // 대시보드 탭 전환 시마다 PD 현황 갱신
+    window._refreshPdSummary = loadPdSummary;
+  })();
+  </script>
 </body>
 </html>

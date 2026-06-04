@@ -19,8 +19,16 @@ app.use(express.json());
 // API 매니저 초기화
 const apiManager = new APIManager();
 
-// 정적 파일 서빙 (현황판 웹페이지)
-app.use(express.static(path.join(__dirname, '..')));
+// 정적 파일 서빙 (현황판 웹페이지) — JS/CSS 캐시 방지
+app.use(express.static(path.join(__dirname, '..'), {
+  setHeaders: function(res, filePath) {
+    if (filePath.endsWith('.js') || filePath.endsWith('.css') || filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }
+}));
 
 const DATA_DIR = path.join(__dirname, 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
@@ -101,6 +109,143 @@ app.post('/api/tasks/sync', (req, res) => {
   res.json({ ok: true, tasks: serverTasks, added: added });
 });
 
+app.put('/api/tasks/:id', (req, res) => {
+  var tasks = loadTasks();
+  var idx = tasks.findIndex(function(t) { return t.id === req.params.id; });
+  if (idx === -1) return res.status(404).json({ error: 'not found' });
+  Object.assign(tasks[idx], req.body, { id: req.params.id });
+  saveTasks(tasks);
+  res.json({ ok: true, task: tasks[idx] });
+});
+
+app.delete('/api/tasks/:id', (req, res) => {
+  var tasks = loadTasks().filter(function(t) { return t.id !== req.params.id; });
+  saveTasks(tasks);
+  res.json({ ok: true, total: tasks.length });
+});
+
+// ── API: YouTube 프록시 (브라우저 CORS 우회) ──
+app.get('/api/youtube/:endpoint', async (req, res) => {
+  var config = loadConfig();
+  var apiKey = (config.youtube && config.youtube.apiKey) || '';
+  if (!apiKey) return res.status(503).json({ error: 'YouTube API 키 없음' });
+
+  var endpoint = req.params.endpoint;
+  var allowed = ['search', 'channels', 'playlistItems', 'videos'];
+  if (!allowed.includes(endpoint)) return res.status(400).json({ error: '허용되지 않은 엔드포인트' });
+
+  var params = new URLSearchParams(req.query);
+  params.set('key', apiKey);
+  var url = 'https://www.googleapis.com/youtube/v3/' + endpoint + '?' + params.toString();
+
+  try {
+    var response = await fetch(url);
+    var data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
+});
+
+// ── API: 대시보드 데이터 (서버사이드 YouTube 캐시) ──
+var dashboardCache = { data: null, timestamp: 0 };
+var DASH_CACHE_TTL = 10 * 60 * 1000; // 10분
+
+app.get('/api/dashboard-data', async (req, res) => {
+  // 캐시 유효하면 바로 반환
+  if (dashboardCache.data && (Date.now() - dashboardCache.timestamp < DASH_CACHE_TTL)) {
+    return res.json(dashboardCache.data);
+  }
+
+  var config = loadConfig();
+  var apiKey = (config.youtube && config.youtube.apiKey) || '';
+  if (!apiKey) return res.json({ bilsanam: null, seoulspace: null });
+
+  var result = { bilsanam: null, seoulspace: null };
+  var channels = [
+    { key: 'bilsanam', search: '빌사남 TV' },
+    { key: 'seoulspace', search: '서울스페이스' }
+  ];
+
+  for (var ch of channels) {
+    try {
+      // 1. 채널 검색
+      var searchUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(ch.search) + '&type=channel&maxResults=1&key=' + apiKey;
+      var searchRes = await fetch(searchUrl);
+      var searchData = await searchRes.json();
+      if (!searchData.items || !searchData.items[0]) continue;
+      var channelId = searchData.items[0].id.channelId;
+
+      // 2. 채널 정보
+      var chUrl = 'https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&id=' + channelId + '&key=' + apiKey;
+      var chRes = await fetch(chUrl);
+      var chData = await chRes.json();
+      if (!chData.items || !chData.items[0]) continue;
+      var c = chData.items[0];
+      var channelInfo = {
+        title: c.snippet.title,
+        thumbnail: (c.snippet.thumbnails && c.snippet.thumbnails.medium) ? c.snippet.thumbnails.medium.url : '',
+        subscriberCount: Number(c.statistics.subscriberCount) || 0,
+        videoCount: Number(c.statistics.videoCount) || 0,
+        viewCount: Number(c.statistics.viewCount) || 0
+      };
+      var uploadsId = c.contentDetails && c.contentDetails.relatedPlaylists ? c.contentDetails.relatedPlaylists.uploads : '';
+
+      // 3. 최근 영상
+      var videos = [];
+      if (uploadsId) {
+        var plUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=' + uploadsId + '&maxResults=10&key=' + apiKey;
+        var plRes = await fetch(plUrl);
+        var plData = await plRes.json();
+        var ids = (plData.items || []).map(function(i) { return i.contentDetails.videoId; }).filter(Boolean);
+        if (ids.length > 0) {
+          var vUrl = 'https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=' + ids.join(',') + '&key=' + apiKey;
+          var vRes = await fetch(vUrl);
+          var vData = await vRes.json();
+          videos = (vData.items || []).map(function(v) {
+            return {
+              id: v.id, title: v.snippet.title, publishedAt: v.snippet.publishedAt,
+              thumbnail: (v.snippet.thumbnails && v.snippet.thumbnails.medium) ? v.snippet.thumbnails.medium.url : '',
+              viewCount: Number(v.statistics.viewCount) || 0,
+              likeCount: Number(v.statistics.likeCount) || 0,
+              commentCount: Number(v.statistics.commentCount) || 0
+            };
+          });
+        }
+      }
+      result[ch.key] = { channelInfo: channelInfo, videos: videos };
+    } catch (e) {
+      console.warn(ch.key + ' fetch error:', e.message);
+    }
+  }
+
+  dashboardCache = { data: result, timestamp: Date.now() };
+  res.json(result);
+});
+
+// ── API: Instagram 프록시 (브라우저 CORS 우회) ──
+app.get('/api/ig/proxy/*', async (req, res) => {
+  var config = loadConfig();
+  var token = (config.instagram && config.instagram.token) || '';
+  if (!token) return res.status(503).json({ error: 'Instagram 토큰 없음' });
+
+  var igPath = req.params[0] || '';
+  var params = new URLSearchParams(req.query);
+  params.set('access_token', token);
+
+  // IG 토큰이면 graph.instagram.com, FB 토큰이면 graph.facebook.com
+  var host = token.startsWith('IGAA') ? 'graph.instagram.com' : 'graph.facebook.com';
+  var url = 'https://' + host + '/v19.0/' + igPath + '?' + params.toString();
+
+  try {
+    var response = await fetch(url);
+    var data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(502).json({ error: err.message });
+  }
+});
+
 // ── API: Instagram 토큰 ──
 app.get('/api/ig/token', (req, res) => {
   var config = loadConfig();
@@ -131,8 +276,16 @@ app.post('/api/ai/analyze', async (req, res) => {
   const { prompt, systemPrompt, maxTokens } = req.body;
   if (!prompt) return res.status(400).json({ success: false, error: '프롬프트 필요' });
 
-  var key = apiManager.config.anthropic;
-  if (!key || key.length < 20) return res.status(503).json({ success: false, error: 'Claude API 키 미설정. .env ANTHROPIC_API_KEY를 확인해주세요.' });
+  var key = apiManager.config.anthropic || process.env.ANTHROPIC_API_KEY || '';
+  // .env 폴백: 직접 파일에서 읽기
+  if (!key || key.length < 20) {
+    try {
+      var envContent = require('fs').readFileSync(require('path').join(__dirname, '..', '.env'), 'utf8');
+      var match = envContent.match(/ANTHROPIC_API_KEY=(.+)/);
+      if (match) key = match[1].trim();
+    } catch(e) {}
+  }
+  if (!key || key.length < 20) return res.status(503).json({ success: false, error: 'Claude API 키 미설정' });
 
   try {
     var body = {

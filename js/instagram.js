@@ -136,19 +136,12 @@ const Instagram = {
     document.getElementById('ig-setup-area').style.display = 'none';
     document.getElementById('ig-loading').style.display = 'flex';
     try {
-      var isIgToken = token.startsWith('IGAA');
-      if (isIgToken) {
-        // IG 토큰: 직접 조회
-        var meRes = await fetch('https://graph.instagram.com/v19.0/me?fields=id,username&access_token=' + token);
-        var meData = await meRes.json();
-        if (meData.error) throw new Error(meData.error.message);
-        localStorage.setItem(this.TOKEN_KEY, token);
-        localStorage.setItem(this.USER_ID_KEY, meData.id);
-      } else {
-        // Facebook 토큰
-        localStorage.setItem(this.TOKEN_KEY, token);
-        localStorage.setItem(this.USER_ID_KEY, this.IG_USER_ID);
-      }
+      // 서버 프록시로 조회
+      var meRes = await fetch('/api/ig/proxy/me?fields=id,username');
+      var meData = await meRes.json();
+      if (meData.error) throw new Error(meData.error.message);
+      localStorage.setItem(this.TOKEN_KEY, token);
+      localStorage.setItem(this.USER_ID_KEY, meData.id);
       document.getElementById('ig-loading').style.display = 'none';
       await this.fetchData(true);
     } catch (err) {
@@ -178,25 +171,22 @@ const Instagram = {
     }
     document.getElementById('ig-loading').style.display = 'flex';
     try {
-      var token = this.getToken();
       var userId = this.getUserId();
-      var isIgToken = token.startsWith('IGAA');
-      var apiBase = isIgToken ? 'https://graph.instagram.com/v19.0' : 'https://graph.facebook.com/v19.0';
 
-      // IG 토큰이고 userId가 없으면 me로 조회
-      if (!userId && isIgToken) {
-        var meRes = await fetch('https://graph.instagram.com/v19.0/me?fields=id,username&access_token=' + token);
+      // 서버 프록시 경유 (CORS 문제 없음)
+      if (!userId) {
+        var meRes = await fetch('/api/ig/proxy/me?fields=id,username');
         var meData = await meRes.json();
         if (meData.error) throw new Error(meData.error.message);
         userId = meData.id;
         localStorage.setItem(this.USER_ID_KEY, userId);
       }
 
-      var profileRes = await fetch(apiBase + '/' + userId + '?fields=name,username,profile_picture_url,followers_count,media_count&access_token=' + token);
+      var profileRes = await fetch('/api/ig/proxy/' + userId + '?fields=name,username,profile_picture_url,followers_count,media_count');
       var profile = await profileRes.json();
       if (profile.error) throw new Error(profile.error.message);
 
-      var mediaRes = await fetch(apiBase + '/' + userId + '/media?fields=id,caption,media_type,timestamp,like_count,comments_count,permalink,thumbnail_url,media_url&limit=30&access_token=' + token);
+      var mediaRes = await fetch('/api/ig/proxy/' + userId + '/media?fields=id,caption,media_type,timestamp,like_count,comments_count,permalink,thumbnail_url,media_url&limit=30');
       var mediaData = await mediaRes.json();
       if (mediaData.error) throw new Error(mediaData.error.message);
 
@@ -217,14 +207,7 @@ const Instagram = {
       this.render();
     } catch (err) {
       this.showStatus('데이터 로드 실패: ' + err.message, 'error');
-      if (err.message.includes('token') || err.message.includes('Session') || err.message.includes('expired')) {
-        localStorage.removeItem(this.TOKEN_KEY);
-        localStorage.removeItem(this.USER_ID_KEY);
-        document.getElementById('ig-setup-area').style.display = 'flex';
-        document.getElementById('ig-dashboard-area').style.display = 'none';
-      } else {
-        this.loadDemo();
-      }
+      this.loadDemo();
     } finally {
       document.getElementById('ig-loading').style.display = 'none';
     }

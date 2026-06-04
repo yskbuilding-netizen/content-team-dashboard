@@ -119,11 +119,25 @@ const ContentBoard = {
     document.getElementById('yt-page-title').textContent = `🎬 ${ch.name}`;
     document.getElementById('yt-channel-select').style.display = 'none';
     document.getElementById('yt-back-btn').style.display = 'inline-flex';
-    this.data = null;
+    document.getElementById('yt-setup-area').style.display = 'none';
+    document.getElementById('yt-dashboard-area').style.display = 'block';
     this.useDemo = false;
 
     // 채널별 캐시/ID 로드
     YouTubeService.CACHE_KEY = ch.cacheKey;
+
+    // 캐시 있으면 즉시 표시
+    let raw = null;
+    try { raw = JSON.parse(localStorage.getItem(ch.cacheKey)); } catch {}
+    const cached = (raw && raw.data) ? raw.data : raw;
+    if (cached && cached.channelInfo) {
+      this.data = cached;
+      this.render();
+      return;
+    }
+
+    // 캐시 없으면 API 호출
+    this.data = null;
     const savedId = localStorage.getItem(ch.channelIdKey);
     if (savedId) {
       YouTubeService.setChannelId(savedId);
@@ -194,9 +208,9 @@ const ContentBoard = {
   },
 
   async refresh() {
-    // 채널이 선택되지 않았으면 선택 화면
+    // 채널이 선택되지 않았으면 자동으로 빌사남TV 선택 (상세 안 눌러도 바로)
     if (!this.currentChannel) {
-      this.showChannelSelect();
+      this.selectChannel('bilsanam');
       return;
     }
 
@@ -293,6 +307,7 @@ const ContentBoard = {
     this.renderChannelHeader();
     this.renderOverviewCards();
     this.renderQuickStats();
+    // AI 자동 분석 (서버 프록시 경유)
     this.runAutoAI();
     this.renderVideoCards();
     this.renderRecommendations();
@@ -920,6 +935,85 @@ const ContentBoard = {
     modal.classList.add('active');
     // 규칙 기반 분석 바로 표시
     document.getElementById('ai-result').innerHTML = this.getVideoFallback(v, videos, avgViews, avgLikes, avgComments, engageRate, avgEngageRate);
+    // 서버 AI 분석 자동 시도 (Claude API 키가 있으면)
+    this._autoAIAnalysis(v);
+  },
+
+  async _autoAIAnalysis(v) {
+    // 서버사이드 AI 분석 시도 (/api/ai/analyze 사용)
+    const resultEl = document.getElementById('ai-result');
+    if (!resultEl) return;
+    const videos = this.data.videos;
+    const channelInfo = this.data.channelInfo;
+    const sameType = videos.filter(x => x.isShort === v.isShort);
+    const avgViews = Math.round(sameType.reduce((s, x) => s + x.views, 0) / sameType.length);
+    const avgLikes = Math.round(sameType.reduce((s, x) => s + x.likes, 0) / sameType.length);
+    const top5 = [...videos].sort((a, b) => b.views - a.views).slice(0, 5).map(x => `"${x.title}" (조회 ${x.views})`).join(', ');
+    const engRate = v.views > 0 ? ((v.likes + v.comments) / v.views * 100).toFixed(2) : 0;
+
+    const prompt = `당신은 유튜브 콘텐츠 전략가입니다. 아래 영상을 분석해주세요.
+
+채널: ${channelInfo.title} (구독자 ${channelInfo.subscriberCount}, 영상 ${channelInfo.videoCount}개)
+분석 대상: "${v.title}"
+- 유형: ${v.isShort ? '숏폼' : '롱폼'} (${v.durationText})
+- 조회수: ${v.views} (${v.isShort?'숏폼':'롱폼'} 평균 ${avgViews})
+- 좋아요: ${v.likes} (평균 ${avgLikes})
+- 댓글: ${v.comments}
+- 참여율: ${engRate}%
+- 업로드: ${v.publishedAt.slice(0,10)}
+
+채널 TOP5: ${top5}
+
+다음 형식으로 분석해주세요:
+## 1. 문제 진단
+이 영상이 평균 대비 어떤 성과인지, 구체적 문제점 2-3개
+
+## 2. 개선 솔루션
+실행 가능한 구체적 액션 3개 (제목 변경, 썸네일, 업로드 시간 등)
+
+## 3. 제목 추천
+현재 제목의 문제점과 대안 제목 3개 (클릭률 높이는 방향)
+
+## 4. 썸네일 전략
+이 영상에 맞는 썸네일 디자인 조언
+
+## 5. 후속 콘텐츠
+이 영상 기반으로 만들면 좋을 후속 콘텐츠 2개
+
+간결하고 실행 가능하게 작성하세요. 한국어로 답변.`;
+
+    // 기존 분석 아래에 "AI 상세 분석 로딩중" 추가
+    const existingContent = resultEl.innerHTML;
+    resultEl.innerHTML = existingContent + '<div id="ai-deep-result" style="margin-top:16px;padding:16px;background:rgba(102,126,234,0.08);border-radius:10px;border:1px solid rgba(102,126,234,0.2);"><div class="ai-loading"><div class="yt-spinner"></div> AI가 상세 분석 중...</div></div>';
+
+    try {
+      const res = await fetch('/api/ai/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      const deepEl = document.getElementById('ai-deep-result');
+      if (!deepEl) return;
+      if (data.success && data.content) {
+        deepEl.innerHTML = '<h4 style="margin:0 0 12px;color:#667eea;">🤖 AI 상세 분석</h4>' + this._markdownToHtml(data.content);
+      } else {
+        deepEl.remove(); // AI 키 없으면 조용히 제거 (규칙 기반만 표시)
+      }
+    } catch (e) {
+      const deepEl = document.getElementById('ai-deep-result');
+      if (deepEl) deepEl.remove();
+    }
+  },
+
+  _markdownToHtml(md) {
+    return md
+      .replace(/## (.+)/g, '<h4 style="margin:14px 0 8px;color:#e8e8f0;">$1</h4>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/^- (.+)/gm, '<li style="margin:3px 0;color:#c0c0d0;">$1</li>')
+      .replace(/^(\d+)\. (.+)/gm, '<li style="margin:3px 0;color:#c0c0d0;"><strong>$1.</strong> $2</li>')
+      .replace(/\n{2,}/g, '<br>')
+      .replace(/\n/g, '<br>');
   },
 
   saveClaudeKey() {
@@ -1053,12 +1147,12 @@ const ContentBoard = {
   },
 
   async runAutoAI() {
-    if (!this.data || !AIAnalysis.isConfigured()) return;
+    if (!this.data) return;
     const resultEl = document.getElementById('ai-auto-result');
     const retryBtn = document.getElementById('ai-auto-retry');
     if (!resultEl) return;
 
-    resultEl.innerHTML = '<div class="ai-loading"><div class="yt-spinner"></div> AI가 채널 데이터를 분석 중입니다...</div>';
+    resultEl.innerHTML = '<div class="ai-loading"><div class="yt-spinner"></div> AI 분석 중... (10~20초)</div>';
     if (retryBtn) retryBtn.style.display = 'none';
 
     try {
@@ -1070,45 +1164,36 @@ const ContentBoard = {
       const totalEng = videos.reduce((s, v) => s + v.likes + v.comments, 0);
       const totalViews = videos.reduce((s, v) => s + v.views, 0);
 
-      const prompt = `당신은 유튜브 채널 성장 전문 컨설턴트입니다. 실제 데이터를 기반으로 분석하세요.
+      const prompt = `유튜브 채널 성장 컨설턴트로서 실제 데이터 기반 분석하세요.
 
-## 채널: ${ch.title} (구독자 ${ch.subscriberCount.toLocaleString()}명)
-- 최근 ${videos.length}개 영상 평균 조회수: ${Math.round(avgViews).toLocaleString()}
-- 전체 참여율: ${totalViews > 0 ? ((totalEng / totalViews) * 100).toFixed(2) : 0}%
+채널: ${ch.title} (구독자 ${ch.subscriberCount.toLocaleString()}명)
+최근 ${videos.length}개 영상 평균 조회수: ${Math.round(avgViews).toLocaleString()}
+참여율: ${totalViews > 0 ? ((totalEng / totalViews) * 100).toFixed(2) : 0}%
 
-## 조회수 TOP 5
-${top5.map((v, i) => `${i+1}. "${v.title}" - ${v.views.toLocaleString()}회 (${v.isShort ? '숏폼' : '롱폼'})`).join('\n')}
+TOP 5: ${top5.map((v, i) => `${i+1}."${v.title}" ${v.views.toLocaleString()}회(${v.isShort?'숏':'롱'})`).join(' / ')}
+하위 5: ${bottom5.map((v, i) => `${i+1}."${v.title}" ${v.views.toLocaleString()}회`).join(' / ')}
 
-## 조회수 하위 5
-${bottom5.map((v, i) => `${i+1}. "${v.title}" - ${v.views.toLocaleString()}회 (${v.isShort ? '숏폼' : '롱폼'})`).join('\n')}
+간결하게 분석:
+1. 현재 문제점 (3줄)
+2. 추천 콘텐츠 제목 3개 + 이유`;
 
-아래 2가지만 간결하게 분석하세요. 각 항목 3-4줄로 핵심만.
-
-### 1. 현재 문제점
-데이터를 근거로 구체적으로 뭐가 문제인지 (조회수가 낮은 영상의 공통점, 참여율 이슈 등)
-
-### 2. 추천 콘텐츠 주제
-앞으로 어떤 주제/형식의 영상을 만들면 좋을지 구체적 제목 3개와 이유`;
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      // 서버 프록시로 호출 (CORS 문제 없음)
+      const response = await fetch('/api/ai/analyze', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': AIAnalysis.getApiKey(),
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          messages: [{ role: 'user', content: prompt }]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: prompt, maxTokens: 1000 })
       });
-
       const data = await response.json();
-      if (data.error) throw new Error(data.error.message);
-      resultEl.innerHTML = `<div class="ai-response">${AIAnalysis.formatResponse(data.content[0].text)}</div>`;
-      if (retryBtn) retryBtn.style.display = 'inline-flex';
+      if (!data.success) throw new Error(data.error || 'AI 호출 실패');
+
+      var html = data.content.replace(/### (.+)/g, '<h4 style="margin:12px 0 6px;color:#667eea;">$1</h4>')
+        .replace(/## (.+)/g, '<h4 style="margin:12px 0 6px;color:#667eea;">$1</h4>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^- (.+)/gm, '<li>$1</li>')
+        .replace(/^(\d+)\. (.+)/gm, '<li><strong>$1.</strong> $2</li>')
+        .replace(/\n/g, '<br>');
+      resultEl.innerHTML = '<div style="font-size:14px;line-height:1.7;color:#ccc;">' + html + '</div>';
+      if (retryBtn) { retryBtn.style.display = 'inline-flex'; retryBtn.textContent = '다시 분석'; }
     } catch (err) {
       // AI 실패 시 규칙 기반 분석으로 대체
       resultEl.innerHTML = this.getFallbackAnalysis();

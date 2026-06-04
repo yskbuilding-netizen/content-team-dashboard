@@ -5,22 +5,32 @@ const App = {
   currentPage: 'dashboard',
 
   async init() {
-    await this.autoConnectKeys();
+    try { await this.autoConnectKeys(); } catch(e) { console.warn('autoConnectKeys:', e); }
+    Storage.syncFromServer().catch(() => {});
     this.seedDefaultTasks();
     this.bindNavigation();
-    Chatbot.init();
-    Calendar.init();
-    Dashboard.init();
-    ContentBoard.init();
-    Instagram.init();
-    TeamSync.init();
-    ContentAgent.init();
-    if (typeof UploadPlanner !== 'undefined') UploadPlanner.init();
 
-    // Check URL hash or default to ai-agent
+    // 각 모듈 독립 초기화 (하나 실패해도 나머지 계속)
+    var modules = [
+      ['Chatbot', typeof Chatbot !== 'undefined' ? Chatbot : null],
+      ['Calendar', typeof Calendar !== 'undefined' ? Calendar : null],
+      ['Dashboard', typeof Dashboard !== 'undefined' ? Dashboard : null],
+      ['ContentBoard', typeof ContentBoard !== 'undefined' ? ContentBoard : null],
+      ['Instagram', typeof Instagram !== 'undefined' ? Instagram : null],
+      ['TeamSync', typeof TeamSync !== 'undefined' ? TeamSync : null],
+      ['ContentAgent', typeof ContentAgent !== 'undefined' ? ContentAgent : null],
+      ['UploadPlanner', typeof UploadPlanner !== 'undefined' ? UploadPlanner : null],
+      ['BlogWP', typeof BlogWP !== 'undefined' ? BlogWP : null]
+    ];
+    modules.forEach(function(m) {
+      if (m[1] && m[1].init) {
+        try { m[1].init(); } catch(e) { console.warn(m[0] + '.init() 에러:', e); }
+      }
+    });
+
+    // 페이지 라우팅
     const hash = window.location.hash.slice(1);
-    if (typeof BlogWP !== 'undefined') BlogWP.init();
-    if (['chatbot','calendar','dashboard','content-board','instagram','competitors','ads','ai-agent','ai-agent-new','blog-wp'].includes(hash)) {
+    if (['chatbot','calendar','dashboard','content-board','instagram','competitors','ads','ai-agent','ai-agent-new','blog-wp','publish'].includes(hash)) {
       this.switchPage(hash);
     } else {
       this.switchPage('dashboard');
@@ -30,11 +40,13 @@ const App = {
     const dateInput = document.getElementById('stat-date');
     if (dateInput) dateInput.value = Storage.formatDate(new Date());
 
-    // 채널 데이터 자동 로딩 (백그라운드)
-    setTimeout(() => {
-      this.autoFetchChannelData();
-      this.autoFetchInstagram();
-    }, 800);
+    // 채널 데이터 자동 로딩 (백그라운드) — 완료 후 대시보드 자동 갱신
+    setTimeout(async () => {
+      await this.autoFetchChannelData();
+      await this.autoFetchInstagram();
+      // 어떤 페이지에 있든 대시보드 데이터 준비 완료
+      if (typeof Dashboard !== 'undefined') Dashboard.refresh();
+    }, 500);
   },
 
   async autoConnectKeys() {
@@ -160,7 +172,7 @@ const App = {
     });
 
     if (page === 'calendar') { Calendar.refresh(); Chatbot.scrollToBottom(); if (typeof UploadPlanner !== 'undefined') UploadPlanner.render(); }
-    if (page === 'dashboard') Dashboard.refresh();
+    if (page === 'dashboard') { try { Dashboard.refresh(); } catch(e){} if (window._refreshPdSummary) window._refreshPdSummary(); }
     if (page === 'content-board') ContentBoard.refresh();
     if (page === 'instagram') Instagram.refresh();
     if (page === 'chatbot') Chatbot.scrollToBottom();

@@ -39,11 +39,73 @@ const Dashboard = {
 
   // ── BSN 채널 데이터 로딩 (빌사남TV / 서울스페이스 / Instagram) ──
   loadBsnChannels() {
-    this.renderBsnYouTube('bilsanam', 'dash-bilsanam-stats', 'dash-bilsanam-recent');
-    this.renderBsnYouTube('seoulspace', 'dash-seoulspace-stats', 'dash-seoulspace-recent');
-    this.renderBsnInstagram('dash-instagram-stats', 'dash-instagram-recent');
-    this.renderChannelSchedule();
-    this.renderPdSummary();
+    // refresh()에서 직접 처리하므로 호환용만 유지
+    this.refresh();
+  },
+
+  async _ensureChannelData() {
+    const channels = [
+      { key: 'bilsanam', search: '빌사남 TV', cacheKey: 'yt_cache_bilsanam', idKey: 'yt_channel_id_bilsanam' },
+      { key: 'seoulspace', search: '서울스페이스', cacheKey: 'yt_cache_seoulspace', idKey: 'yt_channel_id_seoulspace' }
+    ];
+    for (const c of channels) {
+      // 캐시 확인
+      let raw = null;
+      try { raw = JSON.parse(localStorage.getItem(c.cacheKey)); } catch {}
+      const cached = (raw && raw.data) ? raw.data : raw;
+      if (cached && cached.channelInfo) continue;
+
+      // 서버 프록시로 직접 가져오기
+      try {
+        let channelId = localStorage.getItem(c.idKey);
+        if (!channelId) {
+          const searchRes = await fetch(`/api/youtube/search?part=snippet&q=${encodeURIComponent(c.search)}&type=channel&maxResults=1`);
+          const searchData = await searchRes.json();
+          if (searchData.items && searchData.items[0]) {
+            channelId = searchData.items[0].id.channelId || searchData.items[0].snippet.channelId;
+            localStorage.setItem(c.idKey, channelId);
+          }
+        }
+        if (!channelId) continue;
+
+        // 채널 정보
+        const chRes = await fetch(`/api/youtube/channels?part=snippet,statistics,contentDetails&id=${channelId}`);
+        const chData = await chRes.json();
+        if (!chData.items || !chData.items[0]) continue;
+        const ch = chData.items[0];
+        const channelInfo = {
+          id: ch.id, title: ch.snippet.title, thumbnail: ch.snippet.thumbnails?.medium?.url || '',
+          subscriberCount: Number(ch.statistics.subscriberCount) || 0,
+          videoCount: Number(ch.statistics.videoCount) || 0,
+          viewCount: Number(ch.statistics.viewCount) || 0,
+          uploadsPlaylistId: ch.contentDetails?.relatedPlaylists?.uploads || ''
+        };
+
+        // 최근 영상
+        let videos = [];
+        if (channelInfo.uploadsPlaylistId) {
+          const plRes = await fetch(`/api/youtube/playlistItems?part=snippet,contentDetails&playlistId=${channelInfo.uploadsPlaylistId}&maxResults=30`);
+          const plData = await plRes.json();
+          const ids = (plData.items || []).map(i => i.contentDetails.videoId).filter(Boolean);
+          if (ids.length > 0) {
+            const vRes = await fetch(`/api/youtube/videos?part=snippet,statistics,contentDetails&id=${ids.join(',')}`);
+            const vData = await vRes.json();
+            videos = (vData.items || []).map(v => ({
+              id: v.id, title: v.snippet.title, publishedAt: v.snippet.publishedAt,
+              thumbnail: v.snippet.thumbnails?.medium?.url || '',
+              viewCount: Number(v.statistics.viewCount) || 0,
+              likeCount: Number(v.statistics.likeCount) || 0,
+              commentCount: Number(v.statistics.commentCount) || 0
+            }));
+          }
+        }
+
+        // 캐시 저장
+        localStorage.setItem(c.cacheKey, JSON.stringify({ timestamp: Date.now(), data: { channelInfo, videos } }));
+      } catch (e) {
+        console.warn(c.key + ' 로딩 실패:', e.message);
+      }
+    }
   },
 
   renderChannelSchedule() {
@@ -103,25 +165,24 @@ const Dashboard = {
     }).join('');
   },
 
+  CACHE_MAP: { bilsanam: 'yt_cache_bilsanam', seoulspace: 'yt_cache_seoulspace' },
+
   renderBsnYouTube(channelKey, statsElId, recentElId) {
     const statsEl = document.getElementById(statsElId);
     const recentEl = document.getElementById(recentElId);
     if (!statsEl || !recentEl) return;
-    const ch = (typeof ContentBoard !== 'undefined') ? ContentBoard.CHANNELS[channelKey] : null;
-    if (!ch) return;
+    const cacheKey = this.CACHE_MAP[channelKey];
+    if (!cacheKey) return;
 
     let raw = null;
-    try { raw = JSON.parse(localStorage.getItem(ch.cacheKey)); } catch {}
+    try { raw = JSON.parse(localStorage.getItem(cacheKey)); } catch {}
     const cached = (raw && raw.data) ? raw.data : raw;
 
     if (!cached || !cached.channelInfo) {
       statsEl.innerHTML = `
-        <div class="bsn-connection-status disconnected" style="grid-column:1/-1;">
-          <div class="bsn-connection-icon">⚪</div>
-          <div class="bsn-connection-text">
-            <div class="bsn-connection-title">미연결</div>
-            <div class="bsn-connection-sub"><a href="#content-board" onclick="App.switchPage('content-board')" style="color:#667eea;">유튜브 메뉴에서 연결</a></div>
-          </div>
+        <div style="grid-column:1/-1;text-align:center;padding:20px;">
+          <div class="yt-spinner" style="display:inline-block;margin-bottom:8px;"></div>
+          <div style="font-size:13px;color:var(--text-muted);">YouTube 데이터 로딩 중...</div>
         </div>`;
       recentEl.innerHTML = '';
       return;
@@ -211,114 +272,55 @@ const Dashboard = {
   renderPdSummary() {
     const el = document.getElementById('dash-pd-summary');
     if (!el) return;
-    const uploads = (typeof UploadPlanner !== 'undefined') ? UploadPlanner.getUploads() : [];
-    const shoots = (typeof UploadPlanner !== 'undefined') ? UploadPlanner.getShoots() : [];
-    const registry = (typeof UploadPlanner !== 'undefined') ? UploadPlanner.getPdRegistry() : [];
 
-    const pdMap = {};
+    // 캘린더 데이터에서 PD별 업무 추출
+    const allTasks = Storage.getTasks();
     const today = new Date();
     today.setHours(0,0,0,0);
+    const pdNames = (typeof Calendar !== 'undefined' && Calendar.PDS) ? Calendar.PDS.filter(p => p !== '미지정') : [];
+    const CAT_COLORS = (typeof Calendar !== 'undefined') ? Calendar.COLORS : {};
 
-    registry.forEach(pd => {
-      pdMap[pd] = { uploads: [], shoots: [], upcoming: 0, past: 0 };
-    });
-
-    uploads.forEach(u => {
-      const pdNames = (u.pd || '미지정').split(/[,、·]\s*/).map(s => s.trim()).filter(Boolean);
-      pdNames.forEach(pd => {
-        if (!pdMap[pd]) pdMap[pd] = { uploads: [], shoots: [], upcoming: 0, past: 0 };
-        const isUpcoming = new Date(u.date + 'T00:00:00') >= today;
-        if (isUpcoming) pdMap[pd].upcoming++; else pdMap[pd].past++;
-        pdMap[pd].uploads.push(u);
-      });
-    });
-
-    shoots.forEach(s => {
-      const pdNames = (s.pd || '미지정').split(/[,、·]\s*/).map(p => p.trim()).filter(Boolean);
-      pdNames.forEach(pd => {
-        if (!pdMap[pd]) pdMap[pd] = { uploads: [], shoots: [], upcoming: 0, past: 0 };
-        pdMap[pd].shoots.push(s);
-      });
-    });
-
-    const pds = Object.entries(pdMap).sort((a, b) =>
-      (b[1].upcoming + b[1].shoots.length) - (a[1].upcoming + a[1].shoots.length)
-      || a[0].localeCompare(b[0])
-    );
-
-    if (pds.length === 0) {
-      el.innerHTML = `<div class="empty-state" style="padding:30px;"><div class="empty-icon">👥</div><p>등록된 PD가 없습니다.</p></div>`;
+    if (allTasks.length === 0 && pdNames.length === 0) {
+      el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">캘린더에서 업무를 추가하면 PD별로 자동 표시됩니다.</div>';
       return;
     }
 
-    const PLATFORM = {
-      'youtube-bilsanam': { icon: '🏢', name: '빌사남TV', color: '#ff4444' },
-      'youtube-seoulspace': { icon: '🏙️', name: '서울스페이스', color: '#4a90e2' },
-      'instagram': { icon: '📸', name: '인스타그램', color: '#e1306c' },
-      'reels': { icon: '🎬', name: '릴스', color: '#9b59b6' },
-      'other': { icon: '📌', name: '기타', color: '#888' }
-    };
+    const pdMap = {};
+    pdNames.forEach(p => { pdMap[p] = { upcoming: [], past: [] }; });
 
-    el.innerHTML = pds.map(([pd, data]) => {
-      const all = data.uploads
-        .sort((a, b) => b.date.localeCompare(a.date));
-      const upcoming = all.filter(u => new Date(u.date + 'T00:00:00') >= today)
-        .sort((a, b) => a.date.localeCompare(b.date))
-        .slice(0, 4);
-      const recent = all.filter(u => new Date(u.date + 'T00:00:00') < today).slice(0, 3);
-      const dayNames = ['일','월','화','수','목','금','토'];
+    allTasks.forEach(t => {
+      const pd = t.pd || '';
+      if (!pd || pd === '미지정') return;
+      if (!pdMap[pd]) pdMap[pd] = { upcoming: [], past: [] };
+      const taskDate = new Date(t.date + 'T00:00:00');
+      if (taskDate >= today) {
+        pdMap[pd].upcoming.push(t);
+      } else {
+        pdMap[pd].past.push(t);
+      }
+    });
 
-      // 채널별 카운트
-      const byChannel = {};
-      all.forEach(u => {
-        byChannel[u.platform] = (byChannel[u.platform] || 0) + 1;
-      });
-      const channelBadges = Object.entries(byChannel).map(([key, n]) => {
-        const p = PLATFORM[key] || PLATFORM.other;
-        return `<span class="pd-channel-badge" style="background:${p.color}22;color:${p.color};">${p.icon} ${p.name} ${n}</span>`;
-      }).join('');
+    const dayNames = ['일','월','화','수','목','금','토'];
+    el.innerHTML = Object.entries(pdMap).filter(([pd, data]) => data.upcoming.length > 0 || data.past.length > 0).map(([pd, data]) => {
+      const upcoming = data.upcoming.sort((a,b) => a.date.localeCompare(b.date)).slice(0, 5);
+      const past = data.past.sort((a,b) => b.date.localeCompare(a.date)).slice(0, 3);
 
-      const renderRow = (u, isPast) => {
-        const d = new Date(u.date + 'T00:00:00');
-        const p = PLATFORM[u.platform] || PLATFORM.other;
-        return `
-          <div class="pd-upload-row${isPast ? ' past' : ''}">
-            <div class="pd-upload-date">${d.getMonth()+1}/${d.getDate()} (${dayNames[d.getDay()]})</div>
-            <div class="pd-upload-icon" style="color:${p.color};">${p.icon}</div>
-            <div class="pd-upload-title">
-              <span class="pd-upload-channel">${p.name}</span>
-              ${this._esc(u.title)}
-            </div>
-          </div>`;
+      const renderRow = (t, isPast) => {
+        const d = new Date(t.date + 'T00:00:00');
+        const color = CAT_COLORS[t.category] || '#888';
+        return '<div style="display:flex;gap:6px;align-items:center;padding:4px 0;font-size:12px;' + (isPast?'opacity:0.5;':'') + '">' +
+          '<span style="min-width:50px;color:var(--text-muted);">' + (d.getMonth()+1) + '/' + d.getDate() + '(' + dayNames[d.getDay()] + ')</span>' +
+          '<span style="color:' + color + ';">' + (t.categoryEmoji||'📌') + '</span>' +
+          '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + this._esc(t.text) + '</span>' +
+        '</div>';
       };
 
-      return `
-        <div class="pd-card">
-          <div class="pd-card-header">
-            <div class="pd-avatar">${pd.charAt(0)}</div>
-            <div class="pd-info">
-              <div class="pd-name">${this._esc(pd)}</div>
-              <div class="pd-stats">예정 ${data.upcoming} · 촬영 ${data.shoots.length}${data.past ? ' · 완료 ' + data.past : ''}</div>
-            </div>
-          </div>
-          ${channelBadges ? `<div class="pd-channel-badges">${channelBadges}</div>` : ''}
-          <div class="pd-section-label">📤 예정 업로드</div>
-          <div class="pd-uploads">
-            ${upcoming.length === 0 ? '<div class="pd-empty">예정된 업로드 없음</div>' : upcoming.map(u => renderRow(u, false)).join('')}
-          </div>
-          ${recent.length > 0 ? `
-            <div class="pd-section-label" style="margin-top:10px;">✅ 최근 업로드</div>
-            <div class="pd-uploads">${recent.map(u => renderRow(u, true)).join('')}</div>
-          ` : ''}
-          ${data.shoots.length > 0 ? `
-            <div class="pd-shoots">
-              <div class="pd-shoots-label">📍 촬영</div>
-              ${data.shoots.slice(0, 3).map(s => `<div class="pd-shoot-item">${this._esc(s.dateText)} · ${this._esc(s.location)}</div>`).join('')}
-            </div>
-          ` : ''}
-        </div>
-      `;
-    }).join('');
+      return '<div class="pd-card">' +
+        '<div class="pd-card-header"><div class="pd-avatar">' + pd.charAt(0) + '</div><div class="pd-info"><div class="pd-name">' + this._esc(pd) + '</div><div class="pd-stats">예정 ' + data.upcoming.length + '건' + (data.past.length ? ' · 완료 ' + data.past.length + '건' : '') + '</div></div></div>' +
+        (upcoming.length > 0 ? '<div style="padding:8px 12px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">📤 예정</div>' + upcoming.map(t => renderRow(t, false)).join('') + '</div>' : '') +
+        (past.length > 0 ? '<div style="padding:4px 12px 8px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">✅ 최근</div>' + past.map(t => renderRow(t, true)).join('') + '</div>' : '') +
+      '</div>';
+    }).join('') || '<div style="padding:20px;text-align:center;color:var(--text-muted);">캘린더에서 업무를 추가하면 PD별로 자동 표시됩니다.</div>';
   },
 
   _esc(s) { return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); },
@@ -352,7 +354,31 @@ const Dashboard = {
     this.renderOverview();
     this.renderCards();
     this.renderCharts();
-    this.loadBsnChannels(false);
+    this.renderPdSummary();
+    // 서버에서 대시보드 데이터 한번에 가져오기
+    this._loadDashboardData();
+  },
+
+  _loadDashboardData: function() {
+    var self = this;
+    // 심플하게 fetch로 교체 + 에러 표시
+    var statsEl = document.getElementById('dash-bilsanam-stats');
+    fetch('/api/dashboard-data')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && data.bilsanam) {
+          localStorage.setItem('yt_cache_bilsanam', JSON.stringify({ timestamp: Date.now(), data: data.bilsanam }));
+        }
+        if (data && data.seoulspace) {
+          localStorage.setItem('yt_cache_seoulspace', JSON.stringify({ timestamp: Date.now(), data: data.seoulspace }));
+        }
+        self.renderBsnYouTube('bilsanam', 'dash-bilsanam-stats', 'dash-bilsanam-recent');
+        self.renderBsnYouTube('seoulspace', 'dash-seoulspace-stats', 'dash-seoulspace-recent');
+        self.renderBsnInstagram('dash-instagram-stats', 'dash-instagram-recent');
+      })
+      .catch(function(e) {
+        if (statsEl) statsEl.innerHTML = '<div style="padding:20px;color:#ff6b6b;">로딩 실패: ' + e.message + '</div>';
+      });
   },
 
   formatNumber(num) {

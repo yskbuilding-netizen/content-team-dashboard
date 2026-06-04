@@ -72,28 +72,72 @@ const Storage = {
     return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
   },
 
-  // ── Tasks ──
-  getTasks() { return this._get(this.KEYS.TASKS); },
+  // ── Tasks (서버가 유일한 저장소 — PD간 완전 공유) ──
+  _tasksCache: null,
+
+  getTasks() {
+    // 캐시 있으면 캐시, 없으면 localStorage 폴백
+    if (this._tasksCache) return this._tasksCache;
+    return this._get(this.KEYS.TASKS);
+  },
 
   addTask(task) {
-    const tasks = this.getTasks();
     const newTask = {
       id: this.generateId(),
       text: task.text,
       url: task.url || '',
       category: task.category || '기타',
       categoryEmoji: task.categoryEmoji || '📌',
+      pd: task.pd || '',
       date: task.date || this.formatDate(new Date()),
+      time: task.time || '',
+      timeEnd: task.timeEnd || '',
       createdAt: new Date().toISOString()
     };
+    // 로컬 캐시 즉시 업데이트
+    var tasks = this.getTasks();
     tasks.push(newTask);
+    this._tasksCache = tasks;
     this._set(this.KEYS.TASKS, tasks);
+    // 서버에 저장
+    fetch('/api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newTask)
+    }).catch(function(){});
     return newTask;
   },
 
-  deleteTask(id) {
-    const tasks = this.getTasks().filter(t => t.id !== id);
+  updateTask(id, updates) {
+    var tasks = this.getTasks().map(function(t) {
+      if (t.id === id) return Object.assign({}, t, updates);
+      return t;
+    });
+    this._tasksCache = tasks;
     this._set(this.KEYS.TASKS, tasks);
+    fetch('/api/tasks/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updates)
+    }).catch(function(){});
+  },
+
+  deleteTask(id) {
+    var tasks = this.getTasks().filter(function(t) { return t.id !== id; });
+    this._tasksCache = tasks;
+    this._set(this.KEYS.TASKS, tasks);
+    fetch('/api/tasks/' + id, { method: 'DELETE' }).catch(function(){});
+  },
+
+  // 서버에서 전체 태스크 불러오기 (서버가 진실의 원천)
+  async syncFromServer() {
+    try {
+      var res = await fetch('/api/tasks');
+      if (!res.ok) return;
+      var serverTasks = await res.json();
+      this._tasksCache = serverTasks;
+      this._set(this.KEYS.TASKS, serverTasks);
+    } catch (e) {}
   },
 
   getTasksByWeek(weekStart) {
