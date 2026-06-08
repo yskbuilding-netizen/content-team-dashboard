@@ -466,6 +466,56 @@ const Instagram = {
       </div>
     `;
     modal.classList.add('active');
+    // AI 상세 분석 자동 시도
+    this._aiAnalyzePost(p, posts, avgLikes, avgComments, avgEngageRate);
+  },
+
+  _aiAnalyzePost: function(p, posts, avgLikes, avgComments, avgEngageRate) {
+    var container = document.getElementById('ig-va-content');
+    if (!container) return;
+    var engRate = (p.likes + p.comments) > 0 && posts.length > 0 ? ((p.likes + p.comments) / Math.max(p.likes * 10, 1) * 100).toFixed(1) : '0';
+    var top3 = posts.slice().sort(function(a,b){return b.likes-a.likes}).slice(0,3).map(function(x){return '"'+(x.caption||'').slice(0,30)+'" 좋아요:'+x.likes}).join(', ');
+
+    var prompt = '인스타그램 콘텐츠 전략가로서 분석하세요.\n\n' +
+      '분석 대상: "' + (p.caption||'').slice(0,60) + '"\n' +
+      '유형: ' + p.type + '\n' +
+      '좋아요: ' + p.likes + ' (평균 ' + Math.round(avgLikes) + ')\n' +
+      '댓글: ' + p.comments + ' (평균 ' + Math.round(avgComments) + ')\n' +
+      '채널 TOP3: ' + top3 + '\n\n' +
+      '간결하게 분석:\n' +
+      '1. 이 게시물의 문제점 (2줄)\n' +
+      '2. 개선 방법 3가지\n' +
+      '3. 추천 캡션 1개 (해시태그 포함)';
+
+    var aiDiv = document.createElement('div');
+    aiDiv.id = 'ig-ai-deep';
+    aiDiv.style.cssText = 'margin-top:16px;padding:16px;background:rgba(225,48,108,0.06);border-radius:10px;border:1px solid rgba(225,48,108,0.2);';
+    aiDiv.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:#e1306c;font-weight:700;margin-bottom:8px;">🤖 AI 분석</div><div style="color:#999;font-size:13px;">분석 중...</div>';
+    container.appendChild(aiDiv);
+
+    fetch('/api/ai/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: prompt, maxTokens: 800 })
+    }).then(function(r) { return r.json(); }).then(function(data) {
+      var el = document.getElementById('ig-ai-deep');
+      if (!el) return;
+      if (data.success && data.content) {
+        var html = data.content
+          .replace(/### (.+)/g, '<h4 style="margin:10px 0 4px;color:#e1306c;">$1</h4>')
+          .replace(/## (.+)/g, '<h4 style="margin:10px 0 4px;color:#e1306c;">$1</h4>')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/^- (.+)/gm, '<li>$1</li>')
+          .replace(/^(\d+)\. (.+)/gm, '<li><strong>$1.</strong> $2</li>')
+          .replace(/\n/g, '<br>');
+        el.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:#e1306c;font-weight:700;margin-bottom:8px;">🤖 AI 분석</div><div style="font-size:14px;line-height:1.7;color:#ccc;">' + html + '</div>';
+      } else {
+        el.remove();
+      }
+    }).catch(function() {
+      var el = document.getElementById('ig-ai-deep');
+      if (el) el.remove();
+    });
   },
 
   closePostAnalysis() {

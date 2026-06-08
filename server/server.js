@@ -194,7 +194,7 @@ app.get('/api/dashboard-data', async (req, res) => {
       // 3. 최근 영상
       var videos = [];
       if (uploadsId) {
-        var plUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=' + uploadsId + '&maxResults=10&key=' + apiKey;
+        var plUrl = 'https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&playlistId=' + uploadsId + '&maxResults=50&key=' + apiKey;
         var plRes = await fetch(plUrl);
         var plData = await plRes.json();
         var ids = (plData.items || []).map(function(i) { return i.contentDetails.videoId; }).filter(Boolean);

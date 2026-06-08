@@ -1452,16 +1452,24 @@
           var data = pdMap[pd];
           var upcoming = data.up.sort(function(a,b){return a.date.localeCompare(b.date)}).slice(0,5);
           var past = data.past.sort(function(a,b){return b.date.localeCompare(a.date)}).slice(0,3);
+          var fmtTime = function(t24) {
+            if (!t24) return '';
+            var parts = t24.split(':');
+            var h = parseInt(parts[0]); var m = parts[1];
+            var ampm = h < 12 ? '오전' : '오후';
+            var h12 = h <= 12 ? h : h - 12;
+            if (h12 === 0) h12 = 12;
+            return ampm + h12 + ':' + m;
+          };
           var rows = function(list,dim) {
             return list.map(function(t) {
               var d=new Date(t.date+'T00:00:00'); var c=colors[t.category]||'#888';
-              var timeStr=''; if(t.time){timeStr=t.time; if(t.timeEnd) timeStr+='~'+t.timeEnd;}
-              var updated = t.serverTime ? ' · ' + new Date(t.serverTime).toLocaleDateString('ko') + ' 등록' : '';
+              var timeStr=''; if(t.time){timeStr=fmtTime(t.time); if(t.timeEnd) timeStr+='~'+fmtTime(t.timeEnd);}
               return '<div style="display:flex;gap:8px;align-items:center;padding:5px 0;font-size:14px;border-bottom:1px solid #ffffff08;'+(dim?'opacity:0.5;':'')+'">'+
                 '<span style="min-width:55px;color:#8a8aa8;font-size:13px;">'+(d.getMonth()+1)+'/'+d.getDate()+'('+dayN[d.getDay()]+')</span>'+
-                (timeStr?'<span style="color:#667eea;font-size:12px;background:#667eea15;padding:2px 6px;border-radius:4px;">'+timeStr+'</span>':'')+
+                (timeStr?'<span style="color:'+c+';font-size:12px;font-weight:700;background:'+c+'15;padding:2px 6px;border-radius:4px;">'+timeStr+'</span>':'')+
                 '<span style="color:'+c+';font-size:15px;">'+(t.categoryEmoji||'📌')+'</span>'+
-                '<span onclick="Calendar.openEdit(\''+t.id+'\')" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;font-weight:500;" title="클릭하여 수정">'+t.text+'<span style="font-size:10px;color:#555;font-weight:400;">'+updated+'</span></span>'+
+                '<span onclick="Calendar.openEdit(\''+t.id+'\')" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;font-weight:500;" title="클릭하여 수정">'+t.text+'</span>'+
                 '<span onclick="Storage.deleteTask(\''+t.id+'\');window._refreshPdSummary();" style="cursor:pointer;color:#666;font-size:12px;padding:4px;opacity:0.4;" onmouseover="this.style.opacity=1;this.style.color=\'#ff4444\'" onmouseout="this.style.opacity=0.4;this.style.color=\'#666\'">✕</span></div>';
             }).join('');
           };

@@ -90,21 +90,38 @@ var Calendar = {
       num.textContent = d;
       cell.appendChild(num);
 
+      // 시간순 정렬
+      tasks.sort(function(a, b) {
+        var ta = a.time || '99:99';
+        var tb = b.time || '99:99';
+        return ta.localeCompare(tb);
+      });
+
       var list = document.createElement('div');
       list.className = 'month-day-tasks';
 
-      for (var t = 0; t < Math.min(tasks.length, 3); t++) {
+      for (var t = 0; t < Math.min(tasks.length, 4); t++) {
         var task = tasks[t];
         var color = this.COLORS[task.category] || '#888';
         var chip = document.createElement('div');
         chip.className = 'month-task-chip';
         chip.style.cssText = 'background:' + color + '22;border-left:3px solid ' + color;
 
+        // 시간 뱃지 (있으면)
+        if (task.time) {
+          var timeBadge = document.createElement('span');
+          timeBadge.className = 'month-task-time';
+          timeBadge.style.cssText = 'background:' + color + '33;color:' + color + ';';
+          var tp = task.time.split(':'); var th = parseInt(tp[0]);
+          var tap = th < 12 ? '오전' : '오후'; var th12 = th <= 12 ? th : th - 12; if(th12===0) th12=12;
+          timeBadge.textContent = tap + th12 + ':' + tp[1];
+          chip.appendChild(timeBadge);
+        }
+
         var txt = document.createElement('span');
         txt.className = 'month-task-text';
         var pdTag = task.pd ? ' [' + task.pd + ']' : '';
-        var timeTag = task.time ? task.time + ' ' : '';
-        var display = timeTag + (task.categoryEmoji||'📌') + ' ' + (task.text.length > 10 ? task.text.slice(0,10)+'…' : task.text) + pdTag;
+        var display = (task.categoryEmoji||'📌') + ' ' + (task.text.length > 10 ? task.text.slice(0,10)+'…' : task.text) + pdTag;
         txt.textContent = display;
         txt.style.cursor = 'pointer';
         (function(tid) {
@@ -125,10 +142,10 @@ var Calendar = {
         chip.appendChild(del);
         list.appendChild(chip);
       }
-      if (tasks.length > 3) {
+      if (tasks.length > 4) {
         var more = document.createElement('div');
         more.className = 'month-task-more';
-        more.textContent = '+' + (tasks.length-3);
+        more.textContent = '+' + (tasks.length-4);
         list.appendChild(more);
       }
       cell.appendChild(list);
@@ -205,10 +222,19 @@ var Calendar = {
             var d = new Date(t.date + 'T00:00:00');
             var c = colors[t.category] || '#888';
             var timeStr = '';
-            if (t.time) { timeStr = t.time; if (t.timeEnd) timeStr += '~' + t.timeEnd; }
+            if (t.time) {
+              var p = t.time.split(':'); var h = parseInt(p[0]); var ampm = h < 12 ? '오전' : '오후';
+              var h12 = h <= 12 ? h : h - 12; if (h12===0) h12=12;
+              timeStr = ampm + h12 + ':' + p[1];
+              if (t.timeEnd) {
+                var p2 = t.timeEnd.split(':'); var h2 = parseInt(p2[0]); var ap2 = h2 < 12 ? '오전' : '오후';
+                var h22 = h2 <= 12 ? h2 : h2 - 12; if (h22===0) h22=12;
+                timeStr += '~' + ap2 + h22 + ':' + p2[1];
+              }
+            }
             return '<div style="display:flex;gap:8px;align-items:center;padding:6px 0;font-size:14px;border-bottom:1px solid #ffffff08;">' +
               '<span style="min-width:55px;color:#8a8aa8;font-size:13px;">' + (d.getMonth()+1) + '/' + d.getDate() + '(' + dayN[d.getDay()] + ')</span>' +
-              (timeStr ? '<span style="color:#667eea;font-size:12px;min-width:45px;background:#667eea15;padding:2px 6px;border-radius:4px;">' + timeStr + '</span>' : '') +
+              (timeStr ? '<span style="color:' + c + ';font-size:12px;font-weight:700;background:' + c + '15;padding:2px 6px;border-radius:4px;">' + timeStr + '</span>' : '') +
               '<span style="color:' + c + ';font-size:15px;">' + (t.categoryEmoji||'📌') + '</span>' +
               '<span onclick="Calendar.openEdit(\'' + t.id + '\')" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;font-weight:500;" title="클릭하여 수정">' + t.text + '</span>' +
               '<span onclick="Storage.deleteTask(\'' + t.id + '\');Calendar.render();" style="cursor:pointer;color:#666;font-size:12px;opacity:0.3;padding:4px;" onmouseover="this.style.opacity=1;this.style.color=\'#ff4444\'" onmouseout="this.style.opacity=0.3;this.style.color=\'#666\'">✕</span>' +

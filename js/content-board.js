@@ -123,28 +123,36 @@ const ContentBoard = {
     document.getElementById('yt-dashboard-area').style.display = 'block';
     this.useDemo = false;
 
-    // 채널별 캐시/ID 로드
-    YouTubeService.CACHE_KEY = ch.cacheKey;
-
-    // 캐시 있으면 즉시 표시
-    let raw = null;
-    try { raw = JSON.parse(localStorage.getItem(ch.cacheKey)); } catch {}
-    const cached = (raw && raw.data) ? raw.data : raw;
-    if (cached && cached.channelInfo) {
-      this.data = cached;
-      this.render();
-      return;
-    }
-
-    // 캐시 없으면 API 호출
+    // 서버에서 대시보드 데이터 가져와서 해당 채널 표시
     this.data = null;
-    const savedId = localStorage.getItem(ch.channelIdKey);
-    if (savedId) {
-      YouTubeService.setChannelId(savedId);
-      this.fetchData(false);
-    } else {
-      this.autoConnectChannel(channelKey);
-    }
+    document.getElementById('yt-loading').style.display = 'flex';
+
+    var self = this;
+    fetch('/api/dashboard-data').then(function(r) { return r.json(); }).then(function(data) {
+      var chData = data[channelKey];
+      if (chData && chData.channelInfo) {
+        // 비디오 필드명 통일 (viewCount→views 등)
+        var videos = (chData.videos || []).map(function(v) {
+          return {
+            id: v.id, title: v.title, publishedAt: v.publishedAt, thumbnail: v.thumbnail,
+            views: v.viewCount || v.views || 0,
+            likes: v.likeCount || v.likes || 0,
+            comments: v.commentCount || v.comments || 0,
+            duration: v.duration || 0,
+            durationText: v.durationText || '',
+            isShort: (v.duration || 0) <= 60
+          };
+        });
+        self.data = { channelInfo: chData.channelInfo, videos: videos, weeks: YouTubeService.groupByWeek(videos) };
+        self.render();
+      } else {
+        self.autoConnectChannel(channelKey);
+      }
+    }).catch(function() {
+      self.autoConnectChannel(channelKey);
+    }).finally(function() {
+      document.getElementById('yt-loading').style.display = 'none';
+    });
   },
 
   async autoConnectChannel(channelKey) {
@@ -208,41 +216,13 @@ const ContentBoard = {
   },
 
   async refresh() {
-    // 채널이 선택되지 않았으면 자동으로 빌사남TV 선택 (상세 안 눌러도 바로)
+    // 채널이 선택되지 않았으면 자동으로 빌사남TV 선택
     if (!this.currentChannel) {
       this.selectChannel('bilsanam');
       return;
     }
-
-    const hasKey = !!YouTubeService.getApiKey();
-
-    if (hasKey && !this.useDemo) {
-      if (!YouTubeService.getChannelId()) {
-        await this.autoConnectChannel(this.currentChannel);
-        return;
-      }
-
-      document.getElementById('yt-setup-area').style.display = 'none';
-      document.getElementById('yt-dashboard-area').style.display = 'block';
-      document.getElementById('yt-channel-select').style.display = 'none';
-      const cached = YouTubeService.loadCache();
-      if (cached) {
-        this.data = cached;
-        this.render();
-      } else {
-        await this.fetchData(false);
-      }
-    } else if (this.useDemo || this.data) {
-      if (!this.data) this.data = this.generateDemoData();
-      this.render();
-    } else {
-      document.getElementById('yt-setup-area').style.display = 'flex';
-      document.getElementById('yt-dashboard-area').style.display = 'none';
-      const existingKey = YouTubeService.getApiKey();
-      if (existingKey) {
-        document.getElementById('yt-api-key-input').value = existingKey;
-      }
-    }
+    // 이미 selectChannel에서 처리하므로 여기서는 추가 작업 불필요
+    // selectChannel이 캐시 확인 → render 또는 fetchData 호출함
   },
 
 
