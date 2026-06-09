@@ -41,7 +41,7 @@
       }
     }
     document.addEventListener('keydown',function(e){if(e.key==='Enter'&&document.getElementById('login-screen').style.display!=='none')doLogin();});
-    if(localStorage.getItem('ct_logged_in')==='1'){document.addEventListener('DOMContentLoaded',function(){document.getElementById('login-screen').style.display='none';document.getElementById('app-main').style.display='';});}
+    if(localStorage.getItem('ct_logged_in')==='1'){document.addEventListener('DOMContentLoaded',async function(){document.getElementById('login-screen').style.display='none';document.getElementById('app-main').style.display='';await Storage.loadInitialData();});}
   </script>
 
   <div id="app-main" style="display:none;">

@@ -74,6 +74,27 @@ const Storage = {
 
   // ── Tasks (서버가 유일한 저장소 — PD간 완전 공유) ──
   _tasksCache: null,
+  _initialDataLoaded: false,
+
+  async loadInitialData() {
+    if (this._initialDataLoaded) return;
+    const storedTasks = this._get(this.KEYS.TASKS);
+    if (storedTasks.length > 0) {
+      this._initialDataLoaded = true;
+      return; // 이미 데이터 있음
+    }
+    try {
+      const res = await fetch('/initial-tasks.json');
+      if (res.ok) {
+        const data = await res.json();
+        this._set(this.KEYS.TASKS, data);
+        this._tasksCache = data;
+      }
+    } catch (e) {
+      console.log('Initial data not available');
+    }
+    this._initialDataLoaded = true;
+  },
 
   getTasks() {
     // 캐시 있으면 캐시, 없으면 localStorage 폴백
