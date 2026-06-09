@@ -14,12 +14,13 @@ const APIManager = require('./api');
 
 // Redis/KV 연동 (Vercel 환경에서만 사용)
 let kv = null;
-if (process.env.KV_REST_API_URL) {
+if (process.env.REDIS_URL || process.env.KV_REST_API_URL) {
   try {
-    const { kv: vercelKv } = require('@vercel/kv');
-    kv = vercelKv;
+    const redis = require('@vercel/kv');
+    kv = redis;
+    console.log('✅ Redis KV connected');
   } catch (e) {
-    console.log('KV not available in local environment');
+    console.log('⚠️ Redis KV not available:', e.message);
   }
 }
 
