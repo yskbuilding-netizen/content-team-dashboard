@@ -12,6 +12,17 @@ const fs = require('fs');
 const path = require('path');
 const APIManager = require('./api');
 
+// Redis/KV 연동 (Vercel 환경에서만 사용)
+let kv = null;
+if (process.env.KV_REST_API_URL) {
+  try {
+    const { kv: vercelKv } = require('@vercel/kv');
+    kv = vercelKv;
+  } catch (e) {
+    console.log('KV not available in local environment');
+  }
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -60,68 +71,115 @@ function saveConfig(config) {
 
 // ── 팀 업무 공유 저장소 ──
 const TASKS_FILE = path.join(DATA_DIR, 'team-tasks.json');
+const TASKS_KV_KEY = 'content-team:tasks';
 
-function loadTasks() {
+async function loadTasks() {
   try {
+    // Vercel 환경에서는 KV 사용
+    if (kv) {
+      const kvTasks = await kv.get(TASKS_KV_KEY);
+      return kvTasks || [];
+    }
+    // 로컬 환경에서는 파일 사용
     return JSON.parse(fs.readFileSync(TASKS_FILE, 'utf8'));
   } catch {
     return [];
   }
 }
 
-function saveTasks(tasks) {
-  fs.writeFileSync(TASKS_FILE, JSON.stringify(tasks, null, 2));
+async function saveTasks(tasks) {
+  try {
+    // Vercel 환경에서는 KV 사용
+    if (kv) {
+      await kv.set(TASKS_KV_KEY, tasks);
+    }
+  } catch (e) {
+    console.error('KV save error:', e);
+  }
+  // 로컬 환경에서는 파일 사용 (백업)
+  try {
+    fs.writeFileSync(TASKS_FILE, JSON.stringify(tasks, null, 2));
+  } catch (e) {
+    console.error('File save error:', e);
+  }
 }
 
 // ── API: 팀 업무 ──
-app.get('/api/tasks', (req, res) => {
-  res.json(loadTasks());
-});
-
-app.post('/api/tasks', (req, res) => {
-  var tasks = loadTasks();
-  var newTask = req.body;
-  newTask.serverTime = new Date().toISOString();
-  // 중복 제거
-  var exists = tasks.find(function(t) { return t.id === newTask.id; });
-  if (!exists) {
-    tasks.push(newTask);
-    saveTasks(tasks);
+app.get('/api/tasks', async (req, res) => {
+  try {
+    const tasks = await loadTasks();
+    res.json(tasks);
+  } catch (e) {
+    console.error('GET tasks error:', e);
+    res.json([]);
   }
-  res.json({ ok: true, total: tasks.length });
 });
 
-app.post('/api/tasks/sync', (req, res) => {
-  var clientTasks = req.body.tasks || [];
-  var serverTasks = loadTasks();
-  var serverIds = new Set(serverTasks.map(function(t) { return t.id; }));
-
-  // 클라이언트에만 있는 업무 추가
-  var added = 0;
-  clientTasks.forEach(function(t) {
-    if (!serverIds.has(t.id)) {
-      serverTasks.push(t);
-      added++;
+app.post('/api/tasks', async (req, res) => {
+  try {
+    var tasks = await loadTasks();
+    var newTask = req.body;
+    newTask.serverTime = new Date().toISOString();
+    // 중복 제거
+    var exists = tasks.find(function(t) { return t.id === newTask.id; });
+    if (!exists) {
+      tasks.push(newTask);
+      await saveTasks(tasks);
     }
-  });
-
-  if (added > 0) saveTasks(serverTasks);
-  res.json({ ok: true, tasks: serverTasks, added: added });
+    res.json({ ok: true, total: tasks.length });
+  } catch (e) {
+    console.error('POST tasks error:', e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
-app.put('/api/tasks/:id', (req, res) => {
-  var tasks = loadTasks();
-  var idx = tasks.findIndex(function(t) { return t.id === req.params.id; });
-  if (idx === -1) return res.status(404).json({ error: 'not found' });
-  Object.assign(tasks[idx], req.body, { id: req.params.id });
-  saveTasks(tasks);
-  res.json({ ok: true, task: tasks[idx] });
+app.post('/api/tasks/sync', async (req, res) => {
+  try {
+    var clientTasks = req.body.tasks || [];
+    var serverTasks = await loadTasks();
+    var serverIds = new Set(serverTasks.map(function(t) { return t.id; }));
+
+    // 클라이언트에만 있는 업무 추가
+    var added = 0;
+    clientTasks.forEach(function(t) {
+      if (!serverIds.has(t.id)) {
+        serverTasks.push(t);
+        added++;
+      }
+    });
+
+    if (added > 0) await saveTasks(serverTasks);
+    res.json({ ok: true, tasks: serverTasks, added: added });
+  } catch (e) {
+    console.error('SYNC tasks error:', e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
-app.delete('/api/tasks/:id', (req, res) => {
-  var tasks = loadTasks().filter(function(t) { return t.id !== req.params.id; });
-  saveTasks(tasks);
-  res.json({ ok: true, total: tasks.length });
+app.put('/api/tasks/:id', async (req, res) => {
+  try {
+    var tasks = await loadTasks();
+    var idx = tasks.findIndex(function(t) { return t.id === req.params.id; });
+    if (idx === -1) return res.status(404).json({ error: 'not found' });
+    Object.assign(tasks[idx], req.body, { id: req.params.id });
+    await saveTasks(tasks);
+    res.json({ ok: true, task: tasks[idx] });
+  } catch (e) {
+    console.error('PUT tasks error:', e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+app.delete('/api/tasks/:id', async (req, res) => {
+  try {
+    var tasks = await loadTasks();
+    var filtered = tasks.filter(function(t) { return t.id !== req.params.id; });
+    await saveTasks(filtered);
+    res.json({ ok: true, total: filtered.length });
+  } catch (e) {
+    console.error('DELETE tasks error:', e);
+    res.status(500).json({ ok: false, error: e.message });
+  }
 });
 
 // ── API: YouTube 프록시 (브라우저 CORS 우회) ──
